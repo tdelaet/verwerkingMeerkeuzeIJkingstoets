@@ -1,0 +1,14 @@
+* Open berekenScoresPermutaties
+* Pas gegevens aan
+	- Controleer de filenaam (nameFile) en de sheetnaam (nameSheet)
+	- pas het aantal vragen aan (numQuestions)
+	- pas aantal alternatieven aan (numAlternatives)
+	- pas aantal reeksen aan (numSeries)
+	- pas de correct antwoorden aan (correctAnswers) - dit zijn de niet-gepermuteerde antwoorden (meestal de antwoorden voor reeks 1)
+	- pas de permutaties aan (permutations) - als de correcte antwoorden de antwoorden van reeks 1 zijn moet de 1ste rij een rij zijn met 1,2,3, ...,numQuestions
+	- pas de opties aan die studenten konden kiezen (twoOptions)
+* Druk op uitvoeren
+* Resultaat is een file output.xls
+
+* open output.xls en controleer op fouten
+* als er een input fout is dan dien je de OMRoutput file aan te passen (OMRoutput.xls in ../OMR)
