@@ -22,26 +22,37 @@ import supportFunctions
 import writeResults
 import leesSleutelEnPermutaties
 
-#nameFile = "../OMR/OMRoutput.xlsx" #name of excel file with scanned forms
-#nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 nameFile = "../OMR/Sept2013.xlsx" #name of excel file with scanned forms
 nameSheet = "IR" #sheet name of excel file with scanned forms
+
+jaar = "2013"
+toets = "ir2"
+
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
 maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
-jaar = "2013"
-toets = "ir2"
 
+############################
+#create list of expected content of scan file
+content = ["ijkID","vragenreeks"]
 
+for question in xrange(1,numQuestions+1):
+        name = "Vraag" + str(question)
+        content.append(name)
+###########################
+
+############################
+############################
 #correct answers
 correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets)
 #permutations
 permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries)
-
+############################
+############################
 #permutations = numpy.loadtxt("../permutatie_ir2.txt",delimiter=',',dtype=numpy.int32)
 
 plt.close("all")
@@ -51,14 +62,7 @@ alternatives = list(string.ascii_uppercase)[0:numAlternatives]
 #numbers of answer alternatives
 #alternatives = numpy.arange(1,numAlternatives+1)
 
-############################
-#create list of expected content of scan file
-content = ["ijkID","vragenreeks"]
-for question in xrange(1,numQuestions+1):
-        name = "Vraag" + str(question)
-        content.append(name)
-#print content
-###########################
+
         
 if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations)):
      print "ERROR found in input variables"   
@@ -112,7 +116,6 @@ columnSeries=sheet.col_values(colNrSerie,1,num_rows)
 scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
 numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
 
-
 matrixAnswers = supportFunctions.getMatrixAnswers(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
 
 
@@ -121,11 +124,6 @@ scoreQuestionsIndicatedSeries, averageScoreQuestions =  supportFunctions.getScor
 
 #get the overall statistics
 totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
-#print totalScore
-#print averageScore
-#print medianScore
-#print standardDeviation
-#print percentagePass
 
 totalScoreDifferentPermutations = supportFunctions.calculateTotalScoreDifferentPermutations(scoreQuestionsAllPermutations,maxTotalScore)
 #print totalScoreDifferentPermutations
