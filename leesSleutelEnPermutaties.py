@@ -38,7 +38,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc):
     return permutations_loc
     
 def leesSleutel(jaar_loc,toets_loc):
-    name_sleutel = jaar_loc + "_" + toets_loc + "_SLEUTELreeks1"
+    name_sleutel = jaar_loc + "_" + toets_loc + "_SLEUTEL"
     sleutel = numpy.loadtxt("../"+ name_sleutel+ ".tex",delimiter='\t',dtype=numpy.str)
     sleutel = sleutel[1:len(sleutel):3]
     return sleutel
