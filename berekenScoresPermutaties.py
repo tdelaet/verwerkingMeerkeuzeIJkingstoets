@@ -20,10 +20,11 @@ from xlwt import Workbook
 import checkInputVariables
 import supportFunctions
 import writeResults
-
+import leesSleutelEnPermutaties
 
 #nameFile = "../OMR/OMRoutput.xlsx" #name of excel file with scanned forms
 #nameSheet = "outputScan" #sheet name of excel file with scanned forms
+
 nameFile = "../OMR/Sept2013.xlsx" #name of excel file with scanned forms
 nameSheet = "IR" #sheet name of excel file with scanned forms
 numQuestions = 35 # number of questions
@@ -32,18 +33,16 @@ maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
-#correct answers for the first series
-correctAnswers = ["E","B","D","D","E","C","A","C","A","B","E","E","D","D","C","A","D","C","D","A","B","D","C","D","A","D","D","D","C","D","C","E","D","D","A" ]
+jaar = "2013"
+toets = "ir2"
 
-#permutations = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35],
-#                [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,1],
-#                [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,1,2],
-#                [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,1,2,3]] #permutations of the different series
 
-permutations =[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35],
-[2,3,1,4,5,11,12,13,14,15,6,7,8,9,10,16,17,18,19,20,33,34,35,21,22,23,24,25,26,27,28,29,30,31,32],
-[3,1,2,4,5,16,17,18,19,20,11,12,13,14,15,6,7,8,9,10,30,31,32,33,34,35,21,22,23,24,25,26,27,28,29],
-[4,3,1,2,5,6,7,8,9,10,16,17,18,19,20,11,12,13,14,15,27,28,29,30,31,32,33,34,35,21,22,23,24,25,26]] #permutations of the different series
+#correct answers
+correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets)
+#permutations
+permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries)
+
+#permutations = numpy.loadtxt("../permutatie_ir2.txt",delimiter=',',dtype=numpy.int32)
 
 plt.close("all")
 
