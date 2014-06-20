@@ -24,7 +24,7 @@ tresholdDifficultyQuestionTwo = 0.5
 tresholdDifficultyQuestionThree = 0.25
 
 
-font_bold = "font: bold true;"
+font_bold = "font: bold on;"
 font_red = "font: color red;"
 font_italic = "font: italic true;"
 align_horizcenter = "align: horiz center;"
@@ -186,7 +186,7 @@ def write_overallStatistics(outputbook_loc,nameSheet_loc,totalScore_loc,averageS
     
     for serie in xrange(numSeries):
         columnCounter = 0;        
-        sheetC.write(rowCounter,columnCounter,"serie " + str(serie+1),style=easyxf(style_header))
+        sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+1,"serie " + str(serie+1),style=easyxf(style_header))
         rowCounter+=1
         
         sheetC.write(rowCounter,columnCounter,"aantal deelnemers",style=easyxf(font_bold))
