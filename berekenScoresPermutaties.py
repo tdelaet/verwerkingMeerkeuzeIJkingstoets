@@ -90,8 +90,8 @@ scoreQuestionsIndicatedSeries= numpy.zeros((numParticipants,numQuestions))
 
 
 # write to excel_file
-outputbook = Workbook()
-outputStudentbook = Workbook()
+outputbook = Workbook(style_compression=2)
+outputStudentbook = Workbook(style_compression=2)
 
 
 name = "ijkID"
