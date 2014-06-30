@@ -178,7 +178,10 @@ def getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_loc,scor
         medianScore_loc[serie-1] = numpy.median(totalScoreSerie_loc)
         standardDeviation_loc[serie-1] = numpy.std(totalScoreSerie_loc)
         #print totalScoreSerie_loc
-        percentagePass_loc[serie-1] = 100* sum(score>= maxTotalScore_loc/2.0 for score in totalScoreSerie_loc)/float(numParticipantsSeries_loc[serie-1]) 
+        if numParticipantsSeries_loc[serie-1] == 0:
+            percentagePass_loc[serie-1] = 0;
+        else:
+            percentagePass_loc[serie-1] = 100* sum(score>= maxTotalScore_loc/2.0 for score in totalScoreSerie_loc)/float(numParticipantsSeries_loc[serie-1]) 
         averageScoreQuestionsDifferentSeries_loc[:,serie-1] =  numpy.average(scoreQuestionsIndicatedSeries_loc[indicesSerie_loc,:],0)
     return numParticipantsSeries_loc, averageScore_loc, medianScore_loc, standardDeviation_loc, percentagePass_loc, averageScoreQuestionsDifferentSeries_loc
 
@@ -194,7 +197,7 @@ def calculateTotalScoreDifferentPermutations(scoreQuestionsAllPermutations_loc,m
         totalScorePermutations_loc[:,serie-1] = totalScore_temp
     return totalScorePermutations_loc
 
-def calculateUpperLowerStatistics(sheet_loc,content_loc,columnSeries_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,content_colNrs_loc,permutations_loc):
+def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,content_colNrs_loc,permutations_loc):
     orderedDeelnemers_loc = sorted(range(len(totalScore_loc)),key=totalScore_loc.__getitem__) 
     numParticipants_loc = len(orderedDeelnemers_loc)
     #numQuestions_loc = len(scoreQuestionsIndicatedSeries_loc[0])
@@ -239,7 +242,8 @@ def calculateUpperLowerStatistics(sheet_loc,content_loc,columnSeries_loc,totalSc
         name_question_serie1 = "Vraag" + str(question_loc)       
         colNr_loc = content_colNrs_loc[content_loc.index(name_question_serie1)]
         #get the answers for the participants (so skip for row with name of first row)
-        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)   
+        #columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)   
+        columnQuestion_loc=matrixAnswers_loc[:,question_loc-1];
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
             for permutation in xrange(1,len(permutations_loc)+1):

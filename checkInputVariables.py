@@ -8,23 +8,24 @@ Created on Wed May 21 14:37:18 2014
 from xlrd import open_workbook, biffh
 
 
-def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternatives_loc,numSeries_loc,correctAnswers_loc,permutations_loc):
+def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternatives_loc,numSeries_loc,correctAnswers_loc,permutations_loc,locations_loc):
     return (
-    checkFileAndSheet(nameFile_loc,nameSheet_loc) &
+    checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc) &
     checkCorrectAnswers(numQuestions_loc, numAlternatives_loc, correctAnswers_loc) & 
     checkPermutations(numSeries_loc,numQuestions_loc, permutations_loc)
     )
             
-def checkFileAndSheet(nameFile_loc,nameSheet_loc):
-    try:
-        book = open_workbook(nameFile_loc)
-        book.sheet_by_name(nameSheet_loc)
-    except IOError:
-        print "the selected file " + nameFile_loc +  " can not be opened as a workbook"
-        return False
-    except biffh.XLRDError:
-        print "the selected sheet " + nameSheet_loc +  " can not be opened"
-        return False
+def checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc):
+    for location in locations_loc:
+        try:
+            book = open_workbook(nameFile_loc+"_"+location+ ".xlsx" )
+            book.sheet_by_name(nameSheet_loc)
+        except IOError:
+            print "the selected file " + nameFile_loc +  " can not be opened as a workbook"
+            return False
+        except biffh.XLRDError:
+            print "the selected sheet " + nameSheet_loc +  " can not be opened"
+            return False
     return True;    
         
             

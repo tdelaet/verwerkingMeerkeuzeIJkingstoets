@@ -270,6 +270,7 @@ def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,av
             sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsMiddle_loc[question-1],3),style=easyxf(style_specialAttention)) 
             columnCounter+=1
             sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsLower_loc[question-1],3),style=easyxf(style_specialAttention+ border_right_medium))    
+            columnCounter+=1
         else:
             sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsUpper_loc[question-1],3))
             columnCounter+=1
@@ -569,4 +570,92 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
                 sheetC.write(rowCounter,columnCounter,answer[i])
                 rowCounter+=1                    
             columnCounter+=1;    
-            
+
+#def write_overallStatisticsInstellingen(outputbook_loc,nameSheet_loc,numParticipants_loc,totalScore_loc,averageScore_loc,medianScore_loc,standardDeviation_loc,percentagePass_loc,numParticipantsSeries_loc,averageScoreSeries_loc,medianScoreSeries_loc,standardDeviationSeries_loc,percentagePassSeries_loc,maxTotalScore_loc):
+def write_overallStatisticsInstellingen(outputbook_loc,nameSheet_loc,instellingen_loc,numParticipants_tot_loc,numParticipants_stacked_tot_loc,averageScore_tot_loc,averageScore_stacked_tot_loc,medianScore_tot_loc,medianScore_stacked_tot_loc,standardDeviation_tot_loc,standardDeviation_stacked_tot_loc,percentagePass_tot_loc,percentagePass_stacked_tot_loc):
+    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
+    columnCounter = 0;
+    rowCounter = 0;
+    sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+8," Globale statistiek",style=easyxf(style_title))
+    rowCounter+=1
+    
+
+    #print numParticipants_loc
+    #column counter
+    columnCounter = 0;
+    rowCounter = 1 
+    
+    sheetC.write(rowCounter,columnCounter,"aantal deelnemers",style=easyxf(font_bold))
+    columnCounter+=1  
+    sheetC.write(rowCounter,columnCounter,numParticipants_tot_loc)
+    rowCounter+=1
+    
+    columnCounter = 0
+    sheetC.write(rowCounter,columnCounter,"gemiddelde score ",style=easyxf(font_bold))
+    columnCounter+=1  
+    sheetC.write(rowCounter,columnCounter,round(averageScore_tot_loc,2))
+    rowCounter+=1
+    
+    columnCounter = 0
+    sheetC.write(rowCounter,columnCounter,"mediaan ",style=easyxf(font_bold))
+    columnCounter+=1  
+    sheetC.write(rowCounter,columnCounter,round(medianScore_tot_loc,2))
+    rowCounter+=1
+
+    columnCounter = 0
+    sheetC.write(rowCounter,columnCounter,"standaard deviatie",style=easyxf(font_bold))
+    columnCounter+=1  
+    sheetC.write(rowCounter,columnCounter,round(standardDeviation_tot_loc,2))
+    rowCounter+=1
+        
+    columnCounter = 0
+    sheetC.write(rowCounter,columnCounter,"% geslaagd ",style=easyxf(font_bold))
+    columnCounter+=1 
+    #print totalScore_loc
+    sheetC.write(rowCounter,columnCounter,round(percentagePass_tot_loc,2))
+    
+    rowCounter+=5
+    columnCounter = 0
+    sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+8," Globale statistiek verschillende reeksen",style=easyxf(style_title))
+    rowCounter+=1
+    
+    numInstellingen = len(numParticipants_stacked_tot_loc)
+    #print numParticipants_loc
+    #column counter
+    
+    for instelling in xrange(numInstellingen):
+        columnCounter = 0;        
+        sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+1,"instelling " + instellingen_loc[instelling],style=easyxf(style_header))
+        rowCounter+=1
+        
+        sheetC.write(rowCounter,columnCounter,"aantal deelnemers",style=easyxf(font_bold))
+        columnCounter+=1  
+        sheetC.write(rowCounter,columnCounter,numParticipants_stacked_tot_loc[instelling][0]) 
+        rowCounter+=1
+        
+        columnCounter = 0
+        sheetC.write(rowCounter,columnCounter,"gemiddelde score ",style=easyxf(font_bold))
+        columnCounter+=1  
+        sheetC.write(rowCounter,columnCounter,round(averageScore_stacked_tot_loc[instelling][0],2))
+        rowCounter+=1
+        
+        columnCounter = 0
+        sheetC.write(rowCounter,columnCounter,"mediaan ",style=easyxf(font_bold))
+        columnCounter+=1  
+        sheetC.write(rowCounter,columnCounter,round(medianScore_stacked_tot_loc[instelling][0],2))
+        rowCounter+=1
+        
+        columnCounter = 0
+        sheetC.write(rowCounter,columnCounter,"standaard deviatie ",style=easyxf(font_bold))
+        columnCounter+=1  
+        sheetC.write(rowCounter,columnCounter,round(standardDeviation_stacked_tot_loc[instelling][0],2))
+        rowCounter+=1
+                
+        columnCounter = 0
+        sheetC.write(rowCounter,columnCounter,"% geslaagd ",style=easyxf(font_bold))
+        columnCounter+=1 
+        #print totalScore_loc
+        sheetC.write(rowCounter,columnCounter,round(percentagePass_stacked_tot_loc[instelling][0],2))
+        
+        rowCounter+=1
+        rowCounter+=1            
