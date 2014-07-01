@@ -300,6 +300,8 @@ plt.pie(numParticipants_all, labels=labels,
 
 #plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
 plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
+plt.savefig('verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
+
 
 # plot the histogram of the total score
 plt.figure()
