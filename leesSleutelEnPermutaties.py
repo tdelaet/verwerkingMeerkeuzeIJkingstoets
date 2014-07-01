@@ -43,3 +43,18 @@ def leesSleutel(jaar_loc,toets_loc):
     sleutel = sleutel[1:len(sleutel):3]
     return sleutel
     
+def leesNamenVragen(jaar_loc,toets_loc):
+    name_basis_loc = jaar_loc + "_" + toets_loc + "_IDreeks1"
+
+    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
+    
+    # check if all have the same length 
+    return questionNames  
+    
+def leesClassificatieVragen(jaar_loc,toets_loc):
+    name_basis_loc = jaar_loc + "_" + toets_loc + "_CLASSreeks1"
+
+    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
+    
+    # check if all have the same length 
+    return questionNames  

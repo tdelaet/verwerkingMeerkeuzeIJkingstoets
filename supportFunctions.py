@@ -7,6 +7,19 @@ Created on Wed May 21 14:54:46 2014
 
 import numpy
 
+def round2(x):
+    """Numpy rounds x.5 to nearest even integer. To emulate SAS/SPSS, 
+    which both round x.5 *up* to nearest integer, use this function.
+    """
+#    y = x - numpy.floor(x)
+#    for i in numpy.arange(0,len(y)):
+#        if (0 < y[i] < 0.5):
+#            x[i] = numpy.floor(x[i])
+#        else:
+#            x[i] = numpy.ceil(x[i])
+    x = numpy.floor(numpy.round(x,6)+0.5)    
+    return x
+
 def common_elements(list1, list2):
     return list(set(list1) & set(list2))
         
@@ -149,7 +162,7 @@ def getOverallStatistics(scoreQuestionsIndicatedSeries_loc,maxTotalScore_loc):
     #print totalScore_loc
     # set negative scores to 0
     totalScore_loc[totalScore_loc < 0]=0
-    totalScore_loc = numpy.round(totalScore_loc)
+    totalScore_loc = round2(totalScore_loc)
     #print totalScore
     averageScore_loc = numpy.average(totalScore_loc)
     medianScore_loc = numpy.median(totalScore_loc)
@@ -193,7 +206,7 @@ def calculateTotalScoreDifferentPermutations(scoreQuestionsAllPermutations_loc,m
     for serie in xrange(1,numSeries_loc+1):
         totalScore_temp = scoreQuestionsAllPermutations_loc[serie-1].sum(axis=1)/numQuestions_loc*maxTotalScore_loc
         totalScore_temp[totalScore_temp < 0]=0
-        totalScore_temp = numpy.round(totalScore_temp)
+        totalScore_temp = round2(totalScore_temp)
         totalScorePermutations_loc[:,serie-1] = totalScore_temp
     return totalScorePermutations_loc
 
@@ -239,8 +252,8 @@ def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc
     for question_loc in xrange(1,numQuestions_loc+1):
         #print "----------------------"
         #print "question " + str(question_loc)
-        name_question_serie1 = "Vraag" + str(question_loc)       
-        colNr_loc = content_colNrs_loc[content_loc.index(name_question_serie1)]
+        #name_question_serie1 = "Vraag" + str(question_loc)       
+        #colNr_loc = content_colNrs_loc[content_loc.index(name_question_serie1)]
         #get the answers for the participants (so skip for row with name of first row)
         #columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)   
         columnQuestion_loc=matrixAnswers_loc[:,question_loc-1];
@@ -265,4 +278,20 @@ def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc
             counter_alternative+=1
 
     return totalScoreUpper_loc, totalScoreMiddle_loc, totalScoreLower_loc, averageScoreUpper_loc, averageScoreMiddle_loc, averageScoreLower_loc, averageScoreQuestionsUpper_loc, averageScoreQuestionsMiddle_loc, averageScoreQuestionsLower_loc, numQuestionsAlternativesUpper_loc,numQuestionsAlternativesMiddle_loc,numQuestionsAlternativesLower_loc, scoreQuestionsUpper_loc, scoreQuestionsMiddle_loc, scoreQuestionsLower_loc, numUpper_loc, numMiddle_loc, numLower_loc
+
+def getDistributionStudents(totalScore_loc,bordersDistributionStudentsLow_loc,bordersDistributionStudentsHigh_loc):
+    distributionStudentsLow_loc = numpy.zeros(len(bordersDistributionStudentsLow_loc))
+    distributionStudentsHigh_loc = numpy.zeros(len(bordersDistributionStudentsHigh_loc))
+    counter = 0
+    for score in bordersDistributionStudentsLow_loc:
+        distributionStudentsLow_loc[counter] = sum(totalScore_loc<=score)
+        counter+=1
+    counter = 0        
+    for score in bordersDistributionStudentsHigh_loc:
+        distributionStudentsHigh_loc[counter] = sum(totalScore_loc>=score)          
+        counter+=1
+    return distributionStudentsHigh_loc,distributionStudentsLow_loc
     
+def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
+    if False in [ e in alternatives_loc+[blankAnswer_loc]  for e in matrixAnswers_loc.reshape(-1) ]:
+        print "ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])
