@@ -208,7 +208,7 @@ for instelling in instellingen:
         bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     figManager = plt.get_current_fig_manager()
     figManager.window.showMaximized()    
-    plt.savefig('histogramGeheel'+ instelling + '.png', bbox_inches='tight')
+    plt.savefig('histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
     
 
     
@@ -321,7 +321,7 @@ plt.text(maxTotalScore, numpy.max(n)-2,
         bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramGeheel.png', bbox_inches='tight')
+plt.savefig('histogramGeheel.png', bbox_inches='tight',dpi=300)
 
 # plot the histogram of the total score UML
 plt.figure()
@@ -362,7 +362,7 @@ plt.text(maxTotalScore, numpy.max(n)-11.5,
 #        bbox=dict(facecolor='none', edgecolor='red', boxstyle='round,pad=1'))
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()            
-plt.savefig('histogramGeheelUML.png', bbox_inches='tight')
+plt.savefig('histogramGeheelUML.png', bbox_inches='tight',dpi=300)
 
 
 #plot histogram for different questions
@@ -385,7 +385,7 @@ for question in xrange(1,numQuestions+1):
     plt.ylabel("aantal studenten")
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramVragen.png', bbox_inches='tight')
+plt.savefig('histogramVragen.png', bbox_inches='tight',dpi=300)
 
 #plot histogram for different questions
 numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
@@ -406,6 +406,6 @@ for question in xrange(1,numQuestions+1):
     plt.legend(loc=2,prop={'size':6})
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramVragenUML.png', bbox_inches='tight')
+plt.savefig('histogramVragenUML.png', bbox_inches='tight',dpi=300)
 
 
