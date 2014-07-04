@@ -8,12 +8,14 @@ Created on Wed May 21 14:37:18 2014
 from xlrd import open_workbook, biffh
 
 
-def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternatives_loc,numSeries_loc,correctAnswers_loc,permutations_loc,nameQuestions_loc,locations_loc):
+def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternatives_loc,numSeries_loc,correctAnswers_loc,permutations_loc,nameQuestions_loc,locations_loc,classificationQuestionsMod_loc,categorieQuestions_loc):
     return (
     checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc) &
     checkCorrectAnswers(numQuestions_loc, numAlternatives_loc, correctAnswers_loc) & 
     checkPermutations(numSeries_loc,numQuestions_loc, permutations_loc) &
-    checkNameQuestions(numQuestions_loc,nameQuestions_loc)
+    checkNameQuestions(numQuestions_loc,nameQuestions_loc) &
+    checkClassificationQuestions(numQuestions_loc,classificationQuestionsMod_loc) &
+    checkCategorieQuestions(numQuestions_loc,categorieQuestions_loc) 
     )
             
 def checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc):
@@ -55,5 +57,17 @@ def checkPermutations(numSeries_loc,numQuestions_loc, permutations_loc):
 def checkNameQuestions(numQuestions_loc, nameQuestions_loc):             
     if (len(nameQuestions_loc) != numQuestions_loc):
         print "ERROR: The length of the list of question names " + str(len(nameQuestions_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
+        return False
+    return True     
+
+def checkClassificationQuestions(numQuestions_loc, classificationQuestionsMod_loc):             
+    if (len(classificationQuestionsMod_loc) != numQuestions_loc):
+        print "ERROR: The length of the list of question names " + str(len(classificationQuestionsMod_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
+        return False
+    return True     
+    
+def checkCategorieQuestions(numQuestions_loc, categorieQuestions_loc):             
+    if (len(categorieQuestions_loc) != numQuestions_loc):
+        print "ERROR: The length of the list of question names " + str(len(categorieQuestions_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
         return False
     return True     

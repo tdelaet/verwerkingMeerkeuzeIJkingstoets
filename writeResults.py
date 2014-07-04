@@ -73,7 +73,7 @@ def write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswe
                   numParticipantsSeries,
                   averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,
                   numQuestionsAlternatives, numQuestionsAlternativesUpper, numQuestionsAlternativesMiddle, numQuestionsAlternativesLower,
-                  nameQuestions,classificationQuestionsMod,
+                  nameQuestions,classificationQuestionsMod,categoriesQuestions,
                   bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow,distributionStudentsHigh
                    ):
                       
@@ -81,11 +81,11 @@ def write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswe
     write_scoreAllPermutations(outputbook,'ScoreVerschillendeSeries',numParticipants,deelnemers,numQuestions,content,content_colNrs,totalScore,totalScoreDifferentPermutations,columnSeries)
     write_overallStatistics(outputbook,'GlobaleParameters',totalScore,averageScore,medianScore,standardDeviation,percentagePass,numParticipantsSeries,averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,maxTotalScore)
     #write_overallStatisticsDifferentPermutations(outputbook,'GlobaleParametersSeries',numParticipantsSeries,averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,maxTotalScore)
-    write_averageScoreQuestions(outputbook,'GemiddeldeScoreVraag',numQuestions,averageScore,averageScoreUpper,averageScoreMiddle,averageScoreLower,averageScoreQuestions,averageScoreQuestionsUpper,averageScoreQuestionsMiddle,averageScoreQuestionsLower,averageScoreSeries,averageScoreQuestionsDifferentSeries,nameQuestions)   
-    write_percentageAlternativesQuestions(outputbook,"PercentageAlternatieven",numQuestions,correctAnswers,alternatives,blankAnswer,numQuestionsAlternatives,numParticipants,nameQuestions)
+    write_averageScoreQuestions(outputbook,'GemiddeldeScoreVraag',numQuestions,averageScore,averageScoreUpper,averageScoreMiddle,averageScoreLower,averageScoreQuestions,averageScoreQuestionsUpper,averageScoreQuestionsMiddle,averageScoreQuestionsLower,averageScoreSeries,averageScoreQuestionsDifferentSeries,nameQuestions,categoriesQuestions)   
+    write_percentageAlternativesQuestions(outputbook,"PercentageAlternatieven",numQuestions,correctAnswers,alternatives,blankAnswer,numQuestionsAlternatives,numParticipants,nameQuestions,categoriesQuestions)
     #write_numberAlternativesQuestions(outputbook,"AantalAlternatieven",numQuestions,correctAnswers,alternatives,blankAnswer,numQuestionsAlternatives,numParticipants)
-    write_percentageAlternativesQuestionsUML(outputbook,"PercentageAlternatievenUML",numQuestions,correctAnswers,alternatives,blankAnswer,numQuestionsAlternativesUpper,numQuestionsAlternativesMiddle,numQuestionsAlternativesLower,numUpper,numMiddle,numLower,nameQuestions)
-    questionClassification  = write_histogramQuestions(outputbook,"HistogramVragen",numQuestions,scoreQuestionsIndicatedSeries,averageScoreQuestions,nameQuestions,classificationQuestionsMod)
+    write_percentageAlternativesQuestionsUML(outputbook,"PercentageAlternatievenUML",numQuestions,correctAnswers,alternatives,blankAnswer,numQuestionsAlternativesUpper,numQuestionsAlternativesMiddle,numQuestionsAlternativesLower,numUpper,numMiddle,numLower,nameQuestions,categoriesQuestions)
+    questionClassification  = write_histogramQuestions(outputbook,"HistogramVragen",numQuestions,scoreQuestionsIndicatedSeries,averageScoreQuestions,nameQuestions,classificationQuestionsMod,categoriesQuestions)
     write_distributionStudents(outputbook,"HistogramStudenten",numParticipants,bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow,distributionStudentsHigh)
 
 
@@ -225,7 +225,7 @@ def write_overallStatistics(outputbook_loc,nameSheet_loc,totalScore_loc,averageS
         rowCounter+=1
         rowCounter+=1
       
-def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,averageScore_loc,averageScoreUpper_loc,averageScoreMiddle_loc,averageScoreLower_loc,averageScoreQuestions_loc,averageScoreQuestionsUpper_loc,averageScoreQuestionsMiddle_loc,averageScoreQuestionsLower_loc,averageScoreSeries_loc,averageScoreQuestionsDifferentSeries_loc,nameQuestions_loc):
+def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,averageScore_loc,averageScoreUpper_loc,averageScoreMiddle_loc,averageScoreLower_loc,averageScoreQuestions_loc,averageScoreQuestionsUpper_loc,averageScoreQuestionsMiddle_loc,averageScoreQuestionsLower_loc,averageScoreSeries_loc,averageScoreQuestionsDifferentSeries_loc,nameQuestions_loc,categoriesQuestions_loc):
     numSeries = len(averageScoreQuestionsDifferentSeries_loc[0])  
     sheetC = outputbook_loc.add_sheet('GemScorePerVraag')
     columnCounter = 0;
@@ -260,6 +260,9 @@ def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,av
     sheetC.write(rowCounter,columnCounter,"ID vraag",style=easyxf(style_header+ border_all_medium)) 
     columnCounter+=1    
     
+    sheetC.write(rowCounter,columnCounter,"categorie vraag",style=easyxf(style_header+ border_all_medium)) 
+    columnCounter+=1    
+    
     rowCounter+=1    
     columnCounter=0
     
@@ -290,6 +293,8 @@ def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,av
             columnCounter+=1
         sheetC.write(rowCounter,columnCounter,nameQuestions_loc[question-1],style=easyxf( border_left_medium))    
         columnCounter+=1
+        sheetC.write(rowCounter,columnCounter,categoriesQuestions_loc[question-1],style=easyxf( border_left_medium))    
+        columnCounter+=1
         rowCounter+=1
         columnCounter = 0;
         
@@ -309,7 +314,7 @@ def write_averageScoreQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,av
         columnCounter+=1        
       
 
-def write_percentageAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternatives_loc,numParticipants_loc,nameQuestions_loc):
+def write_percentageAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternatives_loc,numParticipants_loc,nameQuestions_loc,categoriesQuestions_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     
@@ -325,7 +330,10 @@ def write_percentageAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuesti
         columnCounter+=1
         
     sheetC.write(rowCounter,columnCounter,"ID vraag",style=easyxf(style_header+ border_all_medium)) 
-    columnCounter+=1    
+    columnCounter+=1  
+    
+    sheetC.write(rowCounter,columnCounter,"categorie vraag",style=easyxf(style_header+ border_all_medium)) 
+    columnCounter+=1  
     rowCounter+=1
         
     for question in xrange(1,numQuestions_loc+1):
@@ -351,11 +359,13 @@ def write_percentageAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuesti
             columnCounter+=1 
             alternativeCounter+=1
         sheetC.write(rowCounter,columnCounter,nameQuestions_loc[question-1],style=easyxf( border_left_medium))    
-        columnCounter+=1     
+        columnCounter+=1    
+        sheetC.write(rowCounter,columnCounter,categoriesQuestions_loc[question-1],style=easyxf( border_left_medium))    
+        columnCounter+=1
         
         rowCounter+=1
         
-def write_numberAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternatives_loc,numParticipants_loc,nameQuestions_loc):
+def write_numberAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternatives_loc,numParticipants_loc,nameQuestions_loc,categoriesQuestions_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
     columnCounter = 0;
     rowCounter = 0;
@@ -370,7 +380,8 @@ def write_numberAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_
         
     sheetC.write(rowCounter,columnCounter,"ID vraag",style=easyxf(style_header+ border_all_medium)) 
     columnCounter+=1 
-
+    sheetC.write(rowCounter,columnCounter,"categorie vraag",style=easyxf(style_header+ border_all_medium)) 
+    columnCounter+=1 
     rowCounter+=1
         
     for question in xrange(1,numQuestions_loc+1):
@@ -395,10 +406,12 @@ def write_numberAlternativesQuestions(outputbook_loc,nameSheet_loc,numQuestions_
             alternativeCounter+=1
         sheetC.write(rowCounter,columnCounter,nameQuestions_loc[question-1],style=easyxf( border_left_medium))    
         columnCounter+=1    
+        sheetC.write(rowCounter,columnCounter,categoriesQuestions_loc[question-1],style=easyxf(border_left_medium)) 
+        columnCounter+=1          
         rowCounter+=1
 
 
-def write_percentageAlternativesQuestionsUML(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternativesUpper_loc,numQuestionsAlternativesMiddle_loc,numQuestionsAlternativesLower_loc,numUpper_loc,numMiddle_loc,numLower_loc,nameQuestions_loc):
+def write_percentageAlternativesQuestionsUML(outputbook_loc,nameSheet_loc,numQuestions_loc,correctAnswers_loc,alternatives_loc,blankAnswer_loc,numQuestionsAlternativesUpper_loc,numQuestionsAlternativesMiddle_loc,numQuestionsAlternativesLower_loc,numUpper_loc,numMiddle_loc,numLower_loc,nameQuestions_loc,categoriesQuestions_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     columnCounter = 0;
@@ -416,6 +429,8 @@ def write_percentageAlternativesQuestionsUML(outputbook_loc,nameSheet_loc,numQue
     sheetC.write(rowCounter,columnCounter,"onderscheidend vermogen",style=easyxf(style_header)    )
     columnCounter+=1
     sheetC.write(rowCounter,columnCounter,"ID vraag",style=easyxf(style_header+ border_all_medium)) 
+    columnCounter+=1 
+    sheetC.write(rowCounter,columnCounter,"categorie vraag",style=easyxf(style_header+ border_all_medium)) 
     columnCounter+=1 
 
     rowCounter+=2
@@ -476,10 +491,12 @@ def write_percentageAlternativesQuestionsUML(outputbook_loc,nameSheet_loc,numQue
         
         sheetC.write(rowCounter,columnCounter,nameQuestions_loc[question-1],style=easyxf( border_left_medium))    
         columnCounter+=1
+        sheetC.write(rowCounter,columnCounter,categoriesQuestions_loc[question-1],style=easyxf(border_left_medium+border_right_medium)) 
+        columnCounter+=1                
         rowCounter+=1
 
      
-def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,scoreQuestionsIndicatedSeries_loc,averageScoreQuestions_loc,nameQuestions_loc,classificationQuestionsMod_loc):
+def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,scoreQuestionsIndicatedSeries_loc,averageScoreQuestions_loc,nameQuestions_loc,classificationQuestionsMod_loc,categoriesQuestions_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
     
     numParticipants  = len(scoreQuestionsIndicatedSeries_loc)   
@@ -504,6 +521,8 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
     sheetC.write(rowCounter,columnCounter,"voorspelde type vraag",style=easyxf(style_header+ border_left_medium)) 
     columnCounter+=1
     sheetC.write(rowCounter,columnCounter,"ID vraag",style=easyxf(style_header+ border_right_medium)) 
+    columnCounter+=1 
+    sheetC.write(rowCounter,columnCounter,"categorie vraag",style=easyxf(style_header+ border_right_medium)) 
     columnCounter+=1 
 
     rowCounter+=1    
@@ -552,6 +571,8 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
         columnCounter+=1        
         sheetC.write(rowCounter,columnCounter,nameQuestions_loc[question-1],style=easyxf( border_right_medium))    
         columnCounter+=1
+        sheetC.write(rowCounter,columnCounter,categoriesQuestions_loc[question-1],style=easyxf(border_right_medium)) 
+        columnCounter+=1        
 
         rowClass = len(classificationQuestionsMod_loc[question-1])-1       
         matrixClassification[rowClass][colClass] = matrixClassification[rowClass][colClass] + str(question) + " "
@@ -699,7 +720,42 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
                 sheetC.write(rowCounter,columnCounter,answer[i])
                 rowCounter+=1                    
             columnCounter+=1;    
+            
+def write_scoreCategoriesStudents(outputbook_loc,nameSheet_loc,deelnemers_loc,totalScore_loc, categoriesQuestions_loc, scoreCategories_loc):
+    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
+    columnCounter = 0;
+    rowCounter = 0;
+    
+    #deelnemersnummers
+    sheetC.write(rowCounter, columnCounter,"ijkID", style=easyxf(style_header+ border_right_medium) )
+    columnCounter+=1
+    sheetC.write(rowCounter, columnCounter,"totale score", style=easyxf(style_header+ border_right_medium) )
+    rowCounter+=1
+    columnCounter=0
+    
+    for i in xrange(0,len(deelnemers_loc)):
+        sheetC.write(rowCounter,columnCounter,deelnemers_loc[i], style=easyxf(style_header + border_right_medium))
+        sheetC.write(rowCounter,columnCounter+1,totalScore_loc[i], style=easyxf(border_right_medium))
+        rowCounter+=1
+    columnCounter+=2;
+    
+    columnCounterCat = columnCounter;
+    rowCounter = 0;
+    
+    for categorie in set(categoriesQuestions_loc):
+        sheetC.write(rowCounter,columnCounter,categorie,style=easyxf(style_header))
+        columnCounter+=1
+    rowCounter+=1
+
+    columnCounter=columnCounterCat;
+    for deelnemer in xrange(scoreCategories_loc.shape[1]):
+        for categorie in xrange(len(set(categoriesQuestions_loc))):
+            sheetC.write(rowCounter,columnCounter,scoreCategories_loc[categorie][deelnemer])
+            columnCounter+=1
+        rowCounter+=1
+        columnCounter=columnCounterCat
+    
 #def write_overallStatisticsInstellingen(outputbook_loc,nameSheet_loc,numParticipants_loc,totalScore_loc,averageScore_loc,medianScore_loc,standardDeviation_loc,percentagePass_loc,numParticipantsSeries_loc,averageScoreSeries_loc,medianScoreSeries_loc,standardDeviationSeries_loc,percentagePassSeries_loc,maxTotalScore_loc):
 def write_overallStatisticsInstellingen(outputbook_loc,nameSheet_loc,instellingen_loc,numParticipants_tot_loc,numParticipants_stacked_tot_loc,averageScore_tot_loc,averageScore_stacked_tot_loc,medianScore_tot_loc,medianScore_stacked_tot_loc,standardDeviation_tot_loc,standardDeviation_stacked_tot_loc,percentagePass_tot_loc,percentagePass_stacked_tot_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)

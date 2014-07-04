@@ -14,9 +14,9 @@ Dit neemt aan dat de gebruikte sheet van excel file de volgende kolommen heeft (
 from xlrd import open_workbook
 import string
 import numpy
-import pylab
 import matplotlib.pyplot as plt
 from xlwt import Workbook
+import matplotlib
 
 import checkInputVariables
 import supportFunctions
@@ -36,7 +36,7 @@ maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
-instellingen = ["Leuven","Kortrijk","Gent","Brussel"]
+instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -59,21 +59,19 @@ permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries)
 nameQuestions = leesSleutelEnPermutaties.leesNamenVragen(jaar,toets)
 #name of questions
 classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(jaar,toets)
+#categorie of questions
+categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets)
 
 ############################
 ############################
-#permutations = numpy.loadtxt("../permutatie_ir2.txt",delimiter=',',dtype=numpy.int32)
 
 plt.close("all")
 
 #letters of answer alternatives
 alternatives = list(string.ascii_uppercase)[0:numAlternatives]
-#numbers of answer alternatives
-#alternatives = numpy.arange(1,numAlternatives+1)
-
 
         
-if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen)):
+if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen,classificationQuestionsMod,categorieQuestions)):
      print "ERROR found in input variables"   
 
 
@@ -90,6 +88,7 @@ percentagePass_all = []
 columnSeries_all = []
 matrixAnswers_all = []
 numParticipants_all = []
+scoreCategories_all = []
 
   
 for instelling in instellingen:  
@@ -109,19 +108,15 @@ for instelling in instellingen:
     #Load the first row => name indicating 
     firstRow =  sheet.row(0) 
     firstRowValues = sheet.row_values(0)
-    #print firstRowValues
     
     content_colNrs = supportFunctions.giveContentColNrs(content, sheet);
     
-                
     #print columnSeries
     scoreQuestionsIndicatedSeries= numpy.zeros((numParticipants,numQuestions))
-    
     
     # write to excel_file
     outputbook = Workbook(style_compression=2)
     outputStudentbook = Workbook(style_compression=2)
-    
     
     name = "ijkID"
     studentenNrCol= content_colNrs[content.index(name)]
@@ -129,7 +124,6 @@ for instelling in instellingen:
     
     if not supportFunctions.checkForUniqueParticipants(deelnemers):
         print "ERROR: Duplicate participants found"
-    
     
     name = "vragenreeks"
     #get the column in which the vragenreeks is stored
@@ -145,17 +139,18 @@ for instelling in instellingen:
     scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
     numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
     
-       
-    
-    
     #get the scores for the indicated series
     scoreQuestionsIndicatedSeries, averageScoreQuestions =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,columnSeries)
     
     #get the overall statistics
     totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
     
+    #get all the scores for the different permutations
     totalScoreDifferentPermutations = supportFunctions.calculateTotalScoreDifferentPermutations(scoreQuestionsAllPermutations,maxTotalScore)
     #print totalScoreDifferentPermutations
+    
+    #get the average score for the different question categories
+    scoreCategories = supportFunctions.getScoreCategories(scoreQuestionsIndicatedSeries,categorieQuestions)
     
     numParticipantsSeries, averageScoreSeries, medianScoreSeries, standardDeviationSeries, percentagePassSeries, averageScoreQuestionsDifferentSeries = supportFunctions.getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations,scoreQuestionsIndicatedSeries,columnSeries,maxTotalScore)
     
@@ -180,12 +175,13 @@ for instelling in instellingen:
                       numParticipantsSeries,
                       averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,
                       numQuestionsAlternatives, numQuestionsAlternativesUpper, numQuestionsAlternativesMiddle, numQuestionsAlternativesLower,
-                      nameQuestions,classificationQuestionsMod,
+                      nameQuestions,classificationQuestionsMod,categorieQuestions,
                       bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow,distributionStudentsHigh
                       )
                       
     ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
     writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)           
+    writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
     outputbook.save('output' +'_'+instelling+'.xls') 
     outputStudentbook.save('punten' +'_'+instelling+'.xls')
                       
@@ -211,7 +207,6 @@ for instelling in instellingen:
     plt.savefig('histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
     
 
-    
     deelnemers_all.append(deelnemers)
     scoreQuestionsAllPermutations_all.append(scoreQuestionsAllPermutations)
     numQuestionsAlternatives_all.append(numQuestionsAlternatives)
@@ -225,6 +220,7 @@ for instelling in instellingen:
     columnSeries_all.append(columnSeries)
     matrixAnswers_all.append(matrixAnswers)
     numParticipants_all.append(numParticipants)
+    scoreCategories_all.append(scoreCategories)
 
     
 deelnemers_tot = numpy.hstack(deelnemers_all)
@@ -240,6 +236,7 @@ medianScore_stacked_tot = numpy.vstack(medianScore_all)
 standardDeviation_stacked_tot = numpy.vstack(standardDeviation_all)
 percentagePass_stacked_tot  = numpy.vstack(percentagePass_all)
 numParticipants_tot = sum(numParticipants_stacked_tot)
+scoreCategories_tot = numpy.hstack(scoreCategories_all)
 
 totalScore_tot, averageScore_tot, medianScore_tot, standardDeviation_tot, percentagePass_tot = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries_tot,maxTotalScore)
 numParticipantsSeries_tot, averageScoreSeries_tot, medianScoreSeries_tot, standardDeviationSeries_tot, percentagePassSeries_tot, averageScoreQuestionsDifferentSeries_tot = supportFunctions.getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,maxTotalScore)
@@ -268,7 +265,7 @@ writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,b
                   numParticipantsSeries_tot,
                   averageScoreSeries_tot,medianScoreSeries_tot,standardDeviationSeries_tot,percentagePassSeries_tot,
                   numQuestionsAlternatives_tot, numQuestionsAlternativesUpper_tot, numQuestionsAlternativesMiddle_tot, numQuestionsAlternativesLower_tot,
-                  nameQuestions,classificationQuestionsMod,
+                  nameQuestions,classificationQuestionsMod,categorieQuestions,
                   bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                   )    
 writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot)           
@@ -306,7 +303,7 @@ plt.savefig('verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
 # plot the histogram of the total score
 plt.figure()
 n, bins, patches = plt.hist(totalScore_tot,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
-plt.title("histogram score")
+#plt.title("histogram score")
 plt.xlabel("score (max " + str(maxTotalScore)+ ")")
 plt.xlim([0-0.5,maxTotalScore+0.5])
 plt.xticks(numpy.arange(1,21))
@@ -321,6 +318,12 @@ plt.text(maxTotalScore, numpy.max(n)-2,
         horizontalalignment='right',
         verticalalignment='top',
         bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+        
+        
+font = {'family' : 'normal',
+        'size'   : 20}
+
+matplotlib.rc('font', **font)
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
 plt.savefig('histogramGeheel.png', bbox_inches='tight',dpi=300)
@@ -385,6 +388,12 @@ for question in xrange(1,numQuestions+1):
     plt.xlabel("score")
     plt.xlim([-2.0/(numAlternatives-1),1+1.0/(numAlternatives-1)])
     plt.ylabel("aantal studenten")
+
+
+font = {'family' : 'normal',
+        'size'   : 12}
+
+matplotlib.rc('font', **font)
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
 plt.savefig('histogramVragen.png', bbox_inches='tight',dpi=300)
@@ -409,5 +418,3 @@ for question in xrange(1,numQuestions+1):
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
 plt.savefig('histogramVragenUML.png', bbox_inches='tight',dpi=300)
-
-

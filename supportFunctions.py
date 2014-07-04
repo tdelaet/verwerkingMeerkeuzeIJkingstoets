@@ -295,3 +295,10 @@ def getDistributionStudents(totalScore_loc,bordersDistributionStudentsLow_loc,bo
 def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
     if False in [ e in alternatives_loc+[blankAnswer_loc]  for e in matrixAnswers_loc.reshape(-1) ]:
         print "ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])
+
+def getScoreCategories(scoreQuestionsIndicatedSeries_loc,categorieQuestions_loc):
+    scoreCategories_loc = []
+    for categorie in set(categorieQuestions_loc):
+        questionsCategorie = numpy.where(categorieQuestions_loc==categorie)[0]
+        scoreCategories_loc.append(numpy.around(numpy.average(scoreQuestionsIndicatedSeries_loc[:,questionsCategorie],axis=1)*100)) 
+    return numpy.vstack(scoreCategories_loc)    

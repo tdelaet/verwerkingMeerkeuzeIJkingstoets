@@ -5,12 +5,8 @@ Created on Fri Jun 20 13:38:02 2014
 @author: tdelaet
 """
 
-from xlrd import open_workbook
-import string
-import numpy
-import matplotlib.pyplot as plt
-from xlwt import Workbook
 
+import numpy
 
 
 def leesPermutaties(jaar_loc,toets_loc,numSeries_loc):
@@ -48,7 +44,6 @@ def leesNamenVragen(jaar_loc,toets_loc):
 
     questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
     
-    # check if all have the same length 
     return questionNames  
     
 def leesClassificatieVragen(jaar_loc,toets_loc):
@@ -56,5 +51,12 @@ def leesClassificatieVragen(jaar_loc,toets_loc):
 
     questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
     
-    # check if all have the same length 
     return questionNames  
+    
+    
+def leesCategorieVragen(jaar_loc,toets_loc):    
+    name_basis_loc = jaar_loc + "_" + toets_loc + "_CATEGORIENreeks1"
+
+    questionCategorie = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
+    
+    return questionCategorie
