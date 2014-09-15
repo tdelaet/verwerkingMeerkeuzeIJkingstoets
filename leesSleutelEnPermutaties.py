@@ -30,7 +30,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc):
         for serie in xrange(1,numSeries_loc+1):
             #find label
             indexQuestion=numpy.where(questions_loc[serie-1]==questions_loc[0][question-1])[0][0]
-            permutations_loc[serie-1][indexQuestion] = question
+            permutations_loc[serie-1][indexQuestion] = int(question)
     return permutations_loc
     
 def leesSleutel(jaar_loc,toets_loc):
@@ -41,9 +41,7 @@ def leesSleutel(jaar_loc,toets_loc):
     
 def leesNamenVragen(jaar_loc,toets_loc):
     name_basis_loc = jaar_loc + "_" + toets_loc + "_IDreeks1"
-
-    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
-    
+    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)   
     return questionNames  
     
 def leesClassificatieVragen(jaar_loc,toets_loc):
@@ -56,7 +54,5 @@ def leesClassificatieVragen(jaar_loc,toets_loc):
     
 def leesCategorieVragen(jaar_loc,toets_loc):    
     name_basis_loc = jaar_loc + "_" + toets_loc + "_CATEGORIENreeks1"
-
     questionCategorie = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
-    
     return questionCategorie

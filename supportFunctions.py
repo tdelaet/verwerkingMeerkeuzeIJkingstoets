@@ -66,6 +66,14 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
+        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
+
         answers_loc[:,counterColumn] = columnQuestion_loc;
         counterColumn+=1
     return answers_loc
@@ -88,6 +96,14 @@ def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,p
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #TODO: replace with matrixAnswers
+        # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
+        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
          
         for permutation in xrange(1,numSeries_loc+1):
             numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]
@@ -121,7 +137,15 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
         name_question_serie1 = "Vraag" + str(question_loc)       
         colNr_loc = content_colNrs_loc[content_loc.index(name_question_serie1)]
         #get the answers for the participants (so skip for row with name of first row)
-        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)   
+        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #TODO: replace with matrixAnswers
+        # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
+        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
             for permutation in xrange(1,len(permutations_loc)+1):

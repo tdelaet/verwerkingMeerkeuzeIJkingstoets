@@ -10,5 +10,5 @@
 * Druk op uitvoeren
 * Resultaat is een file output.xls
 
-* open output.xls en controleer op fouten
+* open output_geheel.xls + output_LOcATIE.xls + punten_geheel.xls + punten_LOCATE.xls en controleer op fouten
 * als er een input fout is dan dien je de OMRoutput file aan te passen (OMRoutput.xls in ../OMR)

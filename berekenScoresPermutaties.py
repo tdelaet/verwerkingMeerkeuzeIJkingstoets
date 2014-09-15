@@ -24,11 +24,11 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2014_ir3_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 jaar = "2014"
-toets = "ir3"
+toets = "ir4"
 
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
@@ -40,6 +40,8 @@ instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
+
+
 ############################
 #create list of expected content of scan file
 content = ["ijkID","vragenreeks"]
@@ -62,6 +64,7 @@ classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(ja
 #categorie of questions
 categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets)
 
+numpy.savetxt("../permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
 ############################
 ############################
 
