@@ -251,9 +251,18 @@ def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc
     totalScoreUpper_loc = totalScore_loc[indicesUpper_loc]
     totalScoreMiddle_loc = totalScore_loc[indicesMiddle_loc]
     totalScoreLower_loc = totalScore_loc[indicesLower_loc]
-    averageScoreUpper_loc = sum(totalScoreUpper_loc)/float(numUpper_loc)
-    averageScoreMiddle_loc = sum(totalScoreMiddle_loc)/float(numMiddle_loc)
-    averageScoreLower_loc = sum(totalScoreLower_loc)/float(numLower_loc)
+    if numUpper_loc ==0:
+        averageScoreUpper_loc = 0
+    else:
+        averageScoreUpper_loc = sum(totalScoreUpper_loc)/float(numUpper_loc)
+    if numMiddle_loc == 0:
+        averageScoreMiddle_loc = 0
+    else:
+        averageScoreMiddle_loc = sum(totalScoreMiddle_loc)/float(numMiddle_loc)
+    if numLower_loc == 0:    
+        averageScoreLower_loc = 0 
+    else:
+        averageScoreLower_loc = sum(totalScoreLower_loc)/float(numLower_loc)
     scoreQuestionsUpper_loc =  scoreQuestionsIndicatedSeries_loc[indicesUpper_loc,:]
     scoreQuestionsMiddle_loc =  scoreQuestionsIndicatedSeries_loc[indicesMiddle_loc,:]
     scoreQuestionsLower_loc =  scoreQuestionsIndicatedSeries_loc[indicesLower_loc,:]

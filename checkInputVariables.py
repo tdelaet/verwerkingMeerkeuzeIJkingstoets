@@ -35,7 +35,7 @@ def checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc):
 def checkCorrectAnswers(numQuestions_loc, numAlternatives_loc, correctAnswers_loc):
     if (len(correctAnswers_loc) == numQuestions_loc):
         if not(set(correctAnswers_loc).issubset(set(map(chr, range(65,65+numAlternatives_loc))))): #correct answers does not only contain A,B,C, .. up to number of alternatives:
-            print "ERROR: The list of correct answers " + str(correctAnswers_loc) +  " does not only contain " + str(map(chr, range(65,65+numAlternatives_loc)))
+            print "ERROR: The list of correct answers " + str(correctAnswers_loc) +  " does not contain " + str(map(chr, range(65,65+numAlternatives_loc)))
     else:
         print "ERROR: The number of indicated questions " + str(numQuestions_loc) +  " is not equal to number of correct answers listed " + str(correctAnswers_loc)
         return False

@@ -443,9 +443,18 @@ def write_percentageAlternativesQuestionsUML(outputbook_loc,nameSheet_loc,numQue
         columnCounter+=1
         alternativeCounter = 0
         for alternative in alternatives_loc + [blankAnswer_loc]:
-            upperPerc = numQuestionsAlternativesUpper_loc[question-1,alternativeCounter]/numUpper_loc  
-            middlePerc = numQuestionsAlternativesMiddle_loc[question-1,alternativeCounter]/numMiddle_loc  
-            lowerPerc = numQuestionsAlternativesLower_loc[question-1,alternativeCounter]/numLower_loc 
+            if numUpper_loc == 0:
+                upperPerc = 0
+            else:
+                upperPerc = numQuestionsAlternativesUpper_loc[question-1,alternativeCounter]/numUpper_loc  
+            if numMiddle_loc == 0:
+                middlePerc = 0
+            else:   
+                middlePerc = numQuestionsAlternativesMiddle_loc[question-1,alternativeCounter]/numMiddle_loc  
+            if numLower_loc == 0:
+                lowerPerc = 0
+            else:
+                lowerPerc = numQuestionsAlternativesLower_loc[question-1,alternativeCounter]/numLower_loc 
             if alternative == correctAnswer:
                 # test of uppergroep het correcte antwoord minder  aanduidt dan lower groep
                 if ( (upperPerc < lowerPerc) ):

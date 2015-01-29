@@ -24,11 +24,12 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2014_ir3_OMRoutput" #name of excel file with scanned forms
+#nameFile = "../OMR/test" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 jaar = "2014"
-toets = "ir4"
+toets = "ir3"
 
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
