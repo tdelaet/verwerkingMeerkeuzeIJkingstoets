@@ -17,6 +17,7 @@ import numpy
 import matplotlib.pyplot as plt
 from xlwt import Workbook
 import matplotlib
+import os
 
 import checkInputVariables
 import supportFunctions
@@ -24,12 +25,17 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2014_ir3_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
 #nameFile = "../OMR/test" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
+
 jaar = "2014"
-toets = "ir3"
+toets = "ir4"
+
+outputFolder = "./" + jaar + "_" +  toets + "/"
+if not os.path.exists(outputFolder):
+    os.makedirs(outputFolder)
 
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
@@ -38,6 +44,7 @@ numSeries=4 # number of series
 blankAnswer = "X"
 
 instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
+
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -65,7 +72,7 @@ classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(ja
 #categorie of questions
 categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets)
 
-numpy.savetxt("../permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
+numpy.savetxt(outputFolder + "../permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
 ############################
 ############################
 
@@ -121,6 +128,7 @@ for instelling in instellingen:
     # write to excel_file
     outputbook = Workbook(style_compression=2)
     outputStudentbook = Workbook(style_compression=2)
+    outputFeedbackbook = Workbook(style_compression=2)
     
     name = "ijkID"
     studentenNrCol= content_colNrs[content.index(name)]
@@ -186,8 +194,9 @@ for instelling in instellingen:
     ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
     writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)           
     writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
-    outputbook.save('output' +'_'+instelling+'.xls') 
-    outputStudentbook.save('punten' +'_'+instelling+'.xls')
+    
+    outputbook.save(outputFolder + 'output' +'_'+instelling+'.xls') 
+    outputStudentbook.save(outputFolder + 'punten' +'_'+instelling+'.xls')
                       
     # plot the histogram of the total score
     plt.figure()
@@ -208,7 +217,7 @@ for instelling in instellingen:
         bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     figManager = plt.get_current_fig_manager()
     figManager.window.showMaximized()    
-    plt.savefig('histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
+    plt.savefig(outputFolder + 'histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
     
 
     deelnemers_all.append(deelnemers)
@@ -276,11 +285,19 @@ writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numPart
 writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
 writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
 
+writeResults.write_feedbackStudents(outputFeedbackbook,permutations,numParticipants_tot,deelnemers_tot, numQuestions,
+                                    alternatives,numAlternatives,content,content_colNrs,
+                                    totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,
+                                    categorieQuestions,scoreCategories_tot,
+                                    averageScoreQuestions_tot,averageScoreQuestionsUpper_tot,averageScoreQuestionsMiddle_tot,averageScoreQuestionsLower_tot
+                                    ,correctAnswers, numQuestionsAlternatives_tot)
+ 
 
-outputbook.save('output' +'_geheel.xls') 
-outputStudentbook.save('punten_geheel.xls') 
-outputInstellingen.save('instellingen.xls')  
 
+outputbook.save(outputFolder + 'output' +'_geheel.xls') 
+outputStudentbook.save(outputFolder + 'punten_geheel.xls') 
+outputInstellingen.save(outputFolder + 'instellingen.xls')  
+outputFeedbackbook.save(outputFolder+ 'feedback'+'.xls')
 
 
 def my_autopct(pct):
@@ -302,7 +319,7 @@ plt.pie(numParticipants_all, labels=labels,
 
 #plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
 plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
-plt.savefig('verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
 
 
 # plot the histogram of the total score
@@ -331,7 +348,7 @@ font = {'family' : 'normal',
 matplotlib.rc('font', **font)
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramGeheel.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
 
 # plot the histogram of the total score UML
 plt.figure()
@@ -372,7 +389,7 @@ plt.text(maxTotalScore, numpy.max(n)-11.5,
 #        bbox=dict(facecolor='none', edgecolor='red', boxstyle='round,pad=1'))
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()            
-plt.savefig('histogramGeheelUML.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'histogramGeheelUML.png', bbox_inches='tight',dpi=300)
 
 
 #plot histogram for different questions
@@ -401,7 +418,7 @@ font = {'family' : 'normal',
 matplotlib.rc('font', **font)
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramVragen.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'histogramVragen.png', bbox_inches='tight',dpi=300)
 
 #plot histogram for different questions
 numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
@@ -422,4 +439,4 @@ for question in xrange(1,numQuestions+1):
     plt.legend(loc=2,prop={'size':6})
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
-plt.savefig('histogramVragenUML.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
