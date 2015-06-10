@@ -238,7 +238,7 @@ for instelling in instellingen:
     
 deelnemers_tot = numpy.hstack(deelnemers_all)
 scoreQuestionsAllPermutations_tot = numpy.hstack(scoreQuestionsAllPermutations_all)
-numQuestionsAlternatives_tot = sum(numQuestionsAlternatives_all,axis=0)
+numQuestionsAlternatives_tot = sum(numQuestionsAlternatives_all)
 scoreQuestionsIndicatedSeries_tot = numpy.vstack(scoreQuestionsIndicatedSeries_all)
 totalScoreDifferentPermutations_tot = numpy.vstack(totalScoreDifferentPermutations_all)
 columnSeries_tot = numpy.hstack(columnSeries_all)
@@ -248,7 +248,7 @@ averageScore_stacked_tot = numpy.vstack(averageScore_all)
 medianScore_stacked_tot = numpy.vstack(medianScore_all)
 standardDeviation_stacked_tot = numpy.vstack(standardDeviation_all)
 percentagePass_stacked_tot  = numpy.vstack(percentagePass_all)
-numParticipants_tot = sum(numParticipants_stacked_tot)
+numParticipants_tot = sum(numParticipants_stacked_tot)[0]
 scoreCategories_tot = numpy.hstack(scoreCategories_all)
 
 totalScore_tot, averageScore_tot, medianScore_tot, standardDeviation_tot, percentagePass_tot = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries_tot,maxTotalScore)
