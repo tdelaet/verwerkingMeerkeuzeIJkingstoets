@@ -323,31 +323,29 @@ plt.savefig(outputFolder + 'verdelingDeelnemers.png', bbox_inches='tight',dpi=30
 
 
 # plot the histogram of the total score
-plt.figure()
+
+fig=plt.figure(figsize=(15, 5))
+ax=fig.add_subplot(111)
 n, bins, patches = plt.hist(totalScore_tot,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
-#plt.title("histogram score")
 plt.xlabel("score (max " + str(maxTotalScore)+ ")")
 plt.xlim([0-0.5,maxTotalScore+0.5])
 plt.xticks(numpy.arange(1,21))
-plt.ylabel("aantal studenten")
-
-plt.text(maxTotalScore, numpy.max(n)-2, 
+plt.ylabel("aantal studenten")       
+plt.text(0.966,0.9, 
          'gemiddelde: ' + str(round(averageScore_tot,2)) + "\n" +
          'mediaan: ' + str(int(medianScore_tot))  + "\n" +
          'percentage geslaagd: ' + str(int(round(percentagePass_tot,0))) + "%"  + "\n" +
          'aantal deelnemers: ' + str(numParticipants_tot)
-         ,
+         ,transform=ax.transAxes,
         horizontalalignment='right',
         verticalalignment='top',
-        bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
-        
-        
+        bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'),
+        fontsize=12)     
 font = {'family' : 'normal',
-        'size'   : 20}
-
-matplotlib.rc('font', **font)
-figManager = plt.get_current_fig_manager()
-figManager.window.showMaximized()    
+        'size'   : 14}
+matplotlib.rc('font', **font)       
+#figManager = plt.get_current_fig_manager()
+#figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
 
 # plot the histogram of the total score UML
