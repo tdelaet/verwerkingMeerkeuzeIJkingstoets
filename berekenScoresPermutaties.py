@@ -32,10 +32,13 @@ nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 jaar = "2014"
 toets = "ir4"
+editie= "juli 2015"
 
 outputFolder = "./" + jaar + "_" +  toets + "/"
 if not os.path.exists(outputFolder):
     os.makedirs(outputFolder)
+if not os.path.exists(outputFolder + '/tex'):
+    os.makedirs(outputFolder + '/tex')
 
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
@@ -347,6 +350,7 @@ matplotlib.rc('font', **font)
 #figManager = plt.get_current_fig_manager()
 #figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
+plt.savefig(outputFolder + 'tex/histogramGeheel.png', bbox_inches='tight',dpi=300)
 
 # plot the histogram of the total score UML
 plt.figure()
@@ -438,3 +442,21 @@ for question in xrange(1,numQuestions+1):
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
+
+#feedback file schrijven
+
+fin = open('feedbackdraft.tex','r')
+fout= open(outputFolder + '/tex/feedback.tex','w')
+inhoud=fin.read()
+inhoud=inhoud.replace('<editie>',editie)
+inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
+inhoud=inhoud.replace('<G>', str(int(distributionStudentsHigh_tot[1])))
+inhoud=inhoud.replace('<N1>', str(round(distributionStudentsHigh_tot[5]/numParticipants_tot*100,1)))
+inhoud=inhoud.replace('<N2>', str(round(distributionStudentsHigh_tot[4]/numParticipants_tot*100,1)))
+inhoud=inhoud.replace('<N3>', str(round(distributionStudentsHigh_tot[3]/numParticipants_tot*100,1)))
+inhoud=inhoud.replace('<N4>', str(round(distributionStudentsHigh_tot[2]/numParticipants_tot*100,1)))
+inhoud=inhoud.replace('<N5>', str(round(distributionStudentsHigh_tot[1]/numParticipants_tot*100,1)))
+inhoud=inhoud.replace('<N6>', str(round(distributionStudentsLow_tot[0]/numParticipants_tot*100,1)))
+fout.write(inhoud)
+fin.close()
+fout.close()
