@@ -48,10 +48,17 @@ blankAnswer = "X"
 
 instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 
-
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
 
+#######################
+#write qsf-file
+########################
+fqsf= open(outputFolder + 'antwoorden.qsf','w')
+fqsf.write('Snapshot,Participant,Vendor,Group')
+for question in xrange(1,numQuestions+1):
+    fqsf.write(',Q'+str(question))
+fqsf.write('\n')
 
 ############################
 #create list of expected content of scan file
@@ -115,6 +122,7 @@ for instelling in instellingen:
     #number of rows and columns
     num_rows = sheet.nrows;
     num_cols = sheet.ncols;
+ 
     
     #number of participants = number of rows-1
     numParticipants = num_rows-1;
@@ -145,7 +153,15 @@ for instelling in instellingen:
     colNrSerie = content_colNrs[content.index(name)]
     #get the series for the participants (so skip for row with name of first row)
     columnSeries=sheet.col_values(colNrSerie,1,num_rows)
-    
+    #write data to qsf
+    for participant in xrange(0,numParticipants):
+        fqsf.write(str(int(columnSeries[participant]))
+        +',\"' + str(int(deelnemers[participant]))
+        +'\",\"Gravic, Inc.\",\"auto\"')   
+        antwoorden=sheet.row_values(1+participant,2,numQuestions+2)
+        for vraag in xrange(0,numQuestions):
+            fqsf.write(',' + str(antwoorden[vraag]))    
+        fqsf.write('\n')
     # get matrix of answers
     matrixAnswers = supportFunctions.getMatrixAnswers(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)  
     supportFunctions.checkMatrixAnswers(matrixAnswers,alternatives,blankAnswer)
@@ -443,8 +459,24 @@ figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
 
-#feedback file schrijven
+#qsf-file afsluiten
+fqsf.write('1,\"999999\",\"Gravic, Inc.\",\"auto\"')   
+for vraag in xrange(0,numQuestions):
+    if correctAnswers[vraag]=='A': 
+        sleutel='1'
+    if correctAnswers[vraag]=='B': 
+        sleutel='2'
+    if correctAnswers[vraag]=='C': 
+        sleutel='3'
+    if correctAnswers[vraag]=='D': 
+        sleutel='4'
+    if correctAnswers[vraag]=='E': 
+        sleutel='5'
+    fqsf.write(',' + sleutel)   
+fqsf.write('\n')
+fqsf.close()
 
+#feedback file schrijven
 fin = open('feedbackdraft.tex','r')
 fout= open(outputFolder + '/tex/feedback.tex','w')
 inhoud=fin.read()
