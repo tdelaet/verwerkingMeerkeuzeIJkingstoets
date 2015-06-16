@@ -30,8 +30,8 @@ nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2014"
-toets = "ir4"
+jaar = "2015"
+toets = "ir5"
 editie= "juli 2015"
 
 outputFolder = "./" + jaar + "_" +  toets + "/"
@@ -46,7 +46,8 @@ maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
-instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
+#instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
+instellingen = ["Gent"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -367,6 +368,7 @@ matplotlib.rc('font', **font)
 #figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
 plt.savefig(outputFolder + 'tex/histogramGeheel.png', bbox_inches='tight',dpi=300)
+plt.savefig( '../tex/histogramGeheel.png', bbox_inches='tight',dpi=300)
 
 # plot the histogram of the total score UML
 plt.figure()
@@ -478,7 +480,7 @@ fqsf.close()
 
 #feedback file schrijven
 fin = open('feedbackdraft.tex','r')
-fout= open(outputFolder + '/tex/feedback.tex','w')
+fout= open('../tex/feedback.tex','w')
 inhoud=fin.read()
 inhoud=inhoud.replace('<editie>',editie)
 inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
@@ -492,3 +494,21 @@ inhoud=inhoud.replace('<N6>', str(round(distributionStudentsLow_tot[0]/numPartic
 fout.write(inhoud)
 fin.close()
 fout.close()
+
+#statistische gegevens in tex-file schrijven
+for vraag in xrange(0,numQuestions):
+    percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants*100,0))
+    percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants*100,0))
+    percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
+    percLowerr = int(round(numQuestionsAlternativesLower_tot[vraag,alternatives.index(correctAnswers[vraag])]/numLower_tot*100,0))
+    fin = open('../tex/' + nameQuestions[vraag] + '.tex','r')
+    fout= open('../tex/' + nameQuestions[vraag] + '_stat.tex','w')
+    inhoud=fin.read()
+    inhoud=inhoud.replace('<editie>',editie)
+    inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
+    inhoud=inhoud.replace('<juist>',str(percCorrectr))
+    inhoud=inhoud.replace('<blanco>',str(percBlankr))
+    inhoud=inhoud.replace('<ul>',str(percUpperr)+'/'+str(percLowerr))
+    fout.write(inhoud)
+    fin.close()
+    fout.close()

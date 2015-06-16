@@ -14,7 +14,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc):
     questions_loc = []
     for serie in xrange(1,numSeries_loc+1):
         name = name_basis_loc+ str(serie)
-        questions_loc.append(numpy.loadtxt("../"+name+".tex",delimiter='\t',dtype=numpy.str))
+        questions_loc.append(numpy.loadtxt("../tex/"+name+".tex",delimiter='\t',dtype=numpy.str))
     
     # check if all have the same length 
     numQuestions_loc=len(questions_loc[0]) 
@@ -35,24 +35,25 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc):
     
 def leesSleutel(jaar_loc,toets_loc):
     name_sleutel = jaar_loc + "_" + toets_loc + "_SLEUTELreeks1"
-    sleutel = numpy.loadtxt("../"+ name_sleutel+ ".tex",delimiter='\t',dtype=numpy.str)
+    sleutel = numpy.loadtxt("../tex/"+ name_sleutel+ ".tex",delimiter='\t',dtype=numpy.str)
     sleutel = sleutel[1:len(sleutel):3]
     return sleutel
     
 def leesNamenVragen(jaar_loc,toets_loc):
     name_basis_loc = jaar_loc + "_" + toets_loc + "_IDreeks1"
-    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)   
+    questionNames = numpy.loadtxt("../tex/"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)   
     return questionNames  
     
 def leesClassificatieVragen(jaar_loc,toets_loc):
     name_basis_loc = jaar_loc + "_" + toets_loc + "_CLASSreeks1"
 
-    questionNames = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
+    questionNames = numpy.loadtxt("../tex/"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
     
     return questionNames  
     
     
 def leesCategorieVragen(jaar_loc,toets_loc):    
     name_basis_loc = jaar_loc + "_" + toets_loc + "_CATEGORIENreeks1"
-    questionCategorie = numpy.loadtxt("../"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
+    questionCategorie = numpy.loadtxt("../tex/"+name_basis_loc+".tex",delimiter='\t',dtype=numpy.str)
     return questionCategorie
+    
