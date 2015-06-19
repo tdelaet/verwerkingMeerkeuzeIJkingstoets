@@ -34,11 +34,17 @@ jaar = "2015"
 toets = "ir5"
 editie= "juli 2015"
 
-outputFolder = "./" + jaar + "_" +  toets + "/"
+texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
+
+outputFolder = "../" + jaar + "_" +  toets + "/output/"
 if not os.path.exists(outputFolder):
     os.makedirs(outputFolder)
-if not os.path.exists(outputFolder + '/tex'):
-    os.makedirs(outputFolder + '/tex')
+    
+texoutputFolder = "../" + jaar + "_" +  toets + "/texoutput/"
+if not os.path.exists(texoutputFolder):
+    os.makedirs(texoutputFolder)    
+
+
 
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
@@ -47,7 +53,7 @@ numSeries=4 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["Gent"]
+instellingen = ["Leuven"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -73,15 +79,15 @@ for question in xrange(1,numQuestions+1):
 ############################
 ############################
 #correct answers
-correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets)
+correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets,texinputFolder)
 #permutations
-permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries)
+permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries,texinputFolder)
 #name of questions
-nameQuestions = leesSleutelEnPermutaties.leesNamenVragen(jaar,toets)
+nameQuestions = leesSleutelEnPermutaties.leesNamenVragen(jaar,toets,texinputFolder,numQuestions)
 #name of questions
-classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(jaar,toets)
+classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(jaar,toets,texinputFolder,numQuestions)
 #categorie of questions
-categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets)
+categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets,texinputFolder,numQuestions)
 
 numpy.savetxt(outputFolder + "../permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
 ############################
@@ -367,8 +373,8 @@ matplotlib.rc('font', **font)
 #figManager = plt.get_current_fig_manager()
 #figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
-plt.savefig(outputFolder + 'tex/histogramGeheel.png', bbox_inches='tight',dpi=300)
-plt.savefig( '../tex/histogramGeheel.png', bbox_inches='tight',dpi=300)
+plt.savefig(texoutputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
+
 
 # plot the histogram of the total score UML
 plt.figure()
@@ -479,8 +485,8 @@ fqsf.write('\n')
 fqsf.close()
 
 #feedback file schrijven
-fin = open('feedbackdraft.tex','r')
-fout= open('../tex/feedback.tex','w')
+fin = open(texinputFolder + 'feedbackdraft.tex','r')
+fout= open(texoutputFolder + 'feedback.tex','w')
 inhoud=fin.read()
 inhoud=inhoud.replace('<editie>',editie)
 inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
@@ -501,8 +507,8 @@ for vraag in xrange(0,numQuestions):
     percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants*100,0))
     percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
     percLowerr = int(round(numQuestionsAlternativesLower_tot[vraag,alternatives.index(correctAnswers[vraag])]/numLower_tot*100,0))
-    fin = open('../tex/' + nameQuestions[vraag] + '.tex','r')
-    fout= open('../tex/' + nameQuestions[vraag] + '_stat.tex','w')
+    fin = open(texinputFolder + nameQuestions[vraag] + '.tex','r')
+    fout= open(texoutputFolder + nameQuestions[vraag] + '_stat.tex','w')
     inhoud=fin.read()
     inhoud=inhoud.replace('<editie>',editie)
     inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
