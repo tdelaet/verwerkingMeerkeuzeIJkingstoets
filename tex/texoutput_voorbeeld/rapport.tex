@@ -1,0 +1,97 @@
+\documentclass[fleqn,a4paper,11pt,twoside]{article}
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage[small,bf]{caption}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usetikzlibrary{through,calc,intersections}
+\setlength{\captionmargin}{1 cm}
+\renewcommand{\captionfont}{\linespread{1} \small}
+\usepackage{ntheorem}
+\usepackage{answers}
+\theoremstyle{break}
+\theoremheaderfont{\normalfont\bfseries}
+\theoremsymbol{}
+\theorembodyfont{\upshape}
+ 
+\newtheorem{oefening}{Oefening} 
+\newtheorem{soefening}{Samengestelde oefening}
+\newtheorem{vraag}[oefening] {Vraag}
+
+\Newassociation{opl}{Oplossing}{ans}
+%\Newassociation{numopl}{Oplossing}{numans}
+\newenvironment{numopl}[1]{\vspace{0.2cm} Oplossing: #1}{ }
+
+\newcommand{\executeiffilenewer}[3]{%
+ \ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+ {\pdffilemoddate{#2}}>0%
+ {\immediate\write18{#3}}\fi%
+}
+
+
+%\newenvironment{numopl}[1]{\vspace{0.2cm} Oplossing: #1}{ }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ds}{\displaystyle}
+\newcommand{\ex}{\vec e_x}
+\newcommand{\ey}{\vec e_y}
+\newcommand{\ez}{\vec e_z}
+\newcommand{\cosec}{\mathrm{cosec}\,}
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\graf}{\mathrm{graf}\,}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\renewcommand{\labelenumi}{(\Alph{enumi})}
+\renewcommand{\labelenumii}{(\Alph{enumii})}
+
+
+\setlength{\textwidth}{18 cm}
+\setlength{\marginparwidth}{0 cm}
+\setlength{\hoffset}{-1 cm}
+\setlength{\voffset}{-2 cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\textheight}{24 cm}
+\setlength{\parindent}{0cm}
+
+\pagestyle{fancy}
+\setlength{\headheight}{2cm}
+\rhead{\parbox{14cm}{\footnotesize\sc{ Statistisch rapport - p. \thepage
+%\newline voorlopige versie \today
+}} \hfill \includegraphics[width=2cm]{logo_ijkingstoets.jpg}}
+\fancyfoot{}
+
+
+\begin{document}
+
+\input{feedback}
+
+\newcommand{\bron}[1]{\begin{scriptsize} \emph{#1} \end{scriptsize}}
+\newcommand{\id}[1]{\mbox{ } \immediate\write\idfile{#1}} 
+\newcommand{\cat}[1]{categorie: #1\\}  
+\newcommand{\class}[1]{ingeschatte moeilijkheidsgraad: #1\\} 
+\newcommand{\info}[1]{#1\\}  
+\newcommand{\juist}[1]{juist beantwoord: #1 \% \\}  
+\newcommand{\blanco}[1]{blanco: #1 \% \\}  
+\newcommand{\ul}[1]{upper/lower: #1}
+
+\input{rapportinput}
+
+
+\end{document}
+
+

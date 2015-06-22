@@ -30,9 +30,9 @@ nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2015"
-toets = "ir5"
-editie= "juli 2015"
+jaar = "2014"
+toets = "ir4"
+editie= "september 2014"
 
 texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
 
@@ -49,11 +49,11 @@ if not os.path.exists(texoutputFolder):
 numQuestions = 35 # number of questions
 numAlternatives = 5 #number of alternatives
 maxTotalScore = 20 #maximum total score
-numSeries=4 # number of series
+numSeries=1 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["Leuven"]
+instellingen = ["Kortrijk","Brussel"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -80,8 +80,14 @@ for question in xrange(1,numQuestions+1):
 ############################
 #correct answers
 correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets,texinputFolder)
-#permutations
-permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries,texinputFolder)
+permutations
+if numSeries == 1:
+    permutations = numpy.zeros((1,numQuestions))
+    for question in xrange(0,numQuestions):
+        permutations[0,question] = question + 1
+else:
+    permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries,texinputFolder)
+    
 #name of questions
 nameQuestions = leesSleutelEnPermutaties.leesNamenVragen(jaar,toets,texinputFolder,numQuestions)
 #name of questions
@@ -89,7 +95,7 @@ classificationQuestionsMod = leesSleutelEnPermutaties.leesClassificatieVragen(ja
 #categorie of questions
 categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toets,texinputFolder,numQuestions)
 
-numpy.savetxt(outputFolder + "../permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
+numpy.savetxt(outputFolder + "permutatie_"+ jaar +"_" +toets + ".txt",permutations,delimiter=',',fmt="%i")
 ############################
 ############################
 
@@ -502,19 +508,29 @@ fin.close()
 fout.close()
 
 #statistische gegevens in tex-file schrijven
+nameFile = [[] for i in range(int(numQuestions))]
+frapport = open(texoutputFolder + 'rapportinput.tex','w')
 for vraag in xrange(0,numQuestions):
     percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants*100,0))
     percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants*100,0))
     percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
     percLowerr = int(round(numQuestionsAlternativesLower_tot[vraag,alternatives.index(correctAnswers[vraag])]/numLower_tot*100,0))
-    fin = open(texinputFolder + nameQuestions[vraag] + '.tex','r')
-    fout= open(texoutputFolder + nameQuestions[vraag] + '_stat.tex','w')
+    if not os.path.isfile(texinputFolder + nameQuestions[vraag] + '.tex'):
+        fin = open(texinputFolder + 'vraagdraft.tex','r')
+        nameFile[vraag]="vraag" + str(int(vraag+1))
+    else:
+        fin = open(texinputFolder + nameQuestions[vraag] + '.tex','r')
+        nameFile[vraag]=nameQuestions[vraag]
     inhoud=fin.read()
+    inhoud=inhoud.replace('<vraagnr>',str(int(vraag+1)))
     inhoud=inhoud.replace('<editie>',editie)
     inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
     inhoud=inhoud.replace('<juist>',str(percCorrectr))
     inhoud=inhoud.replace('<blanco>',str(percBlankr))
     inhoud=inhoud.replace('<ul>',str(percUpperr)+'/'+str(percLowerr))
+    fout= open(texoutputFolder + nameFile[vraag] + '_stat.tex','w')
     fout.write(inhoud)
     fin.close()
     fout.close()
+    frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
+frapport.close()
