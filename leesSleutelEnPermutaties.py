@@ -42,7 +42,7 @@ def leesSleutel(jaar_loc,toets_loc,texinputFolder_loc):
     
 def leesNamenVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
     name_basis_loc = jaar_loc + "_" + toets_loc + "_IDreeks1"        
-    questionNames = [[] for i in range(int(numQuestions_loc))]
+    questionNames =  numpy.empty(numQuestions_loc, dtype='string') 
     if not os.path.isfile(texinputFolder_loc + name_basis_loc + ".tex"):
         for question in xrange(0,numQuestions_loc):
             questionNames[question] = 'vraag' + str(int(question+1))
@@ -52,7 +52,7 @@ def leesNamenVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
     
 def leesClassificatieVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
     name_basis_loc = jaar_loc + "_" + toets_loc + "_CLASSreeks1"  
-    questionNames = numpy.empty(numQuestions_loc, dtype='string') #[[] for i in range(int(numQuestions_loc))]
+    questionNames = numpy.empty(numQuestions_loc, dtype='string') 
     if not os.path.isfile(texinputFolder_loc + name_basis_loc + ".tex"):
         for question in xrange(0,numQuestions_loc):
             questionNames[question] = "?"

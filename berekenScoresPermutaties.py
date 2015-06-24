@@ -80,7 +80,7 @@ for question in xrange(1,numQuestions+1):
 ############################
 #correct answers
 correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets,texinputFolder)
-permutations
+#permutations
 if numSeries == 1:
     permutations = numpy.zeros((1,numQuestions))
     for question in xrange(0,numQuestions):
@@ -534,3 +534,10 @@ for vraag in xrange(0,numQuestions):
     fout.close()
     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
 frapport.close()
+
+fpunten =  open(outputFolder + toets +'_punten_upload','w')
+fpunten.write("\"Alle studenten\", , , , , \n")
+fpunten.write("\"naam\",\"voornaam\",\"nummer\",\"ijkID\",\"Datum Examen\",\"TOTAAL\" \n")
+for participant in xrange(0,numParticipants_tot):
+    fpunten.write("-,-," + str(int(deelnemers_tot[participant])) + ",-,-,"+ str(int(totalScore_tot[participant])) + "\n") 
+fpunten.close()
