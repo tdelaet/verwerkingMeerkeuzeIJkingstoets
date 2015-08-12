@@ -28,6 +28,8 @@ font_bold = "font: bold on;"
 font_red = "font: color red;"
 font_italic = "font: italic true;"
 align_horizcenter = "align: horiz center;"
+align_horizright = "align: horiz right;"
+align_horizleft = "align: horiz left;"
 align_vertcenter = "align: vert centre;"
 align_horizvertcenter = "align: vert centre, horiz center;"
 border_bottom_medium = "border: bottom medium;"
@@ -1033,31 +1035,31 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
             questionNumberSerie1 = permutations_loc[columnSeries_loc[participant]-1,question-1]
             correctAnswer = correctAnswers_loc[questionNumberSerie1-1]
 
-            sheetC.write(rowCounter,columnCounter,str(question),style=easyxf(font_bold + border_right_medium))
+            sheetC.write(rowCounter,columnCounter,str(question),style=easyxf(font_bold + border_right_medium + align_horizright))
             columnCounter+=1
-            sheetC.write(rowCounter,columnCounter,sorted_score[question-1])
+            sheetC.write(rowCounter,columnCounter,sorted_score[question-1],style=easyxf(align_horizleft))
             columnCounter+=1
             answer = matrixAnswers[participant,question-1]
-            sheetC.write(rowCounter,columnCounter,answer)   
+            sheetC.write(rowCounter,columnCounter,answer,style=easyxf(align_horizleft))   
             columnCounter+=1   
-            sheetC.write(rowCounter,columnCounter,correctAnswer)   
+            sheetC.write(rowCounter,columnCounter,correctAnswer,style=easyxf(align_horizleft))   
             columnCounter+=1  
-            sheetC.write(rowCounter,columnCounter,questionNumberSerie1)   
+            sheetC.write(rowCounter,columnCounter,questionNumberSerie1,style=easyxf(align_horizleft))   
             columnCounter+=1   
-            sheetC.write(rowCounter,columnCounter,categorieQuestions_loc[questionNumberSerie1-1])  
+            sheetC.write(rowCounter,columnCounter,categorieQuestions_loc[questionNumberSerie1-1],style=easyxf(align_horizleft))  
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestions_tot_loc[questionNumberSerie1-1],2))  
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestions_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft))  
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsUpper_tot_loc[questionNumberSerie1-1],2) )
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsUpper_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft) )
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsLower_tot_loc[questionNumberSerie1-1],2))             
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsLower_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft))             
  
             percCorrect = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,percCorrect)
+            sheetC.write(rowCounter,columnCounter,percCorrect,style=easyxf(align_horizleft))
             percBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc]/numParticipants_loc*100,0))
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,percBlank)            
+            sheetC.write(rowCounter,columnCounter,percBlank,style=easyxf(align_horizleft))            
             rowCounter+=1;  
 
         
