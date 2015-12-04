@@ -1062,4 +1062,93 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
             sheetC.write(rowCounter,columnCounter,percBlank,style=easyxf(align_horizleft))            
             rowCounter+=1;  
 
+def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,alternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers):
+    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
+
+    columnCounter = 0;
+    rowCounter = 0;
+    
+    #deelnemersnummers
+    sheetC.write(rowCounter, 0,"studentennummer", style=easyxf(style_header_borderRight)) 
+    rowCounter+=1
+    for i in xrange(0,len(deelnemers_loc)):
+        sheetC.write(rowCounter,columnCounter,deelnemers_loc[i], style=easyxf(style_header_borderRight))
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #total score for indicated series
+    sheetC.write(rowCounter,columnCounter,"totale score",style=easyxf(style_header))
+    rowCounter+=1
+    for i in xrange(len(totalScore_loc)):
+        sheetC.write(rowCounter,columnCounter,totalScore_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+
+    rowCounter = 0;
+    #indicated series
+    sheetC.write(rowCounter,columnCounter,"reeks",style=easyxf(style_header))
+    rowCounter+=1
+    for i in xrange(len(totalScore_loc)):
+        sheetC.write(rowCounter,columnCounter,columnSeries_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    #score for different questions
+    rowCounter = 0;
+    #write heading    
+    columnCounterHeader = columnCounter
+    for question in xrange(1,numQuestions_loc+1):
+        sheetC.write(rowCounter,columnCounterHeader,"score vraag " + str(question),style=easyxf(style_header))
+        columnCounterHeader+=1
         
+    columnCounterScoreQuestions = columnCounter   
+    rowCounter = 1;  
+    for participant in xrange(len(totalScore_loc)): # loop over participants
+        columnCounter = columnCounterScoreQuestions;
+        score = scoreQuestionsIndicatedSeries_loc[participant,:]
+        #serie = int(columnSeries_loc[participant]-1)
+        #sorted_score = [score[i-1] for i in permutations_loc[serie]]
+        #find questions with weight zero
+        #questionsZeroWeight = numpy.where(weightsQuestions_loc==0)
+                #find questions
+        #score[numpy.where(weightsQuestions_loc==0)[0]]=float('NaN')
+        
+        for question in xrange(1,numQuestions_loc+1):
+            #if (question-1) in questionsZeroWeight:
+            #    sheetC.write(rowCounter,columnCounter,"X")
+            #else:
+            #    sheetC.write(rowCounter,columnCounter,score[question-1])
+            sheetC.write(rowCounter,columnCounter,score[question-1])
+            columnCounter+=1
+        rowCounter+=1            
+ 
+
+    #answers for different questions
+    #beware answers are stored per question with the permutation; 
+    #so for the us the answers have to be permutated 
+    #write heading    
+    for question in xrange(1,numQuestions_loc+1):
+        for alternative in alternatives_loc:
+            sheetC.write(0,columnCounterHeader,"antwoord vraag " + str(question) + alternative,style=easyxf(style_header))
+            columnCounterHeader+=1
+    rowCounter = 1;      
+    columnCounterAnswers = columnCounter
+    for participant in xrange(len(totalScore_loc)): # loop over participants
+        columnCounter = columnCounterAnswers;
+        serie = int(columnSeries_loc[participant]-1)
+        answers =  matrixAnswers[participant]
+        
+        #find questions with weight zero
+        #questionsZeroWeight = numpy.where(weightsQuestions_loc==0)
+                #find questions
+        #score[numpy.where(weightsQuestions_loc==0)[0]]=float('NaN')
+        
+        for question in xrange(1,numQuestions_loc+1):
+            questionInSerie = numpy.where(permutations_loc[serie]==question)[0][0]+1
+            answersQuestion = answers[numAlternatives_loc*(questionInSerie-1):numAlternatives_loc*(questionInSerie-1)+numAlternatives_loc] 
+            for counterAlternative in xrange(0,numAlternatives_loc):
+                sheetC.write(rowCounter,columnCounter,answersQuestion[counterAlternative])
+                columnCounter+=1
+        rowCounter+=1                
