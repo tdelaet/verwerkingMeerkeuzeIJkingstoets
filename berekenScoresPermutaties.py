@@ -25,14 +25,14 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2015_ir5_OMRoutput" #name of excel file with scanned forms
 #nameFile = "../OMR/test" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2014"
-toets = "ir4"
-editie= "september 2014"
+jaar = "2015"
+toets = "ir5"
+editie= "juni 2015"
 
 texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
 
@@ -46,14 +46,14 @@ if not os.path.exists(texoutputFolder):
 
 
 
-numQuestions = 35 # number of questions
+numQuestions = 30 # number of questions
 numAlternatives = 5 #number of alternatives
 maxTotalScore = 20 #maximum total score
-numSeries=1 # number of series
+numSeries=4 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["Kortrijk","Brussel"]
+instellingen = ["Leuven"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -315,7 +315,8 @@ writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,b
                   )    
 writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot)           
 
-writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+#writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
 
 writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
 writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)

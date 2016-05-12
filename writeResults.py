@@ -1063,6 +1063,7 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
             rowCounter+=1;  
 
 def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,alternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers):
+    
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     columnCounter = 0;
@@ -1124,7 +1125,9 @@ def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_l
             columnCounter+=1
         rowCounter+=1            
  
-
+#       test door Riet
+        columnCounter = columnCounterScoreQuestions+1;
+        
     #answers for different questions
     #beware answers are stored per question with the permutation; 
     #so for the us the answers have to be permutated 
@@ -1135,20 +1138,22 @@ def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_l
             columnCounterHeader+=1
     rowCounter = 1;      
     columnCounterAnswers = columnCounter
-    for participant in xrange(len(totalScore_loc)): # loop over participants
-        columnCounter = columnCounterAnswers;
-        serie = int(columnSeries_loc[participant]-1)
-        answers =  matrixAnswers[participant]
-        
-        #find questions with weight zero
-        #questionsZeroWeight = numpy.where(weightsQuestions_loc==0)
-                #find questions
-        #score[numpy.where(weightsQuestions_loc==0)[0]]=float('NaN')
-        
-        for question in xrange(1,numQuestions_loc+1):
-            questionInSerie = numpy.where(permutations_loc[serie]==question)[0][0]+1
-            answersQuestion = answers[numAlternatives_loc*(questionInSerie-1):numAlternatives_loc*(questionInSerie-1)+numAlternatives_loc] 
-            for counterAlternative in xrange(0,numAlternatives_loc):
-                sheetC.write(rowCounter,columnCounter,answersQuestion[counterAlternative])
-                columnCounter+=1
-        rowCounter+=1                
+#   comment Riet 12/5/2016: onderstaande nog te debuggen    
+#    for participant in xrange(len(totalScore_loc)): # loop over participants
+#        columnCounter = columnCounterAnswers;
+#        serie = int(columnSeries_loc[participant]-1)
+#        answers =  matrixAnswers[participant]
+#        
+#        #find questions with weight zero
+#        #questionsZeroWeight = numpy.where(weightsQuestions_loc==0)
+#                #find questions
+#        #score[numpy.where(weightsQuestions_loc==0)[0]]=float('NaN')
+#        
+#        for question in xrange(1,numQuestions_loc+1):
+#            questionInSerie = numpy.where(permutations_loc[serie]==question)[0][0]+1
+#            answersQuestion = answers[numAlternatives_loc*(questionInSerie-1):numAlternatives_loc*(questionInSerie-1)+numAlternatives_loc]                                  
+#            for counterAlternative in xrange(0,numAlternatives_loc):
+#                print rowCounter,columnCounter,answersQuestion[counterAlternative]
+#                sheetC.write(rowCounter,columnCounter,answersQuestion[counterAlternative])
+#                columnCounter+=1
+#        rowCounter+=1                
