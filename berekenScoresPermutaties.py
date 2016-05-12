@@ -25,14 +25,14 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
-#nameFile = "../OMR/test" #name of excel file with scanned forms
+#nameFile = "../OMR/2014_ir4_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2015_ir6_OMRoutput" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2014"
-toets = "ir4"
-editie= "september 2014"
+jaar = "2015"
+toets = "ir6"
+editie= "juli 2015"
 
 texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
 
@@ -46,14 +46,14 @@ if not os.path.exists(texoutputFolder):
 
 
 
-numQuestions = 35 # number of questions
+numQuestions = 27 # number of questions
 numAlternatives = 5 #number of alternatives
 maxTotalScore = 20 #maximum total score
-numSeries=1 # number of series
+numSeries=4 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["Kortrijk","Brussel"]
+instellingen = ["Test"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
