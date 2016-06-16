@@ -25,14 +25,14 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2016_ir7_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2015_ir5_OMRoutput" #name of excel file with scanned forms
 #nameFile = "../OMR/test" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2016"
-toets = "ir7"
-editie= "juni 2016"
+jaar = "2015"
+toets = "ir5"
+editie= "juni 2015"
 
 texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
 
@@ -46,17 +46,14 @@ if not os.path.exists(texoutputFolder):
 
 
 
-numQuestions = 32 # number of questions
-numAlternatives = 4 #number of alternatives
-# Take care, only 4 and 5 alternatives is correctly implemented.
-# In calculateScoreAllPermutations en getNumberAlternatives and getMatrixAnswers numbers are replaced by letters
-
+numQuestions = 30 # number of questions
+numAlternatives = 5 #number of alternatives
 maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["Test"]
+instellingen = ["Leuven"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
