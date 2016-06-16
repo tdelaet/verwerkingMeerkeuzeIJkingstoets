@@ -60,6 +60,7 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     # Get the matrix of answers of the students
     numQuestions_loc = len(correctAnswers_loc)
     answers_loc= numpy.array(range(numParticipants_loc*numQuestions_loc),dtype='a10').reshape(numParticipants_loc,numQuestions_loc)
+    numAlternatives_loc = len(alternatives_loc)
    
     counterColumn = 0
     for question_loc in xrange(1,numQuestions_loc+1):
@@ -71,8 +72,11 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
         columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
+        if numAlternatives_loc == 5:        
+            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+        else:
+            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
 
         answers_loc[:,counterColumn] = columnQuestion_loc;
         counterColumn+=1
@@ -102,8 +106,12 @@ def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,p
         columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
+        if numAlternatives_loc == 5:        
+            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+        else:
+            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            
          
         for permutation in xrange(1,numSeries_loc+1):
             numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]
@@ -144,8 +152,13 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
         columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
         columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)
+        if numAlternatives_loc == 5:        
+            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+        else:
+            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            
+
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
             for permutation in xrange(1,len(permutations_loc)+1):

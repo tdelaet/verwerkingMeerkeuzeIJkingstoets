@@ -62,12 +62,12 @@ def checkNameQuestions(numQuestions_loc, nameQuestions_loc):
 
 def checkClassificationQuestions(numQuestions_loc, classificationQuestionsMod_loc):             
     if (len(classificationQuestionsMod_loc) != numQuestions_loc):
-        print "ERROR: The length of the list of question names " + str(len(classificationQuestionsMod_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
+        print "ERROR: The length of the list of classifications " + str(len(classificationQuestionsMod_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
         return False
     return True     
     
 def checkCategorieQuestions(numQuestions_loc, categorieQuestions_loc):             
     if (len(categorieQuestions_loc) != numQuestions_loc):
-        print "ERROR: The length of the list of question names " + str(len(categorieQuestions_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
+        print "ERROR: The length of the list of categories " + str(len(categorieQuestions_loc)) +  " is not equal to the number of questions  " + str(numQuestions_loc)
         return False
     return True     
