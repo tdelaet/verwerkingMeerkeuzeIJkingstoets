@@ -534,7 +534,12 @@ for vraag in xrange(0,numQuestions):
     inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
     inhoud=inhoud.replace('<juist>',str(percCorrectr))
     inhoud=inhoud.replace('<blanco>',str(percBlankr))
-    inhoud=inhoud.replace('<ul>',str(percUpperr)+'/'+str(percLowerr))
+    ULABCD = 'upper/lower:'+str(percUpperr)+'/'+str(percLowerr)+'\\newline percentages ABCD:'
+    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,0]/numParticipants*100,0)))+'/'
+    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,1]/numParticipants*100,0)))+'/'
+    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,2]/numParticipants*100,0)))+'/'
+    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,3]/numParticipants*100,0)))
+    inhoud=inhoud.replace('<ul>',ULABCD)
     fout= open(texoutputFolder + nameFile[vraag] + '_stat.tex','w')
     fout.write(inhoud)
     fin.close()
