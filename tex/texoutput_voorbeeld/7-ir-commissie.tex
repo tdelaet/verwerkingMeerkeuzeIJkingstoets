@@ -1,0 +1,184 @@
+\documentclass[fleqn,a4paper,10pt,twoside]{article}
+\usepackage[dutch]{babel}
+%\usepackage{course}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage[small,bf]{caption}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+%\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usetikzlibrary{through,calc,intersections}
+%\usepackage{xcolor}
+%\definecolor{KULblauw}{RGB}{26,67,121}
+%\usepackage[urlbordercolor=KULblauw]{hyperref}
+%\usepackage[urlbordercolor=white]{hyperref}
+
+\setlength{\captionmargin}{1 cm}
+\renewcommand{\captionfont}{\linespread{1} \small}
+
+%\usepackage[thmmarks,framed,amsmath]{ntheorem}
+\usepackage{ntheorem}
+\usepackage{answers}
+\theoremstyle{break}
+%\setlength {\theorempostskipamount}{3cm}
+\theoremheaderfont{\normalfont\bfseries}
+\theoremsymbol{}
+\theorembodyfont{\upshape}
+ 
+\newtheorem{oefening}{Oefening} 
+\newtheorem{soefening}{Samengestelde oefening}
+\newtheorem{vraag}[oefening] {Vraag}
+
+\Newassociation{opl}{Oplossing}{ans}
+%\Newassociation{numopl}{Oplossing}{numans}
+\newenvironment{numopl}[1]{\vspace{0.2cm} Oplossing: #1}{ }
+
+\newcommand{\executeiffilenewer}[3]{%
+ \ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+ {\pdffilemoddate{#2}}>0%
+ {\immediate\write18{#3}}\fi%
+}
+
+
+%\newenvironment{numopl}[1]{\vspace{0.2cm} Oplossing: #1}{ }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ds}{\displaystyle}
+\newcommand{\ex}{\vec e_x}
+\newcommand{\ey}{\vec e_y}
+\newcommand{\ez}{\vec e_z}
+\newcommand{\cosec}{\mathrm{cosec}\,}
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\graf}{\mathrm{graf}\,}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\renewcommand{\labelenumi}{(\Alph{enumi})}
+\renewcommand{\labelenumii}{(\Alph{enumii})}
+
+
+ 
+%pagestyle{myheadings}
+%\markboth{ \parbox{\includegraphics[height=1cm]{logo_ijkingstoets.jpg}} \footnotesize\sc{ IJkingstoets 1 juli 2013 - reeks1 - versie \today}} {\footnotesize\sc{IJkingstoets 1 juli 2013 - reeks1 - versie \today }}
+
+
+%\includegraphics[height=1cm]{logo_ijkingstoets.jpg}
+
+\setlength{\textwidth}{18 cm}
+\setlength{\marginparwidth}{0 cm}
+\setlength{\hoffset}{-1 cm}
+\setlength{\voffset}{-3 cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\textheight}{26 cm}
+\setlength{\parindent}{0cm}
+
+\pagestyle{fancy}
+\setlength{\headheight}{2cm}
+\rhead{\parbox{14cm}{\footnotesize\sc{ IJkingstoets burgerlijk ingenieur 14 september 2015 - reeks 1 - p. \thepage
+%\newline voorlopige versie \today
+}} \hfill \includegraphics[width=2cm]{logo_ijkingstoets.jpg}}
+\fancyfoot{}
+
+\newwrite\idfile
+\immediate\openout\idfile=ir5_IDreeks1.tex
+\newwrite\classfile
+\immediate\openout\idfile=ir5_CLASSreeks1.tex
+\newwrite\catfile
+\immediate\openout\idfile=ir5_CATreeks1.tex
+
+\begin{document}
+
+\Opensolutionfile{ans}[ans1]
+\Opensolutionfile{numans}[2015_ir6_SLEUTELreeks1]
+
+\input{feedback}
+\newpage
+\newcommand{\bron}[1]{\begin{scriptsize} \emph{#1} \end{scriptsize}}
+%\newcommand{\id}[1]{\begin{scriptsize} id: \emph{#1} \end{scriptsize}}  
+\newcommand{\id}[1]{\mbox{ } \immediate\write\idfile{#1}} 
+\newcommand{\cat}[1]{categorie: #1\\}  
+\newcommand{\class}[1]{ingeschatte moeilijkheidsgraad: #1\\} 
+\newcommand{\info}[1]{#1\\}  
+\newcommand{\juist}[1]{juist beantwoord: #1 \% \\}  
+\newcommand{\blanco}[1]{blanco: #1 \% \\}  
+\newcommand{\ul}[1]{#1}
+\newcommand{\opm}[1]{opmerking vooraf: #1}
+
+\input{2016beg09_stat}
+\input{2016mod02_stat}
+\newpage
+\input{2016beg08_stat}
+\input{2016red04_stat}
+\newpage
+
+
+\input{2016wis09_stat}
+\input{2016red09_stat}
+\input{2016wis04_stat}
+\input{2016red02_stat}
+
+\newpage
+
+
+\input{2016beg05_stat}
+\input{2016wis05_stat}
+\newpage
+\input{2016beg13_stat}
+\input{2016mod04_stat}
+
+\newpage
+
+\input{2016wis08_stat}
+\input{2016beg01_stat}
+
+\newpage
+\input{2016mod03_stat}
+\input{2016red07_stat}
+\newpage
+\input{2016wis12_stat}
+\input{2016mod05_stat}
+
+\newpage
+
+
+\input{2016red08_stat}
+\input{2016wis13_stat}
+\newpage
+\input{2016mod07_stat}
+\input{2016wis01_stat}
+\newpage
+\input{2016mod08_stat}
+\input{2016beg02_stat}
+
+\newpage 
+
+\input{2016beg04_stat}
+\input{2016red01_stat}
+\newpage
+\input{2016red06_stat}
+\input{2016beg07_stat}
+\newpage
+\input{2016mod01_stat}
+\input{2016wis02_stat}
+\newpage
+\input{2016ri01_stat}
+\input{2016ri02_stat}
+
+
+
+\end{document}
+
+
