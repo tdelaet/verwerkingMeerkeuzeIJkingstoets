@@ -48,15 +48,13 @@ if not os.path.exists(texoutputFolder):
 
 numQuestions = 32 # number of questions
 numAlternatives = 4 #number of alternatives
-# Take care, only 4 and 5 alternatives is correctly implemented.
-# In calculateScoreAllPermutations en getNumberAlternatives and getMatrixAnswers numbers are replaced by letters
-
 maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 instellingen = ["Test"]
+#instellingen = ["Gent"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -163,7 +161,7 @@ for instelling in instellingen:
     
     if not supportFunctions.checkForUniqueParticipants(deelnemers):
         print "ERROR: Duplicate participants found"
-    
+    print "Ik ben op lijn 164"
     name = "vragenreeks"
     #get the column in which the vragenreeks is stored
     colNrSerie = content_colNrs[content.index(name)]
@@ -317,10 +315,6 @@ writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,b
                   bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                   )    
 writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot)           
-
-#writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-
 writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
 writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
 
@@ -518,8 +512,8 @@ fout.close()
 nameFile = [[] for i in range(int(numQuestions))]
 frapport = open(texoutputFolder + 'rapportinput.tex','w')
 for vraag in xrange(0,numQuestions):
-    percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants*100,0))
-    percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants*100,0))
+    percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants_tot*100,0))
+    percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants_tot*100,0))
     percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
     percLowerr = int(round(numQuestionsAlternativesLower_tot[vraag,alternatives.index(correctAnswers[vraag])]/numLower_tot*100,0))
     if not os.path.isfile(texinputFolder + nameQuestions[vraag] + '.tex'):
@@ -534,12 +528,7 @@ for vraag in xrange(0,numQuestions):
     inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
     inhoud=inhoud.replace('<juist>',str(percCorrectr))
     inhoud=inhoud.replace('<blanco>',str(percBlankr))
-    ULABCD = 'upper/lower:'+str(percUpperr)+'/'+str(percLowerr)+'\\newline percentages ABCD:'
-    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,0]/numParticipants*100,0)))+'/'
-    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,1]/numParticipants*100,0)))+'/'
-    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,2]/numParticipants*100,0)))+'/'
-    ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives[vraag,3]/numParticipants*100,0)))
-    inhoud=inhoud.replace('<ul>',ULABCD)
+    inhoud=inhoud.replace('<ul>',str(percUpperr)+'/'+str(percLowerr))
     fout= open(texoutputFolder + nameFile[vraag] + '_stat.tex','w')
     fout.write(inhoud)
     fin.close()
