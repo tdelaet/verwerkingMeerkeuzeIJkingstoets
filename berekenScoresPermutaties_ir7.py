@@ -63,7 +63,7 @@ bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many stude
 ########################
 fqsf= open(outputFolder + 'antwoorden.qsf','w')
 fqsf.write('Snapshot,Participant,Vendor,Group')
-for question in xrange(1,numQuestions+1):
+for question in range(1,numQuestions+1):
     fqsf.write(',Q'+str(question))
 fqsf.write('\n')
 
@@ -71,7 +71,7 @@ fqsf.write('\n')
 #create list of expected content of scan file
 content = ["ijkID","vragenreeks"]
 
-for question in xrange(1,numQuestions+1):
+for question in range(1,numQuestions+1):
         name = "Vraag" + str(question)
         content.append(name)
 ###########################
@@ -83,7 +83,7 @@ correctAnswers = leesSleutelEnPermutaties.leesSleutel(jaar,toets,texinputFolder)
 #permutations
 if numSeries == 1:
     permutations = numpy.zeros((1,numQuestions))
-    for question in xrange(0,numQuestions):
+    for question in range(0,numQuestions):
         permutations[0,question] = question + 1
 else:
     permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries,texinputFolder)
@@ -106,7 +106,7 @@ alternatives = list(string.ascii_uppercase)[0:numAlternatives]
 
         
 if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen,classificationQuestionsMod,categorieQuestions)):
-     print "ERROR found in input variables"   
+    print ("ERROR found in input variables"   )
 
 
 deelnemers_all = []      
@@ -127,7 +127,7 @@ scoreCategories_all = []
   
 for instelling in instellingen:  
     counter = 0
-    print "INSTELLING: " + instelling
+    print ("INSTELLING: " + instelling)
     # read file and get sheet
     book= open_workbook(nameFile+"_"+ instelling+".xlsx")
     sheet = book.sheet_by_name(nameSheet)
@@ -159,7 +159,7 @@ for instelling in instellingen:
     deelnemers=sheet.col_values(studentenNrCol,1,num_rows)
     
     if not supportFunctions.checkForUniqueParticipants(deelnemers):
-        print "ERROR: Duplicate participants found"
+        print ("ERROR: Duplicate participants found")
     
     name = "vragenreeks"
     #get the column in which the vragenreeks is stored
@@ -167,12 +167,12 @@ for instelling in instellingen:
     #get the series for the participants (so skip for row with name of first row)
     columnSeries=sheet.col_values(colNrSerie,1,num_rows)
     #write data to qsf
-    for participant in xrange(0,numParticipants):
+    for participant in range(0,numParticipants):
         fqsf.write(str(int(columnSeries[participant]))
         +',\"' + str(int(deelnemers[participant]))
         +'\",\"Gravic, Inc.\",\"auto\"')   
         antwoorden=sheet.row_values(1+participant,2,numQuestions+2)
-        for vraag in xrange(0,numQuestions):
+        for vraag in range(0,numQuestions):
             fqsf.write(',' + str(antwoorden[vraag]))    
         fqsf.write('\n')
     # get matrix of answers
@@ -248,7 +248,7 @@ for instelling in instellingen:
         verticalalignment='top',
         bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     figManager = plt.get_current_fig_manager()
-    figManager.window.showMaximized()    
+    #figManager.window.showMaximized()    
     plt.savefig(outputFolder + 'histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
     
 
@@ -424,7 +424,7 @@ plt.text(maxTotalScore, numpy.max(n)-11.5,
         verticalalignment='top')
 #        bbox=dict(facecolor='none', edgecolor='red', boxstyle='round,pad=1'))
 figManager = plt.get_current_fig_manager()
-figManager.window.showMaximized()            
+#figManager.window.showMaximized()            
 plt.savefig(outputFolder + 'histogramGeheelUML.png', bbox_inches='tight',dpi=300)
 
 
@@ -438,7 +438,7 @@ fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
 
 binsHist = numpy.array([-3.0/(2*(numAlternatives-1)),-1.0/(2*(numAlternatives-1)),0.5,1.5])
 
-for question in xrange(1,numQuestions+1):
+for question in range(1,numQuestions+1):
     ax = plt.subplot(numRowsPict,numColsPict,question)
     n, bins, patches = plt.hist(scoreQuestionsIndicatedSeries_tot[:,question-1],bins=binsHist)
     plt.xticks([-1/(numAlternatives-1), 0,1])
@@ -453,7 +453,7 @@ font = {'family' : 'normal',
 
 matplotlib.rc('font', **font)
 figManager = plt.get_current_fig_manager()
-figManager.window.showMaximized()    
+#figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramVragen.png', bbox_inches='tight',dpi=300)
 
 #plot histogram for different questions
@@ -464,7 +464,7 @@ numRowsPict = int(numpy.ceil(numQuestions/numColsPict)) +1
 fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict)
 fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
 
-for question in xrange(1,numQuestions+1):
+for question in range(1,numQuestions+1):
     ax = plt.subplot(numRowsPict,numColsPict,question)
     n, bins, patches = plt.hist([scoreQuestionsUpper_tot[:,question-1], scoreQuestionsMiddle_tot[:,question-1], scoreQuestionsLower_tot[:,question-1]],bins=binsHist, stacked=True,  label=['Upper', 'Middle', 'Lower'],color=['g','b','r'])
     plt.xticks([-1/(numAlternatives-1), 0,1])
@@ -474,12 +474,12 @@ for question in xrange(1,numQuestions+1):
     plt.ylabel("aantal studenten")
     plt.legend(loc=2,prop={'size':6})
 figManager = plt.get_current_fig_manager()
-figManager.window.showMaximized()    
+#figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
 
 #qsf-file afsluiten
 fqsf.write('1,\"999999\",\"Gravic, Inc.\",\"auto\"')   
-for vraag in xrange(0,numQuestions):
+for vraag in range(0,numQuestions):
     if correctAnswers[vraag]=='A': 
         sleutel='1'
     if correctAnswers[vraag]=='B': 
@@ -514,7 +514,7 @@ fout.close()
 #statistische gegevens in tex-file schrijven
 nameFile = [[] for i in range(int(numQuestions))]
 frapport = open(texoutputFolder + 'rapportinput.tex','w')
-for vraag in xrange(0,numQuestions):
+for vraag in range(0,numQuestions):
     percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants_tot*100,0))
     percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants_tot*100,0))
     percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
@@ -547,6 +547,6 @@ frapport.close()
 fpunten =  open(outputFolder + toets +'_punten_upload','w')
 fpunten.write("\"Alle studenten\", , , , , \n")
 fpunten.write("\"naam\",\"voornaam\",\"nummer\",\"ijkID\",\"Datum Examen\",\"TOTAAL\" \n")
-for participant in xrange(0,numParticipants_tot):
+for participant in range(0,numParticipants_tot):
     fpunten.write("-,-," + str(int(deelnemers_tot[participant])) + ",-,-,"+ str(int(totalScore_tot[participant])) + "\n") 
 fpunten.close()

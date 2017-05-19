@@ -44,14 +44,14 @@ def giveContentColNrs(content_loc, sheet_loc):
             content_colNrs_loc[indexC_loc] = firstRowValues_loc.index(x)
             indexC_loc += 1
         except ValueError:
-            print "the expected content " + x + " is not present in the selected sheet"
+            print ("the expected content " + x + " is not present in the selected sheet")
             break;
     return content_colNrs_loc
     
 def checkForUniqueParticipants(particpants):
     setd = set([x for x in particpants if particpants.count(x) > 1])
     if setd:
-        print "Duplicate particpants found: " + str(setd)
+        print ("Duplicate particpants found: " + str(setd))
         return False
     else:
         return True
@@ -59,26 +59,36 @@ def checkForUniqueParticipants(particpants):
 def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
     # Get the matrix of answers of the students
     numQuestions_loc = len(correctAnswers_loc)
-    answers_loc= numpy.array(range(numParticipants_loc*numQuestions_loc),dtype='a10').reshape(numParticipants_loc,numQuestions_loc)
+    answers_loc= numpy.array(range(numParticipants_loc*numQuestions_loc),dtype=str).reshape(numParticipants_loc,numQuestions_loc)
     numAlternatives_loc = len(alternatives_loc)
    
     counterColumn = 0
-    for question_loc in xrange(1,numQuestions_loc+1):
+    for question_loc in range(1,numQuestions_loc+1):
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #print( columnQuestion_loc)
+        #print(columnQuestion_loc[1])
         # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
-        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = ['A' if x=='1'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['B' if x=='2'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['C' if x=='3'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['D' if x=='4'  else x for x in columnQuestion_loc]
         if numAlternatives_loc == 5:        
-            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+            #columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            #columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)   
+            columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
+            columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
         else:
-            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
-
+            #columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
+        #print( columnQuestion_loc)
         answers_loc[:,counterColumn] = columnQuestion_loc;
+        #rint(answers_loc)
         counterColumn+=1
     return answers_loc
             
@@ -92,7 +102,7 @@ def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,p
    
    #Calculate score for all permutations
                  
-    for question_loc in xrange(1,numQuestions_loc+1):
+    for question_loc in range(1,numQuestions_loc+1):
         #print "----------------------"
         #print "question " + str(question_loc)
         counter_alternative = 0;
@@ -102,24 +112,32 @@ def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,p
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
         #TODO: replace with matrixAnswers
         # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
-        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = ['A' if x=='1'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['B' if x=='2'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['C' if x=='3'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['D' if x=='4'  else x for x in columnQuestion_loc]
         if numAlternatives_loc == 5:        
-            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+            #columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            #columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)   
+            columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
+            columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
         else:
-            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            #columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
             
          
-        for permutation in xrange(1,numSeries_loc+1):
+        for permutation in range(1,numSeries_loc+1):
             numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]
             correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]
             wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
-            indicesCorrectAnswer_loc = [x for x in xrange(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
-            indicesWrongAnswer_loc = [x for x in xrange(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
-            #indicesBlankAnswer_loc = [x for x in xrange(numParticipants_loc) if columnQuestion_loc[x]==blankAnswer]
+           # print (range(numParticipants_loc))
+            indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
+            indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
+            #indicesBlankAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==blankAnswer]
             #correct answers + 1
             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
             #wrong answers -1/4
@@ -139,7 +157,7 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
 
     #number of alternatives per question
     #loop over question
-    for question_loc in xrange(1,numQuestions_loc+1):
+    for question_loc in range(1,numQuestions_loc+1):
         #print "----------------------"
         #print "question " + str(question_loc)
         name_question_serie1 = "Vraag" + str(question_loc)       
@@ -148,22 +166,29 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
         #TODO: replace with matrixAnswers
         # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
-        columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
-        columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "B" if x=="2" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "C" if x=="3" else x, columnQuestion_loc)
+        #columnQuestion_loc = map(lambda x: "D" if x=="4" else x, columnQuestion_loc)
+        columnQuestion_loc = ['A' if x=='1'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['B' if x=='2'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['C' if x=='3'  else x for x in columnQuestion_loc]
+        columnQuestion_loc = ['D' if x=='4'  else x for x in columnQuestion_loc]        
         if numAlternatives_loc == 5:        
-            columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
-            columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)          
+            #columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
+            #columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)   
+            columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
+            columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
         else:
-            columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            #columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
+            columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
             
 
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
-            for permutation in xrange(1,len(permutations_loc)+1):
+            for permutation in range(1,len(permutations_loc)+1):
                 #print permutation
-                indicesPermutation =  [x for x in xrange(len(columnSeries_loc)) if columnSeries_loc[x]==permutation]                
+                indicesPermutation =  [x for x in range(len(columnSeries_loc)) if columnSeries_loc[x]==permutation]                
                 #print indicesPermutation
                 numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]              
                 #print numQuestionPermutations_loc
@@ -183,7 +208,7 @@ def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSer
     #print numQuestions_loc
     #print columnSeries_loc
     scoreQuestionsIndicatedSeries_loc= numpy.zeros((numParticipants_loc,numQuestions_loc))
-    for participant in xrange(numParticipants_loc):
+    for participant in range(numParticipants_loc):
         serieIndicated = columnSeries_loc[participant]
         scoreQuestionsIndicatedSeries_loc[participant,:] = scoreQuestionsAllPermutations_loc[serieIndicated-1,participant,:] 
     averageScoreQuestions_loc = scoreQuestionsIndicatedSeries_loc.sum(axis=0)/float(numParticipants_loc)    
@@ -220,7 +245,7 @@ def getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_loc,scor
     averageScoreQuestionsDifferentSeries_loc = numpy.zeros(numQuestions_loc* numSeries_loc)
     averageScoreQuestionsDifferentSeries_loc = averageScoreQuestionsDifferentSeries_loc.reshape(numQuestions_loc, numSeries_loc)
     
-    for serie in xrange(1,numSeries_loc+1):
+    for serie in range(1,numSeries_loc+1):
         indicesSerie_loc = [x for x in range(0,numParticipants_loc) if columnSeries_loc[x]==serie]
         totalScoreSerie_loc = [totalScoreDifferentPermutations_loc[i,serie-1] for i in indicesSerie_loc]
         numParticipantsSeries_loc[serie-1] = len(totalScoreSerie_loc)
@@ -240,7 +265,7 @@ def calculateTotalScoreDifferentPermutations(scoreQuestionsAllPermutations_loc,m
     numParticipants_loc = len(scoreQuestionsAllPermutations_loc[0])
     numQuestions_loc = len(scoreQuestionsAllPermutations_loc[0][0])
     totalScorePermutations_loc = numpy.zeros((numParticipants_loc,numSeries_loc))    
-    for serie in xrange(1,numSeries_loc+1):
+    for serie in range(1,numSeries_loc+1):
         totalScore_temp = scoreQuestionsAllPermutations_loc[serie-1].sum(axis=1)/numQuestions_loc*maxTotalScore_loc
         totalScore_temp[totalScore_temp < 0]=0
         totalScore_temp = round2(totalScore_temp)
@@ -295,7 +320,7 @@ def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc
 
     #number of alternatives per question
     #loop over question
-    for question_loc in xrange(1,numQuestions_loc+1):
+    for question_loc in range(1,numQuestions_loc+1):
         #print "----------------------"
         #print "question " + str(question_loc)
         #name_question_serie1 = "Vraag" + str(question_loc)       
@@ -305,9 +330,9 @@ def calculateUpperLowerStatistics(matrixAnswers_loc,content_loc,columnSeries_loc
         columnQuestion_loc=matrixAnswers_loc[:,question_loc-1];
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
-            for permutation in xrange(1,len(permutations_loc)+1):
+            for permutation in range(1,len(permutations_loc)+1):
                 #print permutation
-                indicesPermutation =  [x for x in xrange(len(columnSeries_loc)) if columnSeries_loc[x]==permutation]                
+                indicesPermutation =  [x for x in range(len(columnSeries_loc)) if columnSeries_loc[x]==permutation]                
                 #print indicesPermutation
                 numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]              
                 #print numQuestionPermutations_loc
@@ -339,8 +364,11 @@ def getDistributionStudents(totalScore_loc,bordersDistributionStudentsLow_loc,bo
     return distributionStudentsHigh_loc,distributionStudentsLow_loc
     
 def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
+    #print( matrixAnswers_loc)
+    #print (alternatives_loc)
+    #print( blankAnswer_loc)
     if False in [ e in alternatives_loc+[blankAnswer_loc]  for e in matrixAnswers_loc.reshape(-1) ]:
-        print "ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])
+        print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc]))
 
 def getScoreCategories(scoreQuestionsIndicatedSeries_loc,categorieQuestions_loc):
     scoreCategories_loc = []
