@@ -1065,6 +1065,139 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
             sheetC.write(rowCounter,columnCounter,percBlank,style=easyxf(align_horizleft))            
             rowCounter+=1;  
 
+def write_feedbackPlatform(outputFolder_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,alternatives_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,categorieQuestions_loc,scoreCategories_loc,
+                           averageScoreQuestions_tot_loc,averageScoreQuestionsUpper_tot_loc,averageScoreQuestionsMiddle_tot_loc,averageScoreQuestionsLower_tot_loc
+                           ,correctAnswers_loc, numQuestionsAlternatives_loc,blankAnswer_loc):
+    fFeedback= open(outputFolder_loc + 'feedbackPlatform.csv','w')
+    orderedParticipants = sorted(range(len(deelnemers_loc)), key=lambda k: deelnemers_loc[k])
+    # write header
+    fFeedback.write("ijkID" )
+    fFeedback.write(',')
+    fFeedback.write("reeks")
+    fFeedback.write(',')
+    fFeedback.write("score")
+    fFeedback.write(',')
+    #namen categoriën
+    for categorie in set(categorieQuestions_loc):
+        fFeedback.write("cat: " + categorie)
+        fFeedback.write(',')
+    fFeedback.write("aantal juist")
+    fFeedback.write(',')
+    fFeedback.write("aantal fout") 
+    fFeedback.write(',')
+    fFeedback.write("aantal blanco")
+    fFeedback.write(',')
+    for question in range(1,numQuestions_loc+1):
+        fFeedback.write("vraag" + str(question) +": score")
+        fFeedback.write(',') 
+        fFeedback.write("vraag" + str(question) +": antwoord")       
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": sleutel")       
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": type") 
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": gem.")    
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": upper")
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": lower") 
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) + ": %juist")
+        fFeedback.write(',')
+        fFeedback.write("vraag" + str(question) +": %blanco")
+        fFeedback.write(',')  
+        for alternative in alternatives_loc:
+            fFeedback.write("aantal " +alternative)
+            fFeedback.write(',')  
+        fFeedback.write("aantal " + blankAnswer_loc)
+        fFeedback.write(',')          
+    fFeedback.write('\n')
+    for participant in orderedParticipants: # range(len(totalScore_loc)):
+        #ijkID
+        fFeedback.write(str(int(deelnemers_loc[participant])))
+        fFeedback.write(',')
+        
+        #indicated series
+        fFeedback.write(str(int(columnSeries_loc[participant])))      
+        fFeedback.write(',')
+        
+        #total score for indicated series
+        fFeedback.write(str(int(totalScore_loc[participant])))
+        fFeedback.write(',')
+
+        #score per categorie
+        counterCategorie = 0;
+        for categorie in set(categorieQuestions_loc):
+            fFeedback.write(str(scoreCategories_loc[counterCategorie][participant]))
+            fFeedback.write(',')
+            counterCategorie+=1
+        
+        score = scoreQuestionsIndicatedSeries_loc[participant,:]
+        sorted_score = [score[i-1] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
+        
+        numBlank = sum(score == 0)
+        numCorrect = sum(score == 1.0)
+        numWrong = sum(score == -1.0/(numAlternatives_loc-1))    
+        
+       
+        # aantal juist
+        fFeedback.write(str(numCorrect))
+        fFeedback.write(',')
+        # aantal fout
+        fFeedback.write(str(numWrong))
+        fFeedback.write(',')
+        # aantal blanco
+        fFeedback.write(str(numBlank))
+        fFeedback.write(',')
+        
+        
+        
+        
+
+        #score for different questions
+        #beware scores are stored per question without the permutation; 
+        #so for the student the scores have to be back-permutated to the order they got
+        
+        for question in range(1,numQuestions_loc+1):
+            questionNumberSerie1 = permutations_loc[columnSeries_loc[participant]-1,question-1]
+            correctAnswer = correctAnswers_loc[questionNumberSerie1-1]
+
+            #fFeedback.write(str(question),style=easyxf(font_bold + border_right_medium + align_horizright))
+            #columnCounter+=1
+            fFeedback.write(str(sorted_score[question-1]))
+            fFeedback.write(',')
+            answer = matrixAnswers[participant,question-1]
+            fFeedback.write(answer)   
+            fFeedback.write(',')
+            fFeedback.write(correctAnswer)   
+            fFeedback.write(',')
+            fFeedback.write(categorieQuestions_loc[questionNumberSerie1-1])  
+            fFeedback.write(',')   
+            fFeedback.write(str((round(averageScoreQuestions_tot_loc[questionNumberSerie1-1],2))  ))
+            fFeedback.write(',')
+            fFeedback.write(str(int(round(averageScoreQuestionsUpper_tot_loc[questionNumberSerie1-1]*100,0) )))
+            fFeedback.write(',')
+            fFeedback.write(str(int(round(averageScoreQuestionsLower_tot_loc[questionNumberSerie1-1]*100,0))           )  )
+ 
+            percCorrect = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
+            fFeedback.write(',')    
+            fFeedback.write(str(percCorrect))
+            percBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc]/numParticipants_loc*100,0))
+            fFeedback.write(',')
+            fFeedback.write(str(percBlank))  
+            fFeedback.write(',')
+            
+            for alternative in range(0,numAlternatives_loc):
+                aantalAlternative = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternative],0))
+                fFeedback.write(str(aantalAlternative))
+                fFeedback.write(',')
+            aantalBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc],0))
+            fFeedback.write(str(aantalBlank))
+            fFeedback.write(',')            
+        fFeedback.write('\n')  
+    fFeedback.close()
+            
+            
 def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,alternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers):
     
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)

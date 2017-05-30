@@ -293,6 +293,8 @@ distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDi
 outputbook = Workbook(style_compression=2)
 outputStudentbook = Workbook(style_compression=2)  
 outputInstellingen = Workbook(style_compression=2)  
+outputFeedbackbook = Workbook(style_compression=2)
+outputFeedbackPlatformbook = Workbook(style_compression=2)
 ## WRITING THE OUTPUT TO A FILE
 writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
                   maxTotalScore,content,content_colNrs,
@@ -314,10 +316,8 @@ writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,b
                   bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                   )    
 writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot)           
-
 #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
 writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-
 writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
 writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
 
@@ -327,14 +327,18 @@ writeResults.write_feedbackStudents(outputFeedbackbook,permutations,numParticipa
                                     categorieQuestions,scoreCategories_tot,
                                     averageScoreQuestions_tot,averageScoreQuestionsUpper_tot,averageScoreQuestionsMiddle_tot,averageScoreQuestionsLower_tot
                                     ,correctAnswers, numQuestionsAlternatives_tot)
- 
+writeResults.write_feedbackPlatform(outputFolder,permutations,numParticipants_tot,deelnemers_tot, numQuestions,
+                                    alternatives,numAlternatives,content,content_colNrs,
+                                    totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,
+                                    categorieQuestions,scoreCategories_tot,
+                                    averageScoreQuestions_tot,averageScoreQuestionsUpper_tot,averageScoreQuestionsMiddle_tot,averageScoreQuestionsLower_tot
+                                    ,correctAnswers, numQuestionsAlternatives_tot,blankAnswer) 
 
 
 outputbook.save(outputFolder + 'output' +'_geheel.xls') 
 outputStudentbook.save(outputFolder + 'punten_geheel.xls') 
 outputInstellingen.save(outputFolder + 'instellingen.xls')  
 outputFeedbackbook.save(outputFolder+ 'feedback'+'.xls')
-
 
 def my_autopct(pct):
     total=sum(numParticipants_all)
@@ -476,6 +480,10 @@ for question in range(1,numQuestions+1):
 figManager = plt.get_current_fig_manager()
 #figManager.window.showMaximized()    
 plt.savefig(outputFolder + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
+
+
+
+
 
 #qsf-file afsluiten
 fqsf.write('1,\"999999\",\"Gravic, Inc.\",\"auto\"')   
