@@ -131,12 +131,12 @@ def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,p
             
          
         for permutation in range(1,numSeries_loc+1):
-            numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1]
-            correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]
+            numQuestionPermutations_loc = permutations_loc[permutation-1][question_loc-1] #Riet: numQuestionPermutations_loc is nummer van de vraag in reeks 1
+            correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]#Riet: correcte antwoord opzoeken
             wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
            # print (range(numParticipants_loc))
-            indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
-            indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
+            indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer] #Riet: alle nummers van deelnemers die de vraag juist had
+            indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))] #Riet: alle nummers van deelnemers die de vraag fout had
             #indicesBlankAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==blankAnswer]
             #correct answers + 1
             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
