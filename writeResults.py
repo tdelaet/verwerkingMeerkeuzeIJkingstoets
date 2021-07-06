@@ -62,7 +62,7 @@ style_border_header = easyxf('border: left thick, top thick, bottom thick, right
 style_borderRight = easyxf( "border: right medium ")
 
 
-def write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
+def write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                   maxTotalScore,content,content_colNrs,
                   columnSeries,deelnemers,
                   numParticipants,
@@ -83,7 +83,7 @@ def write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswe
                    ):
                       
                       
-    write_scoreAllPermutations(outputbook,'ScoreVerschillendeSeries',numParticipants,deelnemers,numQuestions,content,content_colNrs,totalScore,totalScoreDifferentPermutations,columnSeries)
+    write_scoreAllPermutations(outputbookperm,'ScoreVerschillendeSeries',numParticipants,deelnemers,numQuestions,content,content_colNrs,totalScore,totalScoreDifferentPermutations,columnSeries)
     write_overallStatistics(outputbook,'GlobaleParameters',totalScore,averageScore,medianScore,standardDeviation,percentagePass,numParticipantsSeries,averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,maxTotalScore)
     #write_overallStatisticsDifferentPermutations(outputbook,'GlobaleParametersSeries',numParticipantsSeries,averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,maxTotalScore)
     write_averageScoreQuestions(outputbook,'GemiddeldeScoreVraag',numQuestions,averageScore,averageScoreUpper,averageScoreMiddle,averageScoreLower,averageScoreQuestions,averageScoreQuestionsUpper,averageScoreQuestionsMiddle,averageScoreQuestionsLower,averageScoreSeries,averageScoreQuestionsDifferentSeries,nameQuestions,categoriesQuestions)   
@@ -94,8 +94,8 @@ def write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswe
     write_distributionStudents(outputbook,"HistogramStudenten",numParticipants,bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow,distributionStudentsHigh)
 
 
-def write_scoreAllPermutations(outputbook_loc,nameSheet_loc,numParticipants_loc,deelnemers_loc, numQuestion_loc,content_loc,content_colNrs_loc,totalScore_loc,totalScoreDifferentPermutations_loc,columnSeries_loc):
-    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
+def write_scoreAllPermutations(outputbookperm_loc,nameSheet_loc,numParticipants_loc,deelnemers_loc, numQuestion_loc,content_loc,content_colNrs_loc,totalScore_loc,totalScoreDifferentPermutations_loc,columnSeries_loc):
+    sheetC = outputbookperm_loc.add_sheet(nameSheet_loc)
 
 
     columnCounter = 0;
@@ -1293,7 +1293,6 @@ def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_l
             columnCounter+=1
         rowCounter+=1            
  
-#       test door Riet
         columnCounter = columnCounterScoreQuestions+1;
         
     #answers for different questions

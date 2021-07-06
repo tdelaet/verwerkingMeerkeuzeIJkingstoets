@@ -37,9 +37,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc,texinputFolder_loc):
 def leesSleutel(jaar_loc,toets_loc,texinputFolder_loc):
     name_sleutel = jaar_loc + "_" + toets_loc + "_SLEUTELreeks1"
     sleutel = numpy.loadtxt(texinputFolder_loc + name_sleutel+ ".tex",delimiter='\t',dtype=bytes).astype(str)
-    #print(sleutel)
     sleutel = sleutel[1:len(sleutel):3]
-    #print(sleutel)
     return sleutel
     
 def leesNamenVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):

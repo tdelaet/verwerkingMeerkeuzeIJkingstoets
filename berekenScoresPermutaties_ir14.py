@@ -25,14 +25,14 @@ import writeResults
 import leesSleutelEnPermutaties
 
 
-nameFile = "../OMR/2016_ir7_OMRoutput" #name of excel file with scanned forms
+nameFile = "../OMR/2019_ir14_OMRoutput" #name of excel file with scanned forms
 #nameFile = "../OMR/test" #name of excel file with scanned forms
 nameSheet = "outputScan" #sheet name of excel file with scanned forms
 
 
-jaar = "2016"
-toets = "ir7"
-editie= "juni 2016"
+jaar = "2019"
+toets = "ir14"
+editie= "augustus 2019"
 
 texinputFolder = "../" + jaar + "_" +  toets + "/texinput/"
 
@@ -46,14 +46,14 @@ if not os.path.exists(texoutputFolder):
 
 
 
-numQuestions = 32 # number of questions
+numQuestions = 30 # number of questions
 numAlternatives = 4 #number of alternatives
 maxTotalScore = 20 #maximum total score
 numSeries=4 # number of series
 blankAnswer = "X"
 
-#instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
+#instellingen = ["GG","LL"]
+instellingen = ["LL","LK","GG","BB"]
 
 bordersDistributionStudentsLow = [7,10,12,14,16,18] #for counting how many students get <=7,10 ...
 bordersDistributionStudentsHigh = [7,10,12,14,16,18]#for counting how many students get >=7,10 ...
@@ -123,6 +123,10 @@ columnSeries_all = []
 matrixAnswers_all = []
 numParticipants_all = []
 scoreCategories_all = []
+numBlanklist = []
+numCorrectlist = []
+numWronglist = []
+
 
   
 for instelling in instellingen:  
@@ -151,6 +155,7 @@ for instelling in instellingen:
     
     # write to excel_file
     outputbook = Workbook(style_compression=2)
+    outputbookperm = Workbook(style_compression=2)
     outputStudentbook = Workbook(style_compression=2)
     outputFeedbackbook = Workbook(style_compression=2)
     
@@ -186,6 +191,7 @@ for instelling in instellingen:
     #get the scores for the indicated series
     scoreQuestionsIndicatedSeries, averageScoreQuestions =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,columnSeries)
     
+    
     #get the overall statistics
     totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
     
@@ -203,7 +209,7 @@ for instelling in instellingen:
     distributionStudentsHigh,distributionStudentsLow = supportFunctions.getDistributionStudents(totalScore,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
     
     ## WRITING THE OUTPUT TO A FILE
-    writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
+    writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                       maxTotalScore,content,content_colNrs,
                       columnSeries,deelnemers,
                       numParticipants,
@@ -227,7 +233,8 @@ for instelling in instellingen:
     writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)           
     writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
     
-    outputbook.save(outputFolder + 'output' +'_'+instelling+'.xls') 
+    outputbook.save(outputFolder + 'output' +'_'+instelling+'.xls')
+    outputbookperm.save(outputFolder + 'output_permutations' +'_'+instelling+'.xls') 
     outputStudentbook.save(outputFolder + 'punten' +'_'+instelling+'.xls')
                       
     # plot the histogram of the total score
@@ -289,14 +296,31 @@ scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot =  supportFunctions
     
 totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot,averageScoreUpper_tot, averageScoreMiddle_tot, averageScoreLower_tot, averageScoreQuestionsUpper_tot, averageScoreQuestionsMiddle_tot, averageScoreQuestionsLower_tot,numQuestionsAlternativesUpper_tot,numQuestionsAlternativesMiddle_tot,numQuestionsAlternativesLower_tot, scoreQuestionsUpper_tot, scoreQuestionsMiddle_tot, scoreQuestionsLower_tot,numUpper_tot, numMiddle_tot, numLower_tot= supportFunctions.calculateUpperLowerStatistics(matrixAnswers_tot,content,columnSeries_tot,totalScore_tot,scoreQuestionsIndicatedSeries_tot,correctAnswers,alternatives,blankAnswer,content_colNrs,permutations)
 distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDistributionStudents(totalScore_tot,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
+
+
+
+#get number correct/wrong/blank (Riet)
+numCorrectlist= numpy.ones(numParticipants_tot+1)
+numWronglist= numpy.ones(numParticipants_tot+1)
+numBlanklist= numpy.ones(numParticipants_tot+1)
+for participant in range(0,numParticipants_tot):
+    score = scoreQuestionsIndicatedSeries_tot[participant,:]
+    numBlanklist[participant] = sum(score == 0)
+    numCorrectlist[participant] = sum(score == 1.0)
+    numWronglist[participant] = sum(score == -1.0/(numAlternatives-1))
+
+
+    
+
 # write to excel_file
 outputbook = Workbook(style_compression=2)
+outputbookperm = Workbook(style_compression=2)
 outputStudentbook = Workbook(style_compression=2)  
 outputInstellingen = Workbook(style_compression=2)  
 outputFeedbackbook = Workbook(style_compression=2)
 outputFeedbackPlatformbook = Workbook(style_compression=2)
 ## WRITING THE OUTPUT TO A FILE
-writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
+writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                   maxTotalScore,content,content_colNrs,
                   columnSeries_tot,deelnemers_tot,
                   numParticipants_tot,
@@ -317,7 +341,7 @@ writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,b
                   )    
 writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot)           
 #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers)
 writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
 writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
 
@@ -335,7 +359,8 @@ writeResults.write_feedbackPlatform(outputFolder,permutations,numParticipants_to
                                     ,correctAnswers, numQuestionsAlternatives_tot,blankAnswer) 
 
 
-outputbook.save(outputFolder + 'output' +'_geheel.xls') 
+outputbook.save(outputFolder + 'output' +'_geheel.xls')
+outputbookperm.save(outputFolder + 'output_permutations_geheel.xls') 
 outputStudentbook.save(outputFolder + 'punten_geheel.xls') 
 outputInstellingen.save(outputFolder + 'instellingen.xls')  
 outputFeedbackbook.save(outputFolder+ 'feedback'+'.xls')
@@ -552,9 +577,11 @@ for vraag in range(0,numQuestions):
     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
 frapport.close()
 
+#puntenfile schrijven
+
 fpunten =  open(outputFolder + toets +'_punten_upload','w')
-fpunten.write("\"Alle studenten\", , , , , \n")
-fpunten.write("\"naam\",\"voornaam\",\"nummer\",\"ijkID\",\"Datum Examen\",\"TOTAAL\" \n")
+fpunten.write("\"Alle studenten\", , , , , , , , , , , , , , , , , , , , , , , , , , , ,\n")
+fpunten.write("\"naam\",\"voornaam\",\"nummer\",\"ijkID\",\"ijkingstoetssessie\",\"TOTAAL\",\"juist\",\"fout\",\"blanco\",\"scoreA\",\"juistA\",\"foutA\",\"blancoA\",\"scoreB\",\"juistB\",\"foutB\",\"blancoB\",\"scoreC\",\"juistC\",\"foutC\",\"blancoC\",\"scoreD\",\"juistD\",\"foutD\",\"blancoD\",\"scoreE\",\"juistE\",\"foutE\",\"blancoE\" \n")
 for participant in range(0,numParticipants_tot):
-    fpunten.write("-,-," + str(int(deelnemers_tot[participant])) + ",-,-,"+ str(int(totalScore_tot[participant])) + "\n") 
+    fpunten.write("-,-," + str(int(deelnemers_tot[participant])) + ",-,-,"+ str(int(totalScore_tot[participant]))+"," + str(int(numCorrectlist[participant]))+","+str(int(numWronglist[participant]))+","+str(int(numBlanklist[participant]))+"\n") 
 fpunten.close()
