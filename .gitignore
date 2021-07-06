@@ -1,41 +1,8 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
 
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Icon must ends with two \r.
-Icon
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
+__pycache__/checkInputVariables.cpython-35.pyc
+__pycache__/checkInputVariables.cpython-38.pyc
+__pycache__/leesSleutelEnPermutaties.cpython-35.pyc
+__pycache__/leesSleutelEnPermutaties.cpython-38.pyc
+__pycache__/supportFunctions.cpython-35.pyc
+__pycache__/supportFunctions.cpython-38.pyc
 *.pyc
-*.png
-*.xls
-*.pdf
