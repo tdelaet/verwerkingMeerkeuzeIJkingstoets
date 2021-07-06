@@ -46,9 +46,9 @@ def checkPermutations(numSeries_loc,numQuestions_loc, permutations_loc):
     if (len(permutations_loc) == numSeries_loc):
         # check if all questions are present
         for permutationNumber_loc in range(1,numSeries_loc+1):
-            if (set(range(1,numQuestions_loc+1)) != set(permutations_loc[permutationNumber_loc-1])):
-                print ("ERROR: Not all " + str(numQuestions_loc) +  " questions are present in permutation " + str(permutationNumber_loc) + ": " + str(permutations_loc[permutationNumber_loc-1]))
-                return False
+              if (set(range(1,numQuestions_loc+1)) != set(permutations_loc[permutationNumber_loc-1])):
+                  print ("ERROR: Not all " + str(numQuestions_loc) +  " questions are present in permutation " + str(permutationNumber_loc) + ": " + str(permutations_loc[permutationNumber_loc-1]))
+                  return False
     else:
         print ("ERROR: The number of indicated series " + str(numSeries_loc) +  " is not equal to the number of permutations listed in the permutation list " + str(permutations_loc))
         return False
