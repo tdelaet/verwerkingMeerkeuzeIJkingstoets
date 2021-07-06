@@ -1,16 +1,31 @@
 2014 overal vervangen door jaar
 ir4 vervangen door toets
 
-files in ../2014_ir4/texinput/:
+In map OMR
+2014_ir4_OMRoutput_Leuven.xslx
+
+map ../2014_ir4/
+
+OFWEL
+sleutel_2014_ir4.txt
+permutatie_2014_ir4.txt
+in hoofdmap onder 
+
+OFWEL in ../2014_ir4/texinput/
 2014_ir4_SLEUTELreeks1.tex => 3 lijnen per vraag
-2014_ir4_CATEGORIENreeks1.tex => 1 lijn per vraag (mag ontbreken, alle vragen krijgen "?" als categorie)
-2014_ir4_CLASSreeks1.tex (mag ontbreken, alle vragen in c1)
+PERMUTATIE
 2014_ir4_IDreeks1.tex (mag ontbreken indien maar 1 reeks)
 2014_ir4_IDreeks2.tex
 2014_ir4_IDreeks3.tex
 2014_ir4_IDreeks4.tex
+
+2014_ir4_CATEGORIENreeks1.tex => 1 lijn per vraag (mag ontbreken, alle vragen krijgen "?" als categorie)
+2014_ir4_CLASSreeks1.tex (mag ontbreken, alle vragen in c1)
+
 feedbackdraft.tex
 indien ID-file geen filenamen bevat: vraagdraft.tex
 
-If 2014_ir4_IDreeks1.tex een filenaam per vraag bevat worden de tags vervangen door statiatische gegevens
+If 2014_ir4_IDreeks1.tex een filenaam per vraag bevat worden de tags vervangen door statistische gegevens
 Else vraag_draft.tex nodig
+
+
