@@ -671,7 +671,7 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
         
     return questionClassification
 
-def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers):
+def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     columnCounter = 0;
@@ -704,6 +704,33 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
         rowCounter+=1
     columnCounter+=1;
     
+    rowCounter = 0;
+    #number of correct Answers
+    sheetC.write(rowCounter,columnCounter,"aantal juist",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberCorrectAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #number of wrong Answers
+    sheetC.write(rowCounter,columnCounter,"aantal fout",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberWrongAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberWrongAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #number of blank Answers
+    sheetC.write(rowCounter,columnCounter,"aantal blanco",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberBlankAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberBlankAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
     #score for different questions
     #beware scores are stored per question without the permutation; 
     #so for the student the scores have to be back-permutated to the order they got
@@ -719,7 +746,8 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
     for participant in range(len(totalScore_loc)): # loop over participants
         columnCounter = columnCounterScoreQuestions;
         score = scoreQuestionsIndicatedSeries_loc[participant,:]
-        sorted_score = [score[i-1] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
+        
+        sorted_score = [score[int(i-1)] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
         for question in range(1,numQuestions_loc+1):
             sheetC.write(rowCounter,columnCounter,sorted_score[question-1])
             columnCounter+=1
@@ -973,7 +1001,7 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
         rowCounter+=1
         
         score = scoreQuestionsIndicatedSeries_loc[participant,:]
-        sorted_score = [score[i-1] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
+        sorted_score = [score[int(i-1)] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
         
         numBlank = sum(score == 0)
         numCorrect = sum(score == 1.0)
@@ -1035,12 +1063,13 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
 
         for question in range(1,numQuestions_loc+1):
             columnCounter = 0
-            questionNumberSerie1 = permutations_loc[columnSeries_loc[participant]-1,question-1]
-            correctAnswer = correctAnswers_loc[questionNumberSerie1-1]
-
+            questionNumberSerie1 = permutations_loc[int(columnSeries_loc[participant]-1),int(question-1)]
+            correctAnswer = correctAnswers_loc[int(questionNumberSerie1-1)]
+            #print("test")
+            #print(questionNumberSerie1)
             sheetC.write(rowCounter,columnCounter,str(question),style=easyxf(font_bold + border_right_medium + align_horizright))
             columnCounter+=1
-            sheetC.write(rowCounter,columnCounter,sorted_score[question-1],style=easyxf(align_horizleft))
+            sheetC.write(rowCounter,columnCounter,sorted_score[int(question-1)],style=easyxf(align_horizleft))
             columnCounter+=1
             answer = matrixAnswers[participant,question-1]
             sheetC.write(rowCounter,columnCounter,answer,style=easyxf(align_horizleft))   
@@ -1049,18 +1078,18 @@ def write_feedbackStudents(outputbook_loc,permutations_loc,numParticipants_loc,d
             columnCounter+=1  
             sheetC.write(rowCounter,columnCounter,questionNumberSerie1,style=easyxf(align_horizleft))   
             columnCounter+=1   
-            sheetC.write(rowCounter,columnCounter,categorieQuestions_loc[questionNumberSerie1-1],style=easyxf(align_horizleft))  
+            sheetC.write(rowCounter,columnCounter,categorieQuestions_loc[int(questionNumberSerie1-1)],style=easyxf(align_horizleft))  
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestions_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft))  
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestions_tot_loc[int(questionNumberSerie1-1)],2),style=easyxf(align_horizleft))  
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsUpper_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft) )
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsUpper_tot_loc[int(questionNumberSerie1-1)],2),style=easyxf(align_horizleft) )
             columnCounter+=1;    
-            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsLower_tot_loc[questionNumberSerie1-1],2),style=easyxf(align_horizleft))             
+            sheetC.write(rowCounter,columnCounter,round(averageScoreQuestionsLower_tot_loc[int(questionNumberSerie1-1)],2),style=easyxf(align_horizleft))             
  
-            percCorrect = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
+            percCorrect = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
             columnCounter+=1;    
             sheetC.write(rowCounter,columnCounter,percCorrect,style=easyxf(align_horizleft))
-            percBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc]/numParticipants_loc*100,0))
+            percBlank = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),numAlternatives_loc]/numParticipants_loc*100,0))
             columnCounter+=1;    
             sheetC.write(rowCounter,columnCounter,percBlank,style=easyxf(align_horizleft))            
             rowCounter+=1;  
@@ -1133,7 +1162,7 @@ def write_feedbackPlatform(outputFolder_loc,permutations_loc,numParticipants_loc
             counterCategorie+=1
         
         score = scoreQuestionsIndicatedSeries_loc[participant,:]
-        sorted_score = [score[i-1] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
+        sorted_score = [score[int(i-1)] for i in permutations_loc[int(columnSeries_loc[participant]-1)]]
         
         numBlank = sum(score == 0)
         numCorrect = sum(score == 1.0)
@@ -1159,39 +1188,42 @@ def write_feedbackPlatform(outputFolder_loc,permutations_loc,numParticipants_loc
         #so for the student the scores have to be back-permutated to the order they got
         
         for question in range(1,numQuestions_loc+1):
-            questionNumberSerie1 = permutations_loc[columnSeries_loc[participant]-1,question-1]
-            correctAnswer = correctAnswers_loc[questionNumberSerie1-1]
+            #print(int(columnSeries_loc[int(participant-1)]))
+            #print(int(question-1))
+            #print(permutations_loc)
+            questionNumberSerie1 = permutations_loc[int(columnSeries_loc[participant]-1),int(question-1)]
+            correctAnswer = correctAnswers_loc[int(questionNumberSerie1-1)]
 
             #fFeedback.write(str(question),style=easyxf(font_bold + border_right_medium + align_horizright))
             #columnCounter+=1
-            fFeedback.write(str(sorted_score[question-1]))
+            fFeedback.write(str(sorted_score[int(question-1)]))
             fFeedback.write(',')
-            answer = matrixAnswers[participant,question-1]
+            answer = matrixAnswers[participant,int(question-1)]
             fFeedback.write(answer)   
             fFeedback.write(',')
             fFeedback.write(correctAnswer)   
             fFeedback.write(',')
-            fFeedback.write(categorieQuestions_loc[questionNumberSerie1-1])  
+            fFeedback.write(categorieQuestions_loc[int(questionNumberSerie1-1)])  
             fFeedback.write(',')   
-            fFeedback.write(str((round(averageScoreQuestions_tot_loc[questionNumberSerie1-1],2))  ))
+            fFeedback.write(str((round(averageScoreQuestions_tot_loc[int(questionNumberSerie1-1)],2))  ))
             fFeedback.write(',')
-            fFeedback.write(str(int(round(averageScoreQuestionsUpper_tot_loc[questionNumberSerie1-1]*100,0) )))
+            fFeedback.write(str(int(round(averageScoreQuestionsUpper_tot_loc[int(questionNumberSerie1-1)]*100,0) )))
             fFeedback.write(',')
-            fFeedback.write(str(int(round(averageScoreQuestionsLower_tot_loc[questionNumberSerie1-1]*100,0))           )  )
+            fFeedback.write(str(int(round(averageScoreQuestionsLower_tot_loc[int(questionNumberSerie1-1)]*100,0))           )  )
  
-            percCorrect = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
+            percCorrect = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),alternatives_loc.index(correctAnswer)]/numParticipants_loc*100,0))
             fFeedback.write(',')    
             fFeedback.write(str(percCorrect))
-            percBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc]/numParticipants_loc*100,0))
+            percBlank = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),numAlternatives_loc]/numParticipants_loc*100,0))
             fFeedback.write(',')
             fFeedback.write(str(percBlank))  
             fFeedback.write(',')
             
             for alternative in range(0,numAlternatives_loc):
-                aantalAlternative = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,alternative],0))
+                aantalAlternative = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),alternative],0))
                 fFeedback.write(str(aantalAlternative))
                 fFeedback.write(',')
-            aantalBlank = int(round(numQuestionsAlternatives_loc[questionNumberSerie1-1,numAlternatives_loc],0))
+            aantalBlank = int(round(numQuestionsAlternatives_loc[int(questionNumberSerie1-1),numAlternatives_loc],0))
             fFeedback.write(str(aantalBlank))
             fFeedback.write(',')            
         fFeedback.write('\n')  
@@ -1257,7 +1289,7 @@ def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_l
             #    sheetC.write(rowCounter,columnCounter,"X")
             #else:
             #    sheetC.write(rowCounter,columnCounter,score[question-1])
-            sheetC.write(rowCounter,columnCounter,score[question-1])
+            sheetC.write(rowCounter,columnCounter,score[int(question-1)])
             columnCounter+=1
         rowCounter+=1            
  
@@ -1292,4 +1324,25 @@ def write_scoreStudentsNonPermutated(outputbook_loc,nameSheet_loc,permutations_l
 #                print rowCounter,columnCounter,answersQuestion[counterAlternative]
 #                sheetC.write(rowCounter,columnCounter,answersQuestion[counterAlternative])
 #                columnCounter+=1
-#        rowCounter+=1                
+#        rowCounter+=1             
+
+def write_participantsList(outputbook_loc,nameSheet_loc,deelnemers_loc):
+    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
+
+    columnCounter = 0;
+    rowCounter = 0;
+    sheetC.write(rowCounter,0,"1 tot 20")
+    
+    rowCounter+=1
+    sheetC.write(rowCounter,0,"Naam")
+    sheetC.write(rowCounter,1,"Voornaam")
+    sheetC.write(rowCounter,2,"Studnr")
+    sheetC.write(rowCounter,10,"TOTAAL")
+    
+    rowCounter+=1
+    columnCounter=2
+    #deelnemersnummers
+    for i in range(0,len(deelnemers_loc)):
+        sheetC.write(rowCounter,columnCounter,deelnemers_loc[i])
+        rowCounter+=1
+  
