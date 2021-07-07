@@ -24,20 +24,16 @@ import supportFunctions
 import writeResults
 import leesSleutelEnPermutaties
 
-
-
-
-
 jaar = "2021"
-toets = "fa21_D"
+toets = "hw21_F"
 editie= "juli "+ jaar
 #verwerking = "tex" #als sleutel en permutatie als tex gegeven
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 
-numQuestions = 5 # number of questions
+numQuestions = 1 # number of questions
 maxTotalScore = 10 #maximum total score
 numAlternatives = 4 #number of alternatives
-numSeries=1 # number of series
+numSeries= 1 # number of series
 blankAnswer = "X"
 
 #nameFile = "../OMR/test" #name of excel file with scanned forms
@@ -98,7 +94,7 @@ if verwerking == 'tex':
     else:
         permutations = leesSleutelEnPermutaties.leesPermutaties(jaar,toets,numSeries,texinputFolder)
 else:
-    correctAnswers = numpy.loadtxt("../" + jaar + "_" +  toets + "/sleutel_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str")
+    correctAnswers = numpy.loadtxt("../" + jaar + "_" +  toets + "/sleutel_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str",ndmin=1)
     #permutations
     if numSeries == 1:
         permutations = numpy.zeros((1,numQuestions))
@@ -180,6 +176,7 @@ for instelling in instellingen:
     
     # write to excel_file
     outputbook = Workbook(style_compression=2)
+    outputbookperm = Workbook(style_compression=2)
     outputStudentbook = Workbook(style_compression=2)
     outputFeedbackbook = Workbook(style_compression=2)
     
@@ -233,7 +230,7 @@ for instelling in instellingen:
     distributionStudentsHigh,distributionStudentsLow = supportFunctions.getDistributionStudents(totalScore,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
     
     ## WRITING THE OUTPUT TO A FILE
-    writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
+    writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                       maxTotalScore,content,content_colNrs,
                       columnSeries,deelnemers,
                       numParticipants,
@@ -250,14 +247,17 @@ for instelling in instellingen:
                       averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,
                       numQuestionsAlternatives, numQuestionsAlternativesUpper, numQuestionsAlternativesMiddle, numQuestionsAlternativesLower,
                       nameQuestions,classificationQuestionsMod,categorieQuestions,
-                      bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow,distributionStudentsHigh
-                      )
-                      
+                      bordersDistributionStudentsLow,bordersDistributionStudentsHigh,
+                      distributionStudentsLow,distributionStudentsHigh)
+    
+                 
     ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
     writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)           
     writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
     
     outputbook.save(outputFolder + 'output' +'_'+instelling+'.xls') 
+    outputbookperm.save(outputFolder + 'output_permutations' +'_'+instelling+'.xls') 
+
     outputStudentbook.save(outputFolder + 'punten' +'_'+instelling+'.xls')
                       
     # plot the histogram of the total score
@@ -325,6 +325,7 @@ distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDi
 
 # write to excel_file
 outputbook = Workbook(style_compression=2)
+outputbookperm = Workbook(style_compression=2)
 outputStudentbook = Workbook(style_compression=2)  
 outputInstellingen = Workbook(style_compression=2)  
 if writeFeedbackStudents:
@@ -333,7 +334,7 @@ outputFeedbackPlatformbook = Workbook(style_compression=2)
 outputDeelnemersLijst = Workbook(style_compression=2)
 
 ## WRITING THE OUTPUT TO A FILE
-writeResults.write_results(outputbook,numQuestions,correctAnswers,alternatives,blankAnswer,
+writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                   maxTotalScore,content,content_colNrs,
                   columnSeries_tot,deelnemers_tot,
                   numParticipants_tot,
@@ -373,7 +374,8 @@ writeResults.write_feedbackPlatform(outputFolder,permutations,numParticipants_to
                                     ,correctAnswers, numQuestionsAlternatives_tot,blankAnswer) 
 writeResults.write_participantsList(outputDeelnemersLijst,"Beoordelingen",deelnemers_tot)
 
-outputbook.save(outputFolder + 'output' +'_geheel.xls') 
+outputbook.save(outputFolder + 'output' +'_geheel.xls')
+outputbookperm.save(outputFolder + 'output_permutations' +'_geheel.xls') 
 outputStudentbook.save(outputFolder + 'punten_geheel.xls') 
 outputInstellingen.save(outputFolder + 'instellingen.xls')  
 outputDeelnemersLijst.save(outputFolder + 'deelnemerslijst_KULoket.xls')  

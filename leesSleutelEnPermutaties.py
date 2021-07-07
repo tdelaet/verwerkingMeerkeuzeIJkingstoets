@@ -15,7 +15,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc,texinputFolder_loc):
     questions_loc = []
     for serie in range(1,numSeries_loc+1):
         name = name_basis_loc+ str(serie)
-        questions_loc.append(numpy.loadtxt(texinputFolder_loc + name+".tex",delimiter='\t',dtype=numpy.str))
+        questions_loc.append(numpy.loadtxt(texinputFolder_loc + name+".tex",delimiter='\t',dtype=numpy.str,ndmin=1))
     
     # check if all have the same length 
     numQuestions_loc=len(questions_loc[0]) 
@@ -36,7 +36,7 @@ def leesPermutaties(jaar_loc,toets_loc,numSeries_loc,texinputFolder_loc):
     
 def leesSleutel(jaar_loc,toets_loc,texinputFolder_loc):
     name_sleutel = jaar_loc + "_" + toets_loc + "_SLEUTELreeks1"
-    sleutel = numpy.loadtxt(texinputFolder_loc + name_sleutel+ ".tex",delimiter='\t',dtype=bytes).astype(str)
+    sleutel = numpy.loadtxt(texinputFolder_loc + name_sleutel+ ".tex",delimiter='\t',dtype=bytes,ndmin=1).astype(str)
     sleutel = sleutel[1:len(sleutel):3]
     return sleutel
     
@@ -47,7 +47,7 @@ def leesNamenVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
         for question in range(0,numQuestions_loc):
             questionNames[question] = 'vraag' + str(int(question+1))
     else:
-        questionNames = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes).astype(str)   
+        questionNames = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes,ndmin=1).astype(str)   
     return questionNames  
     
 def leesClassificatieVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
@@ -57,7 +57,7 @@ def leesClassificatieVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_l
         for question in range(0,numQuestions_loc):
             questionNames[question] = "?"
     else:        
-        questionNames = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes).astype(str) 
+        questionNames = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes,ndmin=1).astype(str) 
     return questionNames  
     
     
@@ -70,6 +70,6 @@ def leesCategorieVragen(jaar_loc,toets_loc,texinputFolder_loc,numQuestions_loc):
         for question in range(0,numQuestions_loc):
             questionCategorie[question] = 'c1'
     else:
-        questionCategorie = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes).astype(str)
+        questionCategorie = numpy.loadtxt(texinputFolder_loc + name_basis_loc+".tex",delimiter='\t',dtype=bytes,ndmin=1).astype(str)
     return questionCategorie
     

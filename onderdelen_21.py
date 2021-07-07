@@ -21,10 +21,10 @@ import os
 import pandas as pd
 
 jaar = "2021"
-toets = "fa21"
+toets = "hw21"
 editie= "juli "+ jaar
-
-aantal_onderdelen = 4
+permutationsUsed = False
+aantal_onderdelen = 6
 
 
 
@@ -34,6 +34,9 @@ for letter in range(97,97+aantal_onderdelen):
     
 
 correctAnswers = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/sleutel_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str")
+if permutationsUsed:
+    permutations = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/permutatie_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str")
+
 OMRfilename = "../" + jaar + "_" +  toets + "/OMR/" + jaar+ "_"+ toets+ "_OMRoutput_all.xlsx"
 
 
@@ -45,8 +48,11 @@ OMR["vragenreeks"] = OMR["vragenreeks"].astype(str).astype(int)
 outputFolder = "../" + jaar + "_" +  toets
 if not os.path.exists(outputFolder):
     os.makedirs(outputFolder)
+
 numpy.savetxt(outputFolder + "/sleutel_" + jaar+ "_"+ toets + ".txt",[correctAnswers],delimiter=',',fmt="%s")
 
+if permutationsUsed:
+    numpy.savetxt(outputFolder + "/permutatie_" + jaar+ "_"+ toets + ".txt",permutations,delimiter=',',fmt="%s")
 
 for onderdeel in onderdelen:
     outputFolder = "../" + jaar + "_" +  toets + "_"+ onderdeel.capitalize()
@@ -56,8 +62,8 @@ for onderdeel in onderdelen:
     if not os.path.exists(outputFolderOMR):
         os.makedirs(outputFolderOMR)
    
-    vragen_onderdeel = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int")
-    
+    vragen_onderdeel = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
+  
     #get OMR with just questions of onderdeel
     namen_onderdeel = ["ijkID","vragenreeks"]
 
@@ -80,8 +86,20 @@ for onderdeel in onderdelen:
         correctAnswers_loc = correctAnswers[vragen_onderdeel]
     else:
         correctAnswers_loc = [correctAnswers[x-1] for x in vragen_onderdeel]
+        
+    if permutationsUsed:
+        # get permutatie with just questions of onderdeel
+        if (vragen_onderdeel.ndim==0):
+            permutations_loc = permutations[vragen_onderdeel]
+        else:
+            permutations_loc = [permutations[:,x-1] for x in vragen_onderdeel]
  
     # get overview of questions with just questions of onderdeel
     numpy.savetxt(outputFolder + "/sleutel_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",[correctAnswers_loc],delimiter=',',fmt="%s")
+    if permutationsUsed:
+        permutations_loc = list(map(list, zip(*permutations_loc)))
+        permutations_loc2 = [ [int(y)-int(min(permutations_loc[0]))+1 for y in x] for x in permutations_loc]
+        numpy.savetxt(outputFolder + "/permutatie_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",permutations_loc2,delimiter=',',fmt="%s")
+
     numpy.savetxt(outputFolder + "/vragen_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",[vragen_onderdeel],delimiter=',',fmt="%i")
     
