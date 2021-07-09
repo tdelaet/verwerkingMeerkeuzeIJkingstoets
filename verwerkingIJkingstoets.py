@@ -4,8 +4,28 @@ Created on 9/7/2021
 
 @author: tdelaet
 
+assumptions:
+    -There is a folder with name jaar_toets, e.g. 2021_ia21
+     The folder contains:
+        - OMR folder with:
+            at least 1 excel file with OMR output:
+                jaar_toets_OMRoutput_instelling.xslx e.g. 2021_ia21_OMRoutput_Brussel.xslx
+        - onderdelen folder with:
+            - maxScores_jaar_toets.txt (e.g. maxScores 2021_ia21.txt)
+                that file contains the maximum scores for the whole test and the subparts
+                 maxScore_TOTAAL, maxScore_A, maxScore_B, maxScore_C
+                 bvb: 20,10,20,10 
+                 conditions: (have to be integers separated by commas) en (length = 1 + number of subparts	)
+            - sleutel_jaar_toets.txt (e.g. sleutel_2021_ia21.txt)
+                that file contains the correct answers for the total test
+                A,B,B,D,A,C ... 
+                conditions: (have to be letters separated by commas) en (length = number of questions in total test	)
+            - for each subpart a file jaar_toets_subpart.txt
+                that contains the questions that are in that subpart
+                e.g. 19,20,21,22
+            - IF different series/permutations are used: permutatie_jaar_toets.txt (e.g. permutatie_2021_ia21.txt)
+    - Below fill in variables jaar, toets, editie, aantal_onderdelen, numSeries, numAlternatives, blankAnswer, verwerking
 """
-
 from xlrd import open_workbook
 import string
 import numpy
@@ -27,19 +47,18 @@ import afwerkingOnderdelen
 jaar = "2021"
 toets = "ia21"
 editie= "juli "+ jaar
-
 aantal_onderdelen = 3
 numSeries= 1 # number of series TODO lezen van file
-
 numAlternatives = 4 #number of alternatives
 blankAnswer = "X" 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
+#verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["all"]
-instellingen = ["Leuven"]
+#instellingen = ["Leuven"]
 
 # do you want to write a feedback excel, one sheet per student?
 writeFeedbackStudents = False
