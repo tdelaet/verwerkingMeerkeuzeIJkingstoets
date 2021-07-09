@@ -13,7 +13,7 @@ def voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instel
     onderdelen=[]
     for letter in range(97,97+aantal_onderdelen):
         onderdelen.append(chr(letter).capitalize())
-    
+
     outputFolderTotaal = "../" + jaar + "_" +  toets + "_TOTAAL"
     if not os.path.exists(outputFolderTotaal):
         os.makedirs(outputFolderTotaal)
@@ -60,10 +60,15 @@ def sleutelOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
 
 def maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
     #get sleutel and save to main folder
-    maxScores = numpy.loadtxt(outputFolder + "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="int")
-    if ( len(maxScores) != ( len(onderdelen) +1) ):
-        print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + len(onderdelen + 1) + " bevatten")
-        sys.exit()
+    maxScores = numpy.loadtxt(outputFolder + "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="int",ndmin=1)
+    if not onderdelen: #geen onderdelen
+        if ( len(maxScores) != 1 ):
+            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + len(onderdelen + 1) + " bevatten")
+            sys.exit()
+    else:
+        if ( len(maxScores) != ( len(onderdelen) +1) ):
+            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + len(onderdelen + 1) + " bevatten")
+            sys.exit()
     #numpy.savetxt(outputFolder + "/maxScores_" + jaar+ "_"+ toets + ".txt",[maxScores],delimiter=',',fmt="%s")
     
     counter = 0
@@ -105,9 +110,12 @@ def permutatieOnderdelen(jaar,toets,onderdelen, outputFolder,outputFolderTotaal)
 def OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTotaal):
     for instelling in instellingen: 
         OMRfilename = outputFolder + "/OMR/" + jaar+ "_"+ toets+ "_OMRoutput_" + instelling + ".xlsx"
+        if not os.path.exists(OMRfilename):
+            print ("ERROR: het bestand "+  OMRfilename + " bestaat niet")
+            sys.exit()
         OMR = pd.read_excel(OMRfilename,dtype=str)
         OMR["vragenreeks"] = OMR["vragenreeks"].astype(str).astype(int)
-        
+
         
         outputFolderOMR = outputFolder + "_TOTAAL/OMR"
         outputOMR= outputFolderOMR + "/" + jaar+ "_"+ toets+  "_TOTAAL_OMRoutput_" + instelling + ".xlsx"
