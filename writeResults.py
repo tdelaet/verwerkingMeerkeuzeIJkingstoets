@@ -1178,10 +1178,6 @@ def write_feedbackPlatform(outputFolder_loc,permutations_loc,numParticipants_loc
         # aantal blanco
         fFeedback.write(str(numBlank))
         fFeedback.write(',')
-        
-        
-        
-        
 
         #score for different questions
         #beware scores are stored per question without the permutation; 
@@ -1345,3 +1341,40 @@ def write_participantsList(outputbook_loc,nameSheet_loc,deelnemers_loc):
         sheetC.write(rowCounter,columnCounter,deelnemers_loc[i])
         rowCounter+=1
   
+def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,matrixAnswers_loc,correctAnswers_loc,deelnemers_loc,columnSeries_loc):
+    fqsf= open(outputFolder_onderdeel_loc + '/antwoorden.qsf','w')
+    fqsf.write('Snapshot,Participant,Vendor,Group')
+    for question in range(1,numQuestions_loc+1):
+        fqsf.write(',Q'+str(question))
+    fqsf.write('\n')
+    
+    # replace letters by numbers for matrix answers and correct answers (sleutel)
+    matrixAnswers_numbers = matrixAnswers_loc
+    correctAnswers_numbers = correctAnswers_loc
+    for alternative in range(0,numAlternatives_loc):
+        letter = chr(97+alternative).capitalize()
+        matrixAnswers_numbers = numpy.where(matrixAnswers_numbers==letter, str(alternative+1), matrixAnswers_numbers)
+        correctAnswers_numbers = numpy.where(correctAnswers_numbers==letter, str(alternative+1), correctAnswers_numbers)
+    
+    #the blank answers => replace by numAlternatives+1
+    letter="X"
+    matrixAnswers_numbers = numpy.where(matrixAnswers_numbers==letter, str(numAlternatives_loc+1), matrixAnswers_numbers)
+
+    #write line with answers of participant
+    for participant in range(0,len(deelnemers_loc)):
+        fqsf.write(str(int(columnSeries_loc[participant]))
+                   +',\"' + str(int(deelnemers_loc[participant]))
+                   +'\",\"Gravic, Inc.\",\"auto\"')   
+        antwoorden=matrixAnswers_numbers[participant]
+        for vraag in range(0,numQuestions_loc):
+            fqsf.write(',' + str(antwoorden[vraag]))    
+        fqsf.write('\n')
+        
+    #write correct answers
+    fqsf.write('1,\"999999\",\"Gravic, Inc.\",\"auto\"')   
+    for vraag in range(0,numQuestions_loc):
+        fqsf.write(',' + str(correctAnswers_numbers[vraag])  )
+    fqsf.write('\n')
+    
+    #close the file
+    fqsf.close()
