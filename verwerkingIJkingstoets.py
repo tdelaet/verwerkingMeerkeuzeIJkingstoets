@@ -45,10 +45,10 @@ import afwerkingOnderdelen
 
 ### Variables to fill in
 jaar = "2021"
-toets = "ia21"
+toets = "bi21"
 editie= "juli "+ jaar
 aantal_onderdelen = 3
-numSeries= 1 # number of series TODO lezen van file
+numSeries= 2 # number of series TODO lezen van file
 numAlternatives = 4 #number of alternatives
 blankAnswer = "X" 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
@@ -56,8 +56,8 @@ verwerking = "text" #als sleutel en permutatie als txt gegeven
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-#instellingen = ["all"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+instellingen = ["all"]
 #instellingen = ["Leuven"]
 
 # do you want to write a feedback excel, one sheet per student?
@@ -66,6 +66,8 @@ writeFeedbackStudents = False
 # code from here
 if numSeries==1:
      permutationsUsed = False
+else:
+     permutationsUsed = True
 
 onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instellingen)
 
@@ -259,57 +261,59 @@ for onderdeel in (["TOTAAL"] + onderdelen):
          
         distributionStudentsHigh,distributionStudentsLow = supportFunctions.getDistributionStudents(totalScore,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
         
-        ## WRITING THE OUTPUT TO A FILE
-        writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
-                          maxTotalScore,content,content_colNrs,
-                          columnSeries,deelnemers,
-                          numParticipants,
-                          totalScore,percentagePass,
-                          scoreQuestionsIndicatedSeries,
-                          totalScoreDifferentPermutations,
-                          medianScore,
-                          standardDeviation,
-                          averageScore,averageScoreUpper,averageScoreMiddle,averageScoreLower,
-                          averageScoreQuestions,averageScoreQuestionsUpper,averageScoreQuestionsMiddle,averageScoreQuestionsLower,
-                          averageScoreQuestionsDifferentSeries,
-                          numUpper,numMiddle,numLower,
-                          numParticipantsSeries,
-                          averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,
-                          numQuestionsAlternatives, numQuestionsAlternativesUpper, numQuestionsAlternativesMiddle, numQuestionsAlternativesLower,
-                          nameQuestions,classificationQuestionsMod,categorieQuestions,
-                          bordersDistributionStudentsLow,bordersDistributionStudentsHigh,
-                          distributionStudentsLow,distributionStudentsHigh)
-        
-                     
-        ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
-        writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)           
-        writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
-        
-        outputbook.save(outputFolder_onderdeel + 'output' +'_'+instelling+'.xls') 
-        outputbookperm.save(outputFolder_onderdeel + 'output_permutations' +'_'+instelling+'.xls') 
-        outputStudentbook.save(outputFolder_onderdeel + 'punten' +'_'+instelling+'.xls')
-                          
-        # plot the histogram of the total score
-        plt.figure()
-        n, bins, patches = plt.hist(totalScore,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
-        plt.title("histogram score " + instelling)
-        plt.xlabel("score (max " + str(maxTotalScore)+ ")")
-        plt.xlim([0-0.5,maxTotalScore+0.5])
-        plt.xticks(numpy.arange(1,maxTotalScore+1))
-        plt.ylabel("aantal studenten")
-        plt.text(maxTotalScore, numpy.max(n)-2, 
-              'gemiddelde: ' + str(round(averageScore,2)) + "\n" +
-              'mediaan: ' + str(int(medianScore))  + "\n" +
-              'percentage geslaagd: ' + str(int(round(percentagePass,0))) + "%"  + "\n" +
-              'aantal deelnemers: ' + str(numParticipants)
-              ,
-            horizontalalignment='right',
-            verticalalignment='top',
-            bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
-        figManager = plt.get_current_fig_manager()
-        #figManager.window.showMaximized()    
-        plt.savefig(outputFolder_onderdeel + 'histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
-        
+        #only plot and write to files if there are multiple instellingen. Otherwise "geheel" is same as single instelling, producing double output.
+        if (len(instellingen)!=1):
+            ## WRITING THE OUTPUT TO A FILE
+            writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
+                              maxTotalScore,content,content_colNrs,
+                              columnSeries,deelnemers,
+                              numParticipants,
+                              totalScore,percentagePass,
+                              scoreQuestionsIndicatedSeries,
+                              totalScoreDifferentPermutations,
+                              medianScore,
+                              standardDeviation,
+                              averageScore,averageScoreUpper,averageScoreMiddle,averageScoreLower,
+                              averageScoreQuestions,averageScoreQuestionsUpper,averageScoreQuestionsMiddle,averageScoreQuestionsLower,
+                              averageScoreQuestionsDifferentSeries,
+                              numUpper,numMiddle,numLower,
+                              numParticipantsSeries,
+                              averageScoreSeries,medianScoreSeries,standardDeviationSeries,percentagePassSeries,
+                              numQuestionsAlternatives, numQuestionsAlternativesUpper, numQuestionsAlternativesMiddle, numQuestionsAlternativesLower,
+                              nameQuestions,classificationQuestionsMod,categorieQuestions,
+                              bordersDistributionStudentsLow,bordersDistributionStudentsHigh,
+                              distributionStudentsLow,distributionStudentsHigh)
+            
+                         
+            ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
+            writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)           
+            writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
+            
+            outputbook.save(outputFolder_onderdeel + 'output' +'_'+instelling+'.xls') 
+            outputbookperm.save(outputFolder_onderdeel + 'output_permutations' +'_'+instelling+'.xls') 
+            outputStudentbook.save(outputFolder_onderdeel + 'punten' +'_'+instelling+'.xls')
+                              
+            # plot the histogram of the total score
+            plt.figure(figsize=(15, 5))
+            n, bins, patches = plt.hist(totalScore,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
+            plt.title("histogram score " + instelling)
+            plt.xlabel("score (max " + str(maxTotalScore)+ ")")
+            plt.xlim([0-0.5,maxTotalScore+0.5])
+            plt.xticks(numpy.arange(1,maxTotalScore+1))
+            plt.ylabel("aantal studenten")
+            plt.text(maxTotalScore, numpy.max(n)-2, 
+                  'gemiddelde: ' + str(round(averageScore,2)) + "\n" +
+                  'mediaan: ' + str(int(medianScore))  + "\n" +
+                  'percentage geslaagd: ' + str(int(round(percentagePass,0))) + "%"  + "\n" +
+                  'aantal deelnemers: ' + str(numParticipants)
+                  ,
+                horizontalalignment='right',
+                verticalalignment='top',
+                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
+            figManager = plt.get_current_fig_manager()
+            #figManager.window.showMaximized()    
+            plt.savefig(outputFolder_onderdeel + 'histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
+            
     
         deelnemers_all.append(deelnemers)
         scoreQuestionsAllPermutations_all.append(scoreQuestionsAllPermutations)
@@ -422,13 +426,14 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     ##################PLOTTING##################
     font = {'family' : 'normal',
             'size'   : 12}
+    if (len(instellingen)!=1):
         # plot the pie diagram of the different locations
-    plt.figure()
-    labels = instellingen    
-    plt.pie(numParticipants_all, labels=labels,
-                    autopct=my_autopct, shadow=True, startangle=90)    
-    plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
-    plt.savefig(outputFolder_onderdeel + 'verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
+        plt.figure()
+        labels = instellingen    
+        plt.pie(numParticipants_all, labels=labels,
+                        autopct=my_autopct, shadow=True, startangle=90)    
+        plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
+        plt.savefig(outputFolder_onderdeel + 'verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
     
     # plot the histogram of the total score
     fig=plt.figure(figsize=(15, 5))
@@ -448,8 +453,6 @@ for onderdeel in (["TOTAAL"] + onderdelen):
             verticalalignment='top',
             bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'),
             fontsize=12)     
-    font = {'family' : 'normal',
-            'size'   : 14}
     matplotlib.rc('font', **font)       
     #figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
@@ -458,7 +461,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         plt.savefig(texoutputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
     
     # plot the histogram of the total score UML
-    plt.figure()
+    plt.figure(figsize=(15, 15))
     n, bins, patches = plt.hist([totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot],bins=numpy.arange(0-0.5,maxTotalScore+1,1), stacked=True, color=['g', 'b', 'r'])
     plt.title("histogram total score")
     plt.xlabel("score (max " + str(maxTotalScore)+ ")")
@@ -494,45 +497,40 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()            
     plt.savefig(outputFolder_onderdeel + 'histogramGeheelUML.png', bbox_inches='tight',dpi=300)
-    
-    
+
     #plot histogram for different questions
     numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
     #print numColsPict
     numRowsPict = int(numpy.ceil(numQuestions/numColsPict)) +1
     #print numRowsPict
-    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict)
+    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict,figsize=(15, 15))
     fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
-    
     binsHist = numpy.array([-3.0/(2*(numAlternatives-1)),-1.0/(2*(numAlternatives-1)),0.5,1.5])
-    
     for question in range(1,numQuestions+1):
         ax = plt.subplot(numRowsPict,numColsPict,question)
         n, bins, patches = plt.hist(scoreQuestionsIndicatedSeries_tot[:,question-1],bins=binsHist)
-        plt.xticks([-1/(numAlternatives-1), 0,1])
+        plt.xticks([round(-1/(numAlternatives-1),2), 0,1])
         plt.title("vraag " + str(question))
         plt.xlabel("score")
         plt.xlim([-2.0/(numAlternatives-1),1+1.0/(numAlternatives-1)])
         plt.ylabel("aantal studenten")
-    
-    
     matplotlib.rc('font', **font)
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
     plt.savefig(outputFolder_onderdeel + 'histogramVragen.png', bbox_inches='tight',dpi=300)
     
-    #plot histogram for different questions
+    #plot histogram for different questions UML
     numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
     #print numColsPict
     numRowsPict = int(numpy.ceil(numQuestions/numColsPict)) +1
     #print numRowsPict
-    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict)
+    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict,figsize=(15, 15))
     fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
     
     for question in range(1,numQuestions+1):
         ax = plt.subplot(numRowsPict,numColsPict,question)
         n, bins, patches = plt.hist([scoreQuestionsUpper_tot[:,question-1], scoreQuestionsMiddle_tot[:,question-1], scoreQuestionsLower_tot[:,question-1]],bins=binsHist, stacked=True,  label=['Upper', 'Middle', 'Lower'],color=['g','b','r'])
-        plt.xticks([-1/(numAlternatives-1), 0,1])
+        plt.xticks([round(-1/(numAlternatives-1),2), 0,1])
         plt.title("vraag " + str(question))
         plt.xlabel("score")
         plt.xlim([-2.0/(numAlternatives-1),1+1.0/(numAlternatives-1)])
@@ -541,8 +539,6 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
     plt.savefig(outputFolder_onderdeel + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
-    
-    
     
     
     
