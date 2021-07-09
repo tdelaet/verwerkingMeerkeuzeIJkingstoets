@@ -78,7 +78,7 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
     if regelFeedbackgroep == "ia":            
         feedbackgroepA = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
         feedbackgroepB = [not x for x in feedbackgroepA]
-    if regelFeedbackgroep == "diergeneeskunde":            
+    if regelFeedbackgroep == "dw":            
         feedbackgroepA = (df["TOTAAL"].values>=9)
         feedbackgroepB = (df["TOTAAL"].values<9) & (df["TOTAAL"].values>=5)
         feedbackgroepC = (df["TOTAAL"].values<5)
@@ -89,6 +89,6 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
     feedbackgroep = numpy.where(feedbackgroepD,"D",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepE,"E",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepF,"F",feedbackgroep)
-    print(feedbackgroep)
+    #print(feedbackgroep)
     return feedbackgroep
     

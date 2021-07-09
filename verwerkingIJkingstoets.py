@@ -51,9 +51,9 @@ editie= "juli "+ jaar
 aantal_onderdelen = 0
 numSeries= 2 # number of series TODO lezen van file
 #regelFeedbackgroep =  "iedereenA"
-regelFeedbackgroep =  "geslaagdTotaal"
-#regelFeedbackgroep == "ia":            
-#regelFeedbackgroep == "diergeneeskunde"
+regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+#regelFeedbackgroep == "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
+#regelFeedbackgroep == "dw"     #A als (TOTAAL >=9 )   ; B als (5<=TOTAAL<9 )    ; C als (TOTAAL<5 ) 
   
 numAlternatives = 4 #number of alternatives
 blankAnswer = "X" 
