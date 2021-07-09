@@ -6,6 +6,7 @@ Created on Wed May 21 14:54:46 2014
 """
 
 import numpy
+import sys
 
 def round2(x):
     """Numpy rounds x.5 to nearest even integer. To emulate SAS/SPSS, 
@@ -45,13 +46,15 @@ def giveContentColNrs(content_loc, sheet_loc):
             indexC_loc += 1
         except ValueError:
             print ("the expected content " + x + " is not present in the selected sheet")
+            sys.exit()
             break;
     return content_colNrs_loc
     
 def checkForUniqueParticipants(particpants):
     setd = set([x for x in particpants if particpants.count(x) > 1])
     if setd:
-        print ("Duplicate particpants found: " + str(setd))
+        print ("Duplicate participants found: " + str(setd))
+        sys.exit()
         return False
     else:
         return True
@@ -79,7 +82,35 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
     return answers_loc
 
-def calculateScoreAllPermutations(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
+def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
+    # Calculate the score for each permutation and for each question 
+    numSeries_loc = len(permutations_loc)
+    numQuestions_loc = len(correctAnswers_loc)
+    numAlternatives_loc = len(alternatives_loc)
+    scoreQuestionsAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
+   
+    #Calculate score for all permutations
+                 
+    for question_loc in range(1,numQuestions_loc+1):
+        #print "----------------------"
+        #print "question " + str(question_loc)
+        columnQuestion_loc=matrixAnswers_loc[:,question_loc-1]
+        counter_alternative = 0;
+        for permutation in range(1,numSeries_loc+1):
+            numQuestionPermutations_loc = int(permutations_loc[permutation-1][question_loc-1])
+            correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]
+            wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
+            indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
+            indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
+            #correctAnswers +1
+            scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
+            #wrong answers -1/(numAlternatives-1)
+            scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]-= 1.0/(float(numAlternatives_loc)-1.0)  
+            #blank answers => do nothing
+        counter_alternative+=1
+    return scoreQuestionsAllPermutations_loc
+
+def calculateScoreAllPermutations_old(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
     # Calculate the score for each permutation and for each question 
     numSeries_loc = len(permutations_loc)
     numQuestions_loc = len(correctAnswers_loc)
@@ -364,6 +395,7 @@ def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
     #print( blankAnswer_loc)
     if False in [ e in alternatives_loc+[blankAnswer_loc]  for e in matrixAnswers_loc.reshape(-1) ]:
         print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc]))
+        sys.exit()
 
 def getScoreCategories(scoreQuestionsIndicatedSeries_loc,categorieQuestions_loc):
     scoreCategories_loc = []
