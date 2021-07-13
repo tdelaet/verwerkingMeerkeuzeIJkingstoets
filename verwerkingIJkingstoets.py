@@ -46,15 +46,17 @@ import afwerkingOnderdelen
 ### Variables to fill in
 jaar = "2021"
 sessie = 21
-toets = "test" 
+toets = "ia" 
 editie= "juli "+ jaar
-aantal_onderdelen = 0
-numSeries= 2 # number of series TODO lezen van file
+aantal_onderdelen = 3
+numSeries= 1 # number of series TODO lezen van file
 #regelFeedbackgroep =  "iedereenA"
-regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-#regelFeedbackgroep == "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
-#regelFeedbackgroep == "dw"     #A als (TOTAAL >=9 )   ; B als (5<=TOTAAL<9 )    ; C als (TOTAAL<5 ) 
-  
+#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
+#regelFeedbackgroep = "dw"     #A als (TOTAAL >=9 )   ; B als (5<=TOTAAL<9 )    ; C als (TOTAAL<5 ) 
+#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
+
 numAlternatives = 4 #number of alternatives
 blankAnswer = "X" 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
@@ -63,8 +65,8 @@ verwerking = "text" #als sleutel en permutatie als txt gegeven
 toets = toets + str(sessie)
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-instellingen = ["all"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["all"]
 #instellingen = ["Leuven"]
 
 # do you want to write a feedback excel, one sheet per student?
@@ -221,6 +223,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         outputbook = Workbook(style_compression=2)
         outputbookperm = Workbook(style_compression=2)
         outputStudentbook = Workbook(style_compression=2)
+        outputResults = Workbook(style_compression=2)
         if writeFeedbackStudents:
             outputFeedbackbook = Workbook(style_compression=2)
         
@@ -292,14 +295,17 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                          
             ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
             writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)           
+            #writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)                   
+
             writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
             
-            outputFolder_instelling = outputFolder_onderdeel + "/" + instelling + "/"
+            outputFolder_instelling = outputFolder_onderdeel + instelling + "/"
             if not os.path.exists(outputFolder_instelling):
                 os.makedirs(outputFolder_instelling)    
-            outputbook.save(outputFolder_instelling + 'output' +'_'+instelling+'.xls') 
-            outputbookperm.save(outputFolder_instelling + 'output_permutations' +'_'+instelling+'.xls') 
-            outputStudentbook.save(outputFolder_instelling + 'punten' +'_'+instelling+'.xls')
+            outputbook.save(outputFolder_instelling + 'output_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
+            outputbookperm.save(outputFolder_instelling + 'output_permutations_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
+            outputStudentbook.save(outputFolder_instelling + 'punten_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
+            #outputResults.save(outputFolder_instelling + 'resultaten_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
                               
             # plot the histogram of the total score
             plt.figure(figsize=(15, 5))
@@ -320,7 +326,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                 bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
             figManager = plt.get_current_fig_manager()
             #figManager.window.showMaximized()    
-            plt.savefig(outputFolder_instelling + 'histogramGeheel'+ instelling + '.png', bbox_inches='tight',dpi=300)
+            plt.savefig(outputFolder_instelling + 'histogramGeheel_'  + jaar + "_" +  toets + "_" +instelling+'.png', bbox_inches='tight',dpi=300)
             
     
         deelnemers_all.append(deelnemers)
@@ -369,6 +375,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     outputbook = Workbook(style_compression=2)
     outputbookperm = Workbook(style_compression=2)
     outputStudentbook = Workbook(style_compression=2)  
+    outputResults = Workbook(style_compression=2)  
     outputInstellingen = Workbook(style_compression=2)  
     if writeFeedbackStudents:
         outputFeedbackbook = Workbook(style_compression=2)
@@ -377,7 +384,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     
 
     ## WRITING THE OUTPUT TO A FILE
-    writeResults.write_qsf(outputFolder_onderdeel_ps,numAlternatives,numQuestions,matrixAnswers_tot,correctAnswers,deelnemers_tot,columnSeries_tot)
+    writeResults.write_qsf(outputFolder_onderdeel_ps,numAlternatives,numQuestions,matrixAnswers_tot,correctAnswers,deelnemers_tot,columnSeries_tot,jaar,toetsnaamOnderdeel)
     writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                       maxTotalScore,content,content_colNrs,
                       columnSeries_tot,deelnemers_tot,
@@ -397,11 +404,15 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                       nameQuestions,classificationQuestionsMod,categorieQuestions,
                       bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                       )    
-    writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
-    #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-    writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-    writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
-    writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
+    
+    if (len(instellingen)!=1):
+        writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
+        writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
+        writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
+        #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+        writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+        writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
+    
 
     if writeFeedbackStudents:
         writeResults.write_feedbackStudents(outputFeedbackbook,permutations,numParticipants_tot,deelnemers_tot, numQuestions,
@@ -418,14 +429,15 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #                                     ,correctAnswers, numQuestionsAlternatives_tot,blankAnswer) 
     writeResults.write_participantsList(outputDeelnemersLijst,"Beoordelingen",deelnemers_tot)
 
-    outputbook.save(outputFolder_onderdeel + 'output' +'_controleerVoorKwaliteitToets.xls')
-    outputbookperm.save(outputFolder_onderdeel + 'output_controleerVoorFouteReeksen.xls') 
-    outputStudentbook.save(outputFolder_onderdeel + 'punten.xls') 
+    outputbook.save(outputFolder_onderdeel + 'output' +'_controleerVoorKwaliteitToets_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+    outputbookperm.save(outputFolder_onderdeel + 'output_controleerVoorFouteReeksen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
     if (len(instellingen)!=1):
-        outputInstellingen.save(outputFolder_onderdeel + 'instellingen.xls')  
-    outputDeelnemersLijst.save(outputFolder_onderdeel_ps + 'deelnemerslijst_KULoket.xls')  
+        outputInstellingen.save(outputFolder_onderdeel + 'instellingen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+        outputStudentbook.save(outputFolder_onderdeel + 'punten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+        outputResults.save(outputFolder_onderdeel + '../resultaten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+    outputDeelnemersLijst.save(outputFolder_onderdeel_ps + 'deelnemerslijst_KULoket_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
     if writeFeedbackStudents:
-        outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback'+'.xls')
+        outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
 
     def my_autopct(pct):
         total=sum(numParticipants_all)
@@ -442,7 +454,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         plt.pie(numParticipants_all, labels=labels,
                         autopct=my_autopct, shadow=True, startangle=90)    
         plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
-        plt.savefig(outputFolder_onderdeel + 'verdelingDeelnemers.png', bbox_inches='tight',dpi=300)
+        plt.savefig(outputFolder_onderdeel + 'verdelingDeelnemers_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
     
     # plot the histogram of the total score
     fig=plt.figure(figsize=(15, 5))
@@ -465,9 +477,9 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     matplotlib.rc('font', **font)       
     #figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
+    plt.savefig(outputFolder_onderdeel + 'histogramGeheel_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
     if verwerking=="tex":
-        plt.savefig(texoutputFolder + 'histogramGeheel.png', bbox_inches='tight',dpi=300)
+        plt.savefig(texoutputFolder + 'histogramGeheel_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
     
     # plot the histogram of the total score UML
     plt.figure(figsize=(15, 5))
@@ -489,7 +501,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
               , bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()            
-    plt.savefig(outputFolder_onderdeel + 'histogramGeheelUML.png', bbox_inches='tight',dpi=300)
+    plt.savefig(outputFolder_onderdeel + 'histogramGeheelUML_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
 
     #plot histogram for different questions
     numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
@@ -510,7 +522,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     matplotlib.rc('font', **font)
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramVragen.png', bbox_inches='tight',dpi=300)
+    plt.savefig(outputFolder_onderdeel + 'histogramVragen_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
        
     #plot histogram for different questions UML
     numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
@@ -531,7 +543,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         plt.ylim([0,1])
     figManager = plt.get_current_fig_manager()
     #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramVragenUML.png', bbox_inches='tight',dpi=300)
+    plt.savefig(outputFolder_onderdeel + 'histogramVragenUML_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
     
     # #feedback file schrijven
     # fin = open(texinputFolder + 'feedbackdraft.tex','r')
@@ -583,5 +595,5 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
     # frapport.close()
     
-afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep)
+afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd)
 afwerkingOnderdelen.kopieerQSF(jaar,toets)

@@ -5,13 +5,13 @@ import shutil
 import numpy
   
 def kopieerQSF(jaar,toets):
-    qsfSourceFilename= "../" + jaar + "_" +  toets + "_TOTAAL/printenscan/antwoorden.qsf"
-    qsfTargetFilename= "../" + jaar + "_" +  toets + "/antwoorden.qsf"
+    qsfSourceFilename= "../" + jaar + "_" +  toets + "_TOTAAL/printenscan/antwoorden_" + jaar + "_" +  toets +"_TOTAAL.qsf"
+    qsfTargetFilename= "../" + jaar + "_" +  toets + "/antwoorden_" + jaar + "_" +  toets +".qsf"
     shutil.copyfile(qsfSourceFilename, qsfTargetFilename)
     
-def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep):
+def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd):
     #lees punten van TOTAAL
-    puntenFilename= "../" + jaar + "_" +  toets + "_TOTAAL/output/punten.xls"
+    puntenFilename= "../" + jaar + "_" +  toets + "_TOTAAL/output/punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
     punten_onderdeel = pd.read_excel(puntenFilename)#,dtype=str)
 
     columns_punten = [punten_onderdeel.columns[x] for x in [0,1,3,4,5]]
@@ -19,11 +19,6 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep):
     namen_nieuw = ["nummer","TOTAAL","juist","fout","blanco"]
     punten_compose.columns=namen_nieuw
     
-    
-    #namen_nieuw = ["FeedbackGroep","ijkingstoetssessie","ijkID","Voornaam","Naam"]
-    #df = pd.DataFrame(columns=namen_nieuw)
-    #punten_compose[namen_nieuw] = df[namen_nieuw]
-
     punten_compose.insert(1,"ijkingstoetssessie",numpy.ones(punten_compose.shape[0]) * sessie)
     punten_compose.insert(1,"ijkID",[""]* punten_compose.shape[0])
     punten_compose.insert(0,"Voornaam",[""]* punten_compose.shape[0])
@@ -35,7 +30,7 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep):
         if not os.path.exists(onderdeelFolder):
              print("Error: folder " + onderdeelFolder + " does not exist")
              sys.exit()
-        puntenFilename= onderdeelFolder + "/output/punten.xls"
+        puntenFilename= onderdeelFolder + "/output/punten_" + jaar + "_" +  toets + "_" + onderdeel + ".xls"
         if not os.path.exists(puntenFilename):
              print("Error: file " + puntenFilename + " does not exist")
              sys.exit()
@@ -56,10 +51,14 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep):
         punten_compose[namen_nieuw] = df[namen_nieuw]
         
     
+    geslaagdVariabele=bepaalGeslaagd(punten_compose,regelGeslaagd)
+    punten_compose.insert(5,"Geslaagd",geslaagdVariabele)
+    
     feedbackgroep=bepaalFeedbackGroep(punten_compose,regelFeedbackgroep)
     punten_compose.insert(5,"FeedbackGroep",feedbackgroep)
         
-    punten_compose.to_excel("../" + jaar + "_" +  toets +"/resultaten.xlsx",sheet_name="punten",index=False)
+    #punten_compose["nummer","FeedbackGroep","Geslaagd"].to_excel("../" + jaar + "_" +  toets +"/resultaten.xlsx",sheet_name="punten",index=False)
+    punten_compose.to_excel("../" + jaar + "_" +  toets +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
 
 def bepaalFeedbackGroep(df,regelFeedbackgroep):
     feedbackgroep = [""]* df.shape[0]
@@ -91,4 +90,20 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
     feedbackgroep = numpy.where(feedbackgroepF,"F",feedbackgroep)
     #print(feedbackgroep)
     return feedbackgroep
+
+def bepaalGeslaagd(df,regelGeslaagd):
+    geslaagdVariabele = [""]* df.shape[0]
+    
+    if regelGeslaagd == "geslaagdTotaal":            
+        geslaagdGroep = (df["TOTAAL"].values>=10)
+        nietGeslaagdGroep = [not x for x in geslaagdGroep]
+    if regelGeslaagd == "ia":            
+        geslaagdGroep = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
+        nietGeslaagdGroep = [not x for x in geslaagdGroep]
+
+    geslaagdVariabele = numpy.where(geslaagdGroep,True,geslaagdVariabele)
+    geslaagdVariabele = numpy.where(nietGeslaagdGroep,False,geslaagdVariabele)
+    
+    #print(geslaagdVariabele)
+    return geslaagdVariabele
     

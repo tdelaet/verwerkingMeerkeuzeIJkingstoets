@@ -766,6 +766,66 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
                 rowCounter+=1                    
             columnCounter+=1;    
             
+def write_resultsFile(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc):
+    sheetC = outputbook_loc.add_sheet(nameSheet_loc)
+
+    columnCounter = 0;
+    rowCounter = 0;
+    
+    #deelnemersnummers
+    sheetC.write(rowCounter, 0,"ijkID", style=easyxf(style_header+ border_right_medium) ) 
+    rowCounter+=1
+    for i in range(0,len(deelnemers_loc)):
+        sheetC.write(rowCounter,columnCounter,deelnemers_loc[i], style=easyxf(style_header + border_right_medium))
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #total score for indicated series
+    sheetC.write(rowCounter,columnCounter,"totale score",style=easyxf(style_header))
+    rowCounter+=1
+    for i in range(len(totalScore_loc)):
+        sheetC.write(rowCounter,columnCounter,totalScore_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+
+    rowCounter = 0;
+    #indicated series
+    sheetC.write(rowCounter,columnCounter,"reeks",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(totalScore_loc)):
+        sheetC.write(rowCounter,columnCounter,columnSeries_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #number of correct Answers
+    sheetC.write(rowCounter,columnCounter,"aantal juist",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberCorrectAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #number of wrong Answers
+    sheetC.write(rowCounter,columnCounter,"aantal fout",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberWrongAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberWrongAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+    
+    rowCounter = 0;
+    #number of blank Answers
+    sheetC.write(rowCounter,columnCounter,"aantal blanco",style=easyxf(style_header)) 
+    rowCounter+=1
+    for i in range(len(numberBlankAnswers_loc)):
+        sheetC.write(rowCounter,columnCounter,numberBlankAnswers_loc[i])
+        rowCounter+=1
+    columnCounter+=1;
+            
 def write_scoreCategoriesStudents(outputbook_loc,nameSheet_loc,deelnemers_loc,totalScore_loc, categoriesQuestions_loc, scoreCategories_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
@@ -1341,8 +1401,8 @@ def write_participantsList(outputbook_loc,nameSheet_loc,deelnemers_loc):
         sheetC.write(rowCounter,columnCounter,deelnemers_loc[i])
         rowCounter+=1
   
-def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,matrixAnswers_loc,correctAnswers_loc,deelnemers_loc,columnSeries_loc):
-    fqsf= open(outputFolder_onderdeel_loc + '/antwoorden.qsf','w')
+def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,matrixAnswers_loc,correctAnswers_loc,deelnemers_loc,columnSeries_loc,jaar,toetsnaamOnderdeel):
+    fqsf= open(outputFolder_onderdeel_loc + '/antwoorden_'  + jaar + "_" +  toetsnaamOnderdeel +'.qsf','w')
     fqsf.write('Snapshot,Participant,Vendor,Group')
     for question in range(1,numQuestions_loc+1):
         fqsf.write(',Q'+str(question))

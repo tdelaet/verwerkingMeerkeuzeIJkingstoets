@@ -23,6 +23,9 @@ def voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instel
         outputFolderOnderdeel = outputFolder + "_"+ onderdeel
         if not os.path.exists(outputFolderOnderdeel):
             os.makedirs(outputFolderOnderdeel)
+        outputFolderOnderdeelPrintEnScan = outputFolder + "_"+ onderdeel + "/printenscan"
+        if not os.path.exists(outputFolderOnderdeelPrintEnScan):
+            os.makedirs(outputFolderOnderdeelPrintEnScan)
         #save wich questions are in subpart
         vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",delimiter=',',dtype="int",ndmin=1)
         numpy.savetxt(outputFolderOnderdeel + "/vragen_" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",[vragen_onderdeel],delimiter=',',fmt="%i")
@@ -99,11 +102,13 @@ def permutatieOnderdelen(jaar,toets,onderdelen, outputFolder,outputFolderTotaal)
             permutations_loc = [permutations[:,x-1] for x in vragen_onderdeel]
         
         outputFolderOnderdeel = outputFolder + "_"+ onderdeel
+        outputFolderOnderdeelPrintEnScan = outputFolder + "_"+ onderdeel +"/printenscan"
         #subtract lowest number such that starts with question1
         #TODO: redo will only work if subsequent numbers in subparts
         permutations_loc = list(map(list, zip(*permutations_loc)))
         permutations_loc2 = [ [int(y)-int(min(permutations_loc[0]))+1 for y in x] for x in permutations_loc]
         numpy.savetxt(outputFolderOnderdeel + "/permutatie_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",permutations_loc2,delimiter=',',fmt="%s")
+        numpy.savetxt(outputFolderOnderdeelPrintEnScan + "/permutatie_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",permutations_loc2,delimiter=',',fmt="%s")
 
         
 # Deelt OMR op in onderdelen en schrijf die weg in map OMR in map van elk onderdeel
