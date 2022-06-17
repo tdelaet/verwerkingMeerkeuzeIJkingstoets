@@ -25,12 +25,12 @@ import writeResults
 import leesSleutelEnPermutaties
 
 jaar = "2021"
-toets = "hw21_F"
+toets = "hw21_E"
 editie= "juli "+ jaar
 #verwerking = "tex" #als sleutel en permutatie als tex gegeven
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 
-numQuestions = 1 # number of questions
+numQuestions = 3 # number of questions
 maxTotalScore = 10 #maximum total score
 numAlternatives = 4 #number of alternatives
 numSeries= 1 # number of series

@@ -64,13 +64,14 @@ def sleutelOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
 def maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
     #get sleutel and save to main folder
     maxScores = numpy.loadtxt(outputFolder + "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="int",ndmin=1)
+
     if not onderdelen: #geen onderdelen
         if ( len(maxScores) != 1 ):
-            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + len(onderdelen + 1) + " bevatten")
+            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + str(len(onderdelen) + 1) + " bevatten")
             sys.exit()
     else:
         if ( len(maxScores) != ( len(onderdelen) +1) ):
-            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + len(onderdelen + 1) + " bevatten")
+            print ("ERROR: het bestand "+  "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt" + " bevat niet het juiste aantal maximum scores. Het moet er " + str(len(onderdelen) + 1) + " bevatten")
             sys.exit()
     #numpy.savetxt(outputFolder + "/maxScores_" + jaar+ "_"+ toets + ".txt",[maxScores],delimiter=',',fmt="%s")
     

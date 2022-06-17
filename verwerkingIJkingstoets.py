@@ -44,31 +44,55 @@ import afwerkingOnderdelen
 
 
 ### Variables to fill in
-jaar = "2021"
-sessie = 21
-toets = "ia" 
+jaar = "2022"
+sessie = 22
+toets = "bi" 
 editie= "juli "+ jaar
 aantal_onderdelen = 3
-numSeries= 1 # number of series TODO lezen van file
-#regelFeedbackgroep =  "iedereenA"
-#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
+numSeries=2 # number of series TODO lezen van file
+
+#dw
 #regelFeedbackgroep = "dw"     #A als (TOTAAL >=9 )   ; B als (5<=TOTAAL<9 )    ; C als (TOTAAL<5 ) 
 #regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
+
+#ir
+#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+
+
+#ia
+#regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
+#regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
+
+#ww
+#regelFeedbackgroep =  "iedereenA"
+#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+
+#bi
+regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+
+#in/id/ib
+#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+
 
 numAlternatives = 4 #number of alternatives
+
+#instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
+#instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]
+instellingen = ["all"]
+#instellingen = ["all","online"]
+#instellingen = ["Leuven"]
+
 blankAnswer = "X" 
+
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 #verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven
 
 toets = toets + str(sessie)
-#instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
-#instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-#instellingen = ["all"]
-#instellingen = ["Leuven"]
-
 # do you want to write a feedback excel, one sheet per student?
 writeFeedbackStudents = False
 
@@ -104,7 +128,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
             os.makedirs(texoutputFolder)    
     
     #where output of processing is saved
-    outputFolder_onderdeel = folder_onderdeel + "/output/"
+    outputFolder_onderdeel = folder_onderdeel + "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
     if not os.path.exists(outputFolder_onderdeel):
         os.makedirs(outputFolder_onderdeel)
     #where output for print en scan is save
@@ -405,13 +429,13 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                       bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                       )    
     
-    if (len(instellingen)!=1):
-        writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
-        writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
-        writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
-        #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-        writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
-        writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
+    
+    writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
+    writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
+    writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
+    #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+    writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
+    writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
     
 
     if writeFeedbackStudents:
@@ -433,8 +457,8 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     outputbookperm.save(outputFolder_onderdeel + 'output_controleerVoorFouteReeksen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
     if (len(instellingen)!=1):
         outputInstellingen.save(outputFolder_onderdeel + 'instellingen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-        outputStudentbook.save(outputFolder_onderdeel + 'punten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-        outputResults.save(outputFolder_onderdeel + '../resultaten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+    outputStudentbook.save(outputFolder_onderdeel + 'punten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+    outputResults.save(outputFolder_onderdeel + '../resultaten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
     outputDeelnemersLijst.save(outputFolder_onderdeel_ps + 'deelnemerslijst_KULoket_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
     if writeFeedbackStudents:
         outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  

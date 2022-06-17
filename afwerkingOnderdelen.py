@@ -11,7 +11,8 @@ def kopieerQSF(jaar,toets):
     
 def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd):
     #lees punten van TOTAAL
-    puntenFilename= "../" + jaar + "_" +  toets + "_TOTAAL/output/punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
+    outputFolder_onderdeel = "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
+    puntenFilename= "../" + jaar + "_" +  toets + "_TOTAAL" + outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
     punten_onderdeel = pd.read_excel(puntenFilename)#,dtype=str)
 
     columns_punten = [punten_onderdeel.columns[x] for x in [0,1,3,4,5]]
@@ -30,7 +31,9 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
         if not os.path.exists(onderdeelFolder):
              print("Error: folder " + onderdeelFolder + " does not exist")
              sys.exit()
-        puntenFilename= onderdeelFolder + "/output/punten_" + jaar + "_" +  toets + "_" + onderdeel + ".xls"
+        toetsnaamOnderdeel = toets + "_" + onderdeel
+        outputFolder_onderdeel = "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
+        puntenFilename= onderdeelFolder + outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_" + onderdeel + ".xls"
         if not os.path.exists(puntenFilename):
              print("Error: file " + puntenFilename + " does not exist")
              sys.exit()

@@ -21,10 +21,10 @@ import os
 import pandas as pd
 
 jaar = "2021"
-toets = "hi21"
+toets = "hw21"
 editie= "juli "+ jaar
 
-aantal_onderdelen =7
+aantal_onderdelen =6
 
 
 
