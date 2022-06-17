@@ -42,7 +42,8 @@ import leesSleutelEnPermutaties
 import voorbereidingOnderdelen
 import afwerkingOnderdelen
 
-
+#####################################################################################
+#####################################################################################
 ### Variables to fill in
 jaar = "2099"
 sessie = 99
@@ -96,6 +97,11 @@ verwerking = "text" #als sleutel en permutatie als txt gegeven
 toets = toets + str(sessie)
 # do you want to write a feedback excel, one sheet per student?
 writeFeedbackStudents = False
+
+
+#####################################################################################
+#####################################################################################
+
 
 # code from here
 if numSeries==1:
