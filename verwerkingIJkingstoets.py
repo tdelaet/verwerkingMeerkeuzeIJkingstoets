@@ -44,9 +44,9 @@ import afwerkingOnderdelen
 
 
 ### Variables to fill in
-jaar = "2022"
-sessie = 22
-toets = "bi" 
+jaar = "2099"
+sessie = 99
+toets = "xx" 
 editie= "juli "+ jaar
 aantal_onderdelen = 3
 numSeries=2 # number of series TODO lezen van file
@@ -83,9 +83,10 @@ numAlternatives = 4 #number of alternatives
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]
-instellingen = ["all"]
+#instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven"]
+instellingen = ["Leuven","Gent"]
 
 blankAnswer = "X" 
 
