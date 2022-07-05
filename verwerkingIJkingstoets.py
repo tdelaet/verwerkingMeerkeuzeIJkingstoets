@@ -45,38 +45,35 @@ import afwerkingOnderdelen
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2099"
-sessie = 99
-toets = "xx" 
+jaar = "2022"
+sessie = 23
+toets = "ia" 
 editie= "juli "+ jaar
-aantal_onderdelen = 3
-numSeries=2 # number of series TODO lezen van file
+aantal_onderdelen = 3 #TODO read from file or as extra safety?
+numSeries=1 # number of series TODO lezen van file or as extra safety?
 
-#dw
-#regelFeedbackgroep = "dw"     #A als (TOTAAL >=9 )   ; B als (5<=TOTAAL<9 )    ; C als (TOTAAL<5 ) 
-#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-
-#ir
-#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-
-
-#ia
-#regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
-#regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
-
-#ww
-#regelFeedbackgroep =  "iedereenA"
-#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-
-#bi
-regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-
-#in/id/ib
-#regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-#regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-
+# For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
+if toets=="ia":
+    regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
+    regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
+elif toets=="dw":
+    regelFeedbackgroep = "dw"     #feedbackgroepA als score >=10; feedbackgroepB als score tussen 5 en 10; feedbackgroepC als score <5
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+elif toets=="bi":
+    regelFeedbackgroep="bi" #score_TOTAAL >=10  4<= score_TOTAAL < 10 score_TOTAAL<=3 
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)
+elif toets=="wf":
+    regelFeedbackgroep="iedereenA"  
+    regelGeslaagd =  "wf" #A als (score_TOTAAL>=10 AND score_wiskunde>=8)
+elif toets=="ir" or toets=="bw" or toets=="fa" or toets=="la" or toets=="et":
+    regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+elif toets=="ww" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="ib" or toets=="id" or toets=="in":
+    regelFeedbackgroep =  "iedereenA"
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
+else:
+    print ("ERROR found in input variables"   )
+    sys.exit()
 
 numAlternatives = 4 #number of alternatives
 
@@ -87,7 +84,7 @@ numAlternatives = 4 #number of alternatives
 #instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven"]
-instellingen = ["Leuven","Gent"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 
 blankAnswer = "X" 
 
@@ -497,7 +494,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     plt.ylabel("aantal studenten")       
     plt.text(0.966,0.9, 
               'gemiddelde: ' + str(round(averageScore_tot,2)) + "\n" +
-              'mediaan: ' + str(int(medianScore_tot+1))  + "\n" +
+              'mediaan: ' + str(int(medianScore_tot))  + "\n" +
               'percentage geslaagd: ' + str(int(round(percentagePass_tot,0))) + "%"  + "\n" +
               'aantal deelnemers: ' + str(numParticipants_tot)
               ,transform=ax.transAxes,

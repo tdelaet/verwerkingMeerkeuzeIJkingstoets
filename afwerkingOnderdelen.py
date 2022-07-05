@@ -72,19 +72,29 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
     feedbackgroepE = [False]* df.shape[0]
     feedbackgroepF = [False]* df.shape[0]
     
+    #iedereen feedbackgroep A
     if regelFeedbackgroep == "iedereenA":
         feedbackgroepA = [True]* df.shape[0]
+    #feedbackgroepA als geslaagd op totaal, anders feedbackgroepB
     if regelFeedbackgroep == "geslaagdTotaal":            
         feedbackgroepA = (df["TOTAAL"].values>=10)
         feedbackgroepB = [not x for x in feedbackgroepA]
+    #feedbackgroepA als totaal geslaagd en score B geslaagd, anders feedbackgroepB
     if regelFeedbackgroep == "ia":            
         feedbackgroepA = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
         feedbackgroepB = [not x for x in feedbackgroepA]
+    #feedbackgroepA als score >=10; feedbackgroepB als score tussen 5 en 10; feedbackgroepC als score <5
     if regelFeedbackgroep == "dw":            
-        feedbackgroepA = (df["TOTAAL"].values>=9)
-        feedbackgroepB = (df["TOTAAL"].values<9) & (df["TOTAAL"].values>=5)
+        feedbackgroepA = (df["TOTAAL"].values>=10)
+        feedbackgroepB = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>=5)
         feedbackgroepC = (df["TOTAAL"].values<5)
+    #feedbackgroepA als score >=10; feedbackgroepB als 4<= score_TOTAAL < 10, feedbackgroepC als score score_TOTAAL<=3 
+    if regelFeedbackgroep == "bi":            
+        feedbackgroepA = (df["TOTAAL"].values>=10)
+        feedbackgroepB = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>=4)
+        feedbackgroepC = (df["TOTAAL"].values<=3)    
 
+        
     feedbackgroep = numpy.where(feedbackgroepA,"A",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepB,"B",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepC,"C",feedbackgroep)
@@ -102,6 +112,10 @@ def bepaalGeslaagd(df,regelGeslaagd):
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
     if regelGeslaagd == "ia":            
         geslaagdGroep = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
+        nietGeslaagdGroep = [not x for x in geslaagdGroep]
+    #A als (score_TOTAAL>=10 AND score_wiskunde>=8)
+    if regelGeslaagd == "wf":            
+        geslaagdGroep = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=8)
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
 
     geslaagdVariabele = numpy.where(geslaagdGroep,True,geslaagdVariabele)
