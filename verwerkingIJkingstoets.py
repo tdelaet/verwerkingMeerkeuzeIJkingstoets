@@ -34,6 +34,7 @@ from xlwt import Workbook
 import matplotlib
 import os
 import sys
+import pandas as pd
 
 import checkInputVariables
 import supportFunctions

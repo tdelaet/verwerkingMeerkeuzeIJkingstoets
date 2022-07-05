@@ -20,10 +20,13 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     namen_nieuw = ["nummer","TOTAAL","juist","fout","blanco"]
     punten_compose.columns=namen_nieuw
     
-    punten_compose.insert(1,"ijkingstoetssessie",numpy.ones(punten_compose.shape[0]) * sessie)
+    sessieCol=numpy.ones(punten_compose.shape[0]) * sessie
+    punten_compose.insert(1,"ijkingstoetssessie",sessieCol.astype(int))
+    #punten_compose['ijkingstoetssessie'] = punten_compose['ijkingstoetssessie'].astype(int)
     punten_compose.insert(1,"ijkID",[""]* punten_compose.shape[0])
     punten_compose.insert(0,"Voornaam",[""]* punten_compose.shape[0])
     punten_compose.insert(0,"Naam",[""]* punten_compose.shape[0])
+    #print(punten_compose.dtypes)
     
    
     for onderdeel in onderdelen:
@@ -61,7 +64,9 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     punten_compose.insert(5,"FeedbackGroep",feedbackgroep)
         
     #punten_compose["nummer","FeedbackGroep","Geslaagd"].to_excel("../" + jaar + "_" +  toets +"/resultaten.xlsx",sheet_name="punten",index=False)
+    #print(punten_compose)
     punten_compose.to_excel("../" + jaar + "_" +  toets +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
+    punten_compose.to_csv("../" + jaar + "_" +  toets +"/resultaten_"+ jaar + "_" + toets + ".csv", index = False) 
 
 def bepaalFeedbackGroep(df,regelFeedbackgroep):
     feedbackgroep = [""]* df.shape[0]
