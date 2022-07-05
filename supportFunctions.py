@@ -242,18 +242,22 @@ def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSer
 
     
 def getOverallStatistics(scoreQuestionsIndicatedSeries_loc,maxTotalScore_loc): 
-    #print "entered getOverallStatistics" 
+    #print("entered getOverallStatistics")
     numParticipants_loc = len(scoreQuestionsIndicatedSeries_loc)
+    #print(numParticipants_loc)
     numQuestions_loc = len(scoreQuestionsIndicatedSeries_loc[0])       
     #To calculate the total score only use the score for the series indicated by the student
     totalScore_loc = scoreQuestionsIndicatedSeries_loc.sum(axis=1)/numQuestions_loc*maxTotalScore_loc
-    #print totalScore_loc
+    #print(totalScore_loc)
     # set negative scores to 0
     totalScore_loc[totalScore_loc < 0]=0
     totalScore_loc = round2(totalScore_loc)
+    #print("size total score="+str(len(totalScore_loc)))
     #print totalScore
     averageScore_loc = numpy.average(totalScore_loc)
+    #print("average= " + str(averageScore_loc))
     medianScore_loc = numpy.median(totalScore_loc)
+    #print("median= " + str(medianScore_loc))
     standardDeviation_loc = numpy.std(totalScore_loc)
     percentagePass_loc = 100*sum(score>= maxTotalScore_loc/2.0 for score in totalScore_loc)/float(numParticipants_loc)    
     return totalScore_loc, averageScore_loc, medianScore_loc, standardDeviation_loc, percentagePass_loc
