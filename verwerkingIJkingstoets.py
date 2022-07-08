@@ -48,10 +48,10 @@ import afwerkingOnderdelen
 ### Variables to fill in
 jaar = "2022"
 sessie = 23
-toets = "ia" 
+toets = "fa" 
 editie= "juli "+ jaar
-aantal_onderdelen = 3 #TODO read from file or as extra safety?
-numSeries=1 # number of series TODO lezen van file or as extra safety?
+aantal_onderdelen = 4 #TODO read from file or as extra safety?
+numSeries= 1 # number of series TODO lezen van file or as extra safety?
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
 if toets=="ia":
@@ -81,11 +81,13 @@ numAlternatives = 4 #number of alternatives
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]
-#instellingen = ["all"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
+instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+
 
 blankAnswer = "X" 
 
@@ -626,3 +628,5 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     
 afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd)
 afwerkingOnderdelen.kopieerQSF(jaar,toets)
+# Let op, zips creëren duurt wel even
+afwerkingOnderdelen.genereerZIPs(jaar,toets,sessie,onderdelen)
