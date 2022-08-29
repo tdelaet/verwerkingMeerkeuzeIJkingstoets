@@ -597,12 +597,46 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
         
         rowCounter+=1
     
-    sheetC = outputbook_loc.add_sheet(nameSheet_loc+"_bis")    
-    # rowCounter = 0;
-    # columnCounter =0
-    # sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+8,"Vergelijking gemodelleerde en eigenlijke moeilijkheidsgraad vraag",style = easyxf(style_title))
-    # rowCounter+=1
+    # sheetC = outputbook_loc.add_sheet(nameSheet_loc+"_bis")    
+    # # rowCounter = 0;
+    # # columnCounter =0
+    # # sheetC.write_merge(rowCounter,rowCounter,columnCounter,columnCounter+8,"Vergelijking gemodelleerde en eigenlijke moeilijkheidsgraad vraag",style = easyxf(style_title))
+    # # rowCounter+=1
     
+    # # sheetC.write_merge(rowCounter,rowCounter,columnCounter+1,columnCounter+6,"eigenlijk",style = easyxf(style_title))
+    # # rowCounter+=1
+    # # sheetC.write_merge(rowCounter,rowCounter+3,columnCounter,columnCounter,"gemodelleerd",style = easyxf(align_rotated+border_all_medium+font_bold))
+
+    # # columnCounter+=2
+    # # sheetC.write(rowCounter,columnCounter,"0",style=easyxf(style_header))
+    # # columnCounter+=1
+    # # sheetC.write(rowCounter,columnCounter,"*",style=easyxf(style_header))
+    # # columnCounter+=1
+    # # sheetC.write(rowCounter,columnCounter,"**",style=easyxf(style_header))
+    # # columnCounter+=1
+    # # sheetC.write(rowCounter,columnCounter,"***",style=easyxf(style_header))
+    # # columnCounter+=1
+    # # sheetC.write(rowCounter,columnCounter,"****",style=easyxf(style_header))
+    
+    # # rowCounter+=1
+    # # columnCounter=1
+    # # for row in range(matrixClassification.shape[0]):
+    # #     if row ==0:
+    # #         sheetC.write(rowCounter,columnCounter,"*",style=easyxf(style_header+border_righttop_medium))
+    # #     elif row==1:
+    # #         sheetC.write(rowCounter,columnCounter,"**",style=easyxf(style_header+border_right_medium))
+    # #     elif row==2:
+    # #         sheetC.write(rowCounter,columnCounter,"***",style=easyxf(style_header+border_right_medium))              
+    # #     columnCounter+=1
+    # #     for col in range(matrixClassification.shape[1]):
+    # #         sheetC.write(rowCounter,columnCounter,matrixClassification[row][col])
+    # #         columnCounter+=1
+    # #     columnCounter=1
+    # #     rowCounter+=1
+        
+    # # matrix with numbers
+    # columnCounter=0
+    # rowCounter +=3;
     # sheetC.write_merge(rowCounter,rowCounter,columnCounter+1,columnCounter+6,"eigenlijk",style = easyxf(style_title))
     # rowCounter+=1
     # sheetC.write_merge(rowCounter,rowCounter+3,columnCounter,columnCounter,"gemodelleerd",style = easyxf(align_rotated+border_all_medium+font_bold))
@@ -629,44 +663,10 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
     #         sheetC.write(rowCounter,columnCounter,"***",style=easyxf(style_header+border_right_medium))              
     #     columnCounter+=1
     #     for col in range(matrixClassification.shape[1]):
-    #         sheetC.write(rowCounter,columnCounter,matrixClassification[row][col])
+    #         sheetC.write(rowCounter,columnCounter,matrixClassificationCounter[row][col])
     #         columnCounter+=1
     #     columnCounter=1
     #     rowCounter+=1
-        
-    # matrix with numbers
-    columnCounter=0
-    rowCounter +=3;
-    sheetC.write_merge(rowCounter,rowCounter,columnCounter+1,columnCounter+6,"eigenlijk",style = easyxf(style_title))
-    rowCounter+=1
-    sheetC.write_merge(rowCounter,rowCounter+3,columnCounter,columnCounter,"gemodelleerd",style = easyxf(align_rotated+border_all_medium+font_bold))
-
-    columnCounter+=2
-    sheetC.write(rowCounter,columnCounter,"0",style=easyxf(style_header))
-    columnCounter+=1
-    sheetC.write(rowCounter,columnCounter,"*",style=easyxf(style_header))
-    columnCounter+=1
-    sheetC.write(rowCounter,columnCounter,"**",style=easyxf(style_header))
-    columnCounter+=1
-    sheetC.write(rowCounter,columnCounter,"***",style=easyxf(style_header))
-    columnCounter+=1
-    sheetC.write(rowCounter,columnCounter,"****",style=easyxf(style_header))
-    
-    rowCounter+=1
-    columnCounter=1
-    for row in range(matrixClassification.shape[0]):
-        if row ==0:
-            sheetC.write(rowCounter,columnCounter,"*",style=easyxf(style_header+border_righttop_medium))
-        elif row==1:
-            sheetC.write(rowCounter,columnCounter,"**",style=easyxf(style_header+border_right_medium))
-        elif row==2:
-            sheetC.write(rowCounter,columnCounter,"***",style=easyxf(style_header+border_right_medium))              
-        columnCounter+=1
-        for col in range(matrixClassification.shape[1]):
-            sheetC.write(rowCounter,columnCounter,matrixClassificationCounter[row][col])
-            columnCounter+=1
-        columnCounter=1
-        rowCounter+=1
                 
         
     return questionClassification
