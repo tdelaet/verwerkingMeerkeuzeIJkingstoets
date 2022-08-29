@@ -47,9 +47,9 @@ import afwerkingOnderdelen
 #####################################################################################
 ### Variables to fill in
 jaar = "2022"
-sessie = 23
-toets = "fa" 
-editie= "juli "+ jaar
+sessie = 24
+toets = "in" 
+editie= "augustus "+ jaar
 aantal_onderdelen = 4 #TODO read from file or as extra safety?
 numSeries= 1 # number of series TODO lezen van file or as extra safety?
 
@@ -76,7 +76,7 @@ else:
     print ("ERROR found in input variables"   )
     sys.exit()
 
-numAlternatives = 4 #number of alternatives
+
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
@@ -84,10 +84,11 @@ numAlternatives = 4 #number of alternatives
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
 instellingen = ["all"]
 #instellingen = ["all","online"]
-#instellingen = ["Leuven"]
+#instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 
+numAlternatives = 4 #number of alternatives
 
 blankAnswer = "X" 
 
@@ -566,7 +567,10 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     for question in range(1,numQuestions+1):
         ax = plt.subplot(numRowsPict,numColsPict,question)
         correctUpper =  sum(scoreQuestionsUpper_tot[:,question-1] == 1.0)/len(scoreQuestionsUpper_tot[:,question-1])
-        correctMiddle = sum(scoreQuestionsMiddle_tot[:,question-1] == 1.0)/len(scoreQuestionsMiddle_tot[:,question-1])
+        if len(scoreQuestionsMiddle_tot[:,question-1])!=0:    
+            correctMiddle = sum(scoreQuestionsMiddle_tot[:,question-1] == 1.0)/len(scoreQuestionsMiddle_tot[:,question-1])
+        else: 
+            correctMiddle =0.0
         correctLower = sum(scoreQuestionsLower_tot[:,question-1] == 1.0)/len(scoreQuestionsLower_tot[:,question-1])                        
         plt.bar(["lower","middle","upper"],[correctLower,correctMiddle,correctUpper],width=0.8)
         plt.title("vraag " + str(question))
