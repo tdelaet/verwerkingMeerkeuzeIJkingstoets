@@ -54,7 +54,7 @@ def sleutelOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
     
     #prepare sleutel for subparts
     for onderdeel in onderdelen:
-        vragen_onderdeel = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
+        vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
 
         # get sleutel with just questions of onderdeel
         if (vragen_onderdeel.ndim==0):
@@ -99,7 +99,7 @@ def permutatieOnderdelen(jaar,toets,onderdelen, outputFolder,outputFolderTotaal)
     numpy.savetxt(outputFolderTotaal + "/permutatie_" + jaar+ "_"+ toets + "_TOTAAL.txt",permutations,delimiter=',',fmt="%s")
     for onderdeel in onderdelen:
        
-        vragen_onderdeel = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
+        vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
       
         # get permutatie with just questions of onderdeel
         if (vragen_onderdeel.ndim==0):
@@ -154,7 +154,10 @@ def OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTo
                 counter=counter+1
             
             outputOMR= outputFolderOMR + "/" + jaar+ "_"+ toets+  "_"+ onderdeel.capitalize() +  "_OMRoutput_" + instelling + ".xlsx"
+            
             OMR_onderdeel = OMR[namen_onderdeel]
+            OMR.to_excel(outputOMR,sheet_name="outputScan",index=False)
+            
             #rename questions to Vraag1,Vraag2, ...
             OMR_onderdeel.columns=namen_onderdeelNieuw
             

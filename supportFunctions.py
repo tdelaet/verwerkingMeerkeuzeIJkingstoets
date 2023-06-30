@@ -83,7 +83,7 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     #answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
     return answers_loc
 
-def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
+def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc,scoreWrongAnswer_loc):
     # Calculate the score for each permutation and for each question 
     numSeries_loc = len(permutations_loc)
     numQuestions_loc = len(correctAnswers_loc)
@@ -106,52 +106,52 @@ def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc
             #correctAnswers +1
             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
             #wrong answers -1/(numAlternatives-1)
-            scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]-= 1.0/(float(numAlternatives_loc)-1.0)  
+            scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]+= scoreWrongAnswer_loc  
             #blank answers => do nothing
         counter_alternative+=1
     return scoreQuestionsAllPermutations_loc
 
-def calculateScoreAllPermutations_old(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
-    # Calculate the score for each permutation and for each question 
-    numSeries_loc = len(permutations_loc)
-    numQuestions_loc = len(correctAnswers_loc)
-    numAlternatives_loc = len(alternatives_loc)
-    scoreQuestionsAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
+# def calculateScoreAllPermutations_old(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
+#     # Calculate the score for each permutation and for each question 
+#     numSeries_loc = len(permutations_loc)
+#     numQuestions_loc = len(correctAnswers_loc)
+#     numAlternatives_loc = len(alternatives_loc)
+#     scoreQuestionsAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
    
-   #Calculate score for all permutations
+#    #Calculate score for all permutations
                  
-    for question_loc in range(1,numQuestions_loc+1):
-        #print "----------------------"
-        #print "question " + str(question_loc)
-        counter_alternative = 0;
+#     for question_loc in range(1,numQuestions_loc+1):
+#         #print "----------------------"
+#         #print "question " + str(question_loc)
+#         counter_alternative = 0;
 
-        name_question_serie1 = "Vraag" + str(question_loc)
-        colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
-        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
-        #TODO: replace with matrixAnswers
-        columnQuestion_loc = ['A' if x=='1'  else x for x in columnQuestion_loc]
-        columnQuestion_loc = ['B' if x=='2'  else x for x in columnQuestion_loc]
-        columnQuestion_loc = ['C' if x=='3'  else x for x in columnQuestion_loc]
-        columnQuestion_loc = ['D' if x=='4'  else x for x in columnQuestion_loc]
-        if numAlternatives_loc == 5:        
-            columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
-            columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
-        else:
-            columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
+#         name_question_serie1 = "Vraag" + str(question_loc)
+#         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
+#         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+#         #TODO: replace with matrixAnswers
+#         columnQuestion_loc = ['A' if x=='1'  else x for x in columnQuestion_loc]
+#         columnQuestion_loc = ['B' if x=='2'  else x for x in columnQuestion_loc]
+#         columnQuestion_loc = ['C' if x=='3'  else x for x in columnQuestion_loc]
+#         columnQuestion_loc = ['D' if x=='4'  else x for x in columnQuestion_loc]
+#         if numAlternatives_loc == 5:        
+#             columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
+#             columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
+#         else:
+#             columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
             
-        for permutation in range(1,numSeries_loc+1):
-            numQuestionPermutations_loc = int(permutations_loc[permutation-1][question_loc-1])
-            correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]
-            wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
-            indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
-            indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
-            #correctAnswers +1
-            scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
-            #wrong answers -1/(numAlternatives-1)
-            scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]-= 1.0/(float(numAlternatives_loc)-1.0)  
-            #blank answers => do nothing
-        counter_alternative+=1
-    return scoreQuestionsAllPermutations_loc
+#         for permutation in range(1,numSeries_loc+1):
+#             numQuestionPermutations_loc = int(permutations_loc[permutation-1][question_loc-1])
+#             correctAnswer = correctAnswers_loc[numQuestionPermutations_loc-1]
+#             wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
+#             indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
+#             indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
+#             #correctAnswers +1
+#             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
+#             #wrong answers -1/(numAlternatives-1)
+#             scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]-= 1.0/(float(numAlternatives_loc)-1.0)  
+#             #blank answers => do nothing
+#         counter_alternative+=1
+#     return scoreQuestionsAllPermutations_loc
  
 def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_loc,scoreQuestionsIndicatedSeries_loc,alternatives_loc,blankAnswer_loc,content_colNrs_loc):
     numParticipants_loc = len(scoreQuestionsIndicatedSeries_loc)
@@ -185,10 +185,10 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
             #columnQuestion_loc = map(lambda x: "E" if x=="5" else x, columnQuestion_loc)
             #columnQuestion_loc = map(lambda x: "X" if x=="6" else x, columnQuestion_loc)   
             columnQuestion_loc = ['E' if x=='5'  else x for x in columnQuestion_loc]
-            columnQuestion_loc = ['X' if x=='6'  else x for x in columnQuestion_loc]
+            columnQuestion_loc = [blankAnswer_loc if x=='6'  else x for x in columnQuestion_loc]
         else:
             #columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
-            columnQuestion_loc = ['X' if x=='5'  else x for x in columnQuestion_loc]
+            columnQuestion_loc = [blankAnswer_loc if x=='5'  else x for x in columnQuestion_loc]
             
 
         counter_alternative = 0;
@@ -207,7 +207,7 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
             counter_alternative+=1
     return numQuestionsAlternatives_loc
    
-def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSeries_loc,numAlternatives_loc):
+def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSeries_loc,numAlternatives_loc,scoreWrongAnswer_loc):
     #print "entered getScoreQuestionsIndicatedSeries"    
     numParticipants_loc = len(scoreQuestionsAllPermutations_loc[0])
     numQuestions_loc = len(scoreQuestionsAllPermutations_loc[0][0])       
@@ -230,7 +230,7 @@ def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSer
         scoreQuestionsIndicatedSeries_loc[participant,:] = scoreQuestionsAllPermutations_loc[serieIndicated-1,participant,:]
        # print("test")
         correctAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==1.0]
-        wrongAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==-1.0/(float(numAlternatives_loc)-1.0)]
+        wrongAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==scoreWrongAnswer_loc]
         blankAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==0.0]
        # print(correctAnswer_loc)
         numberCorrectAnswers_loc[participant] = len(correctAnswers_loc)
