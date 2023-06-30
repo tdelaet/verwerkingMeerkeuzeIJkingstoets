@@ -3,18 +3,22 @@ import os
 import pandas as pd
 import sys
 
-def voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instellingen):
+def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder):
+    #print("voorbereidingOnderdelen: "+ "voorbereidingOnderdelen")
     #prepare main outputfolder
-    outputFolder = "../" + jaar + "_" +  toets
-    if not os.path.exists(outputFolder):
-        os.makedirs(outputFolder)
+    #outputFolder = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets
+    #print(outputFolder)
+    #outputFolderTotaal = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets+ "_TOTAAL"
 
     #construct list of letters for subparts (a,b,c,...)
     onderdelen=[]
     for letter in range(97,97+aantal_onderdelen):
         onderdelen.append(chr(letter).capitalize())
 
-    outputFolderTotaal = "../" + jaar + "_" +  toets + "_TOTAAL"
+    outputFolderTotaal = outputFolder +  "_TOTAAL"
+    #print(outputFolderTotaal)
+
+    #outputFolderTotaal = "../" + jaar +"/" + jaar + "_" +  toets + "_TOTAAL"
     if not os.path.exists(outputFolderTotaal):
         os.makedirs(outputFolderTotaal)
         
@@ -27,6 +31,7 @@ def voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instel
         if not os.path.exists(outputFolderOnderdeelPrintEnScan):
             os.makedirs(outputFolderOnderdeelPrintEnScan)
         #save wich questions are in subpart
+        print(outputFolderOnderdeel)
         vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",delimiter=',',dtype="int",ndmin=1)
         numpy.savetxt(outputFolderOnderdeel + "/vragen_" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",[vragen_onderdeel],delimiter=',',fmt="%i")
 
@@ -90,7 +95,7 @@ def maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
 
 
 def permutatieOnderdelen(jaar,toets,onderdelen, outputFolder,outputFolderTotaal):
-    permutations = numpy.loadtxt("../" + jaar + "_" +  toets + "/onderdelen/permutatie_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str")
+    permutations = numpy.loadtxt(outputFolder + "/onderdelen/permutatie_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="str")
     numpy.savetxt(outputFolderTotaal + "/permutatie_" + jaar+ "_"+ toets + "_TOTAAL.txt",permutations,delimiter=',',fmt="%s")
     for onderdeel in onderdelen:
        

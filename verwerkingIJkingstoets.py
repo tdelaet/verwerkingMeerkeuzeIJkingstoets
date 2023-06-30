@@ -48,10 +48,10 @@ import afwerkingOnderdelen
 ### Variables to fill in
 jaar = "2022"
 sessie = 24
-toets = "in" 
+toets = "ir" 
 editie= "augustus "+ jaar
-aantal_onderdelen = 4 #TODO read from file or as extra safety?
-numSeries= 1 # number of series TODO lezen van file or as extra safety?
+aantal_onderdelen = 0 #TODO read from file or as extra safety?
+numSeries= 4 # number of series TODO lezen van file or as extra safety?
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
 if toets=="ia":
@@ -82,11 +82,11 @@ else:
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-instellingen = ["all"]
+#instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 
 numAlternatives = 4 #number of alternatives
 
@@ -103,6 +103,9 @@ writeFeedbackStudents = False
 #####################################################################################
 #####################################################################################
 
+outputFolder = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets
+if not os.path.exists(outputFolder):
+        os.makedirs(outputFolder)
 
 # code from here
 if numSeries==1:
@@ -110,14 +113,14 @@ if numSeries==1:
 else:
      permutationsUsed = True
 
-onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,permutationsUsed,aantal_onderdelen,instellingen)
+onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder)
 
 for onderdeel in (["TOTAAL"] + onderdelen):
     print("-------------------------------------------------")
     print("VERWERKING ONDERDEEL " + onderdeel)
     print("-------------------------------------------------")
     toetsnaamOnderdeel = toets + "_" + onderdeel
-    folder_onderdeel = "../" + jaar + "_" +  toetsnaamOnderdeel
+    folder_onderdeel = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toetsnaamOnderdeel
     # number of questions is length of the sleutel/correct answers
     numQuestions = len(numpy.loadtxt(folder_onderdeel + "/sleutel_"  + jaar +"_" + toetsnaamOnderdeel +".txt",delimiter=',',dtype="str",ndmin=1))
     print("aantal vragen "+ str(numQuestions))
@@ -630,7 +633,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
     # frapport.close()
     
-afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd)
-afwerkingOnderdelen.kopieerQSF(jaar,toets)
+afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,outputFolder)
+afwerkingOnderdelen.kopieerQSF(jaar,toets,outputFolder)
 # Let op, zips creëren duurt wel even
-afwerkingOnderdelen.genereerZIPs(jaar,toets,sessie,onderdelen)
+afwerkingOnderdelen.genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder)

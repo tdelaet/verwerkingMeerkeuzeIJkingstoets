@@ -5,33 +5,35 @@ import shutil
 import numpy
 
         
-def kopieerQSF(jaar,toets):
-    qsfSourceFilename= "../" + jaar + "_" +  toets + "_TOTAAL/printenscan/antwoorden_" + jaar + "_" +  toets +"_TOTAAL.qsf"
-    qsfTargetFilename= "../" + jaar + "_" +  toets + "/antwoorden_" + jaar + "_" +  toets +".qsf"
+def kopieerQSF(jaar,toets,outputFolder):
+    qsfSourceFilename= outputFolder + "_TOTAAL/printenscan/antwoorden_" + jaar + "_" +  toets +"_TOTAAL.qsf"
+    qsfTargetFilename= outputFolder + "/antwoorden_" + jaar + "_" +  toets +".qsf"
     shutil.copyfile(qsfSourceFilename, qsfTargetFilename)
     
-def genereerZIPs(jaar,toets,sessie,onderdelen):
+def genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder):
     onderdelen_loc=onderdelen.copy()
     onderdelen_loc.insert(0,"TOTAAL")
-    outputFolder = os.path.dirname(os.getcwd()) + "\\" + jaar+ "_" +  toets + "\\"
     #print(outputFolder)
     for onderdeel in onderdelen_loc:
-        onderdeelFolder = os.path.dirname(os.getcwd()) + "\\" + jaar + "_" +  toets + "_"+ onderdeel + "\\"
+        #onderdeelFolder = os.path.dirname(os.getcwd()) + "\\" + jaar + "_" +  toets + "_"+ onderdeel + "\\"
+        onderdeelFolder = outputFolder + "_"+ onderdeel
         toetsnaamOnderdeel = toets + "_" + onderdeel
-        outputFolder_onderdeelFull =  onderdeelFolder + "output_" + jaar + "_" + toetsnaamOnderdeel + "\\"
+        outputFolder_onderdeelFull =  onderdeelFolder + "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
+        print("Onderdeel " + onderdeel + "   folder: " + outputFolder_onderdeelFull)
         if not os.path.exists(outputFolder_onderdeelFull):
              print("Error: folder " + outputFolder_onderdeelFull + " does not exist")
              sys.exit()
-        zipToCreate = outputFolder+ toetsnaamOnderdeel
-        #print(zipToCreate)
+        zipToCreate = outputFolder+ "_"+ onderdeel
+        print(zipToCreate)
         #print(outputFolder_onderdeelFull)
         shutil.make_archive(zipToCreate,"zip",outputFolder_onderdeelFull)
     
-def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd):
-    #print("begin genereerPUntenBestand")
+def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,outputFolder):
+    print("begin genereerPUntenBestand")
     #lees punten van TOTAAL
-    outputFolder_onderdeel = "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
-    puntenFilename= "../" + jaar + "_" +  toets + "_TOTAAL" + outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
+    outputFolder_onderdeel = outputFolder +  "_TOTAAL/" + "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
+    print("genereerPuntenbestand " + outputFolder_onderdeel )
+    puntenFilename= outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
     punten_onderdeel = pd.read_excel(puntenFilename)#,dtype=str)
 
     columns_punten = [punten_onderdeel.columns[x] for x in [0,1,3,4,5]]
@@ -49,7 +51,8 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     #print("test")
 
     for onderdeel in onderdelen:
-        onderdeelFolder = "../" + jaar + "_" +  toets + "_"+ onderdeel
+        #onderdeelFolder = "../" + jaar + "_" +  toets + "_"+ onderdeel
+        onderdeelFolder = outputFolder + "_"+ onderdeel
         if not os.path.exists(onderdeelFolder):
              print("Error: folder " + onderdeelFolder + " does not exist")
              sys.exit()
@@ -85,9 +88,9 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     #print("test")
     #punten_compose["nummer","FeedbackGroep","Geslaagd"].to_excel("../" + jaar + "_" +  toets +"/resultaten.xlsx",sheet_name="punten",index=False)
     #print(punten_compose)
-    punten_compose.to_csv("../" + jaar + "_" +  toets +"/resultaten_"+ jaar + "_" + toets + ".csv", index = False) 
+    punten_compose.to_csv(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".csv", index = False) 
     #print("tussen")
-    punten_compose.to_excel("../" + jaar + "_" +  toets +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
+    punten_compose.to_excel(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
     #print("end genereerPUntenBestand")
     
 def bepaalFeedbackGroep(df,regelFeedbackgroep):
