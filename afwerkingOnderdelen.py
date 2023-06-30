@@ -19,20 +19,20 @@ def genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder):
         onderdeelFolder = outputFolder + "_"+ onderdeel
         toetsnaamOnderdeel = toets + "_" + onderdeel
         outputFolder_onderdeelFull =  onderdeelFolder + "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
-        print("Onderdeel " + onderdeel + "   folder: " + outputFolder_onderdeelFull)
+        #print("Onderdeel " + onderdeel + "   folder: " + outputFolder_onderdeelFull)
         if not os.path.exists(outputFolder_onderdeelFull):
              print("Error: folder " + outputFolder_onderdeelFull + " does not exist")
              sys.exit()
         zipToCreate = outputFolder+ "_"+ onderdeel
-        print(zipToCreate)
+        #print(zipToCreate)
         #print(outputFolder_onderdeelFull)
         shutil.make_archive(zipToCreate,"zip",outputFolder_onderdeelFull)
     
 def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,outputFolder):
-    print("begin genereerPUntenBestand")
+    #print("begin genereerPUntenBestand")
     #lees punten van TOTAAL
     outputFolder_onderdeel = outputFolder +  "_TOTAAL/" + "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
-    print("genereerPuntenbestand " + outputFolder_onderdeel )
+    #print("genereerPuntenbestand " + outputFolder_onderdeel )
     puntenFilename= outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
     punten_onderdeel = pd.read_excel(puntenFilename)#,dtype=str)
 
