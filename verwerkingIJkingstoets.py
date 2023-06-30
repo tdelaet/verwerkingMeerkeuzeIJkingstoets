@@ -46,12 +46,14 @@ import afwerkingOnderdelen
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2022"
-sessie = 24
+jaar = "2023"
+sessie = 25
 toets = "ir" 
-editie= "augustus "+ jaar
+editie= "juli "+ jaar
 aantal_onderdelen = 0 #TODO read from file or as extra safety?
 numSeries= 4 # number of series TODO lezen van file or as extra safety?
+
+
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
 if toets=="ia":
@@ -86,11 +88,13 @@ else:
 #instellingen = ["all","online"]
 #instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+instellingen = ["Leuven","Gent"]
 
 numAlternatives = 4 #number of alternatives
 
-blankAnswer = "X" 
+#blankAnswerEncoded = "BLAN" 
+blankAnswer = "BLAN"  #how a blank answer is encoded in the OMR output
 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 #verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven

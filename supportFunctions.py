@@ -77,9 +77,10 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     for alternative in range(0,numAlternatives_loc):
         letter = chr(97+alternative).capitalize()
         answers_loc = numpy.where(answers_loc==str(alternative+1), letter, answers_loc)
+    print( answers_loc)
     #the blank answers who are thus equal to numAlternatives + 1 => replace by X
-    letter="X"
-    answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
+    #letter="X"
+    #answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
     return answers_loc
 
 def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
