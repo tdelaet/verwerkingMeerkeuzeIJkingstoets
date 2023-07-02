@@ -99,8 +99,10 @@ numAlternatives = 4 #number of alternatives
 #blankAnswerEncoded = "BLAN" 
 blankAnswer = "BLANK"  #how a blank answer is encoded in the OMR output
 #score voor fout antwoord
-scoreWrongAnswer = -1.0/(float(numAlternatives)-1.0)
-#scoreWrongAnswer = 0
+# GISCORRECTIE
+#scoreWrongAnswer = -1.0/(float(numAlternatives)-1.0)
+# AFSCHAFFING GISCORRECTIE
+scoreWrongAnswer = 0
 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 #verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven
