@@ -70,17 +70,17 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
-        print(columnQuestion_loc)
+        #print(columnQuestion_loc)
         answers_loc[:,counterColumn] = columnQuestion_loc;
-        print(answers_loc[:,counterColumn])
+        #print(answers_loc[:,counterColumn])
         counterColumn+=1
-    print("test")
-    print(answers_loc)
+    #print("test")
+    #print(answers_loc)
     # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
     for alternative in range(0,numAlternatives_loc):
         letter = chr(97+alternative).capitalize()
         answers_loc = numpy.where(answers_loc==str(alternative+1), letter, answers_loc)
-    print( answers_loc)
+    #print( answers_loc)
     #the blank answers who are thus equal to numAlternatives + 1 => replace by X
     #letter="X"
     #answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
