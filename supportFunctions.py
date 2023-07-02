@@ -62,7 +62,7 @@ def checkForUniqueParticipants(particpants):
 def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
     # Get the matrix of answers of the students
     numQuestions_loc = len(correctAnswers_loc)
-    answers_loc= numpy.array(range(numParticipants_loc*numQuestions_loc),dtype=str).reshape(numParticipants_loc,numQuestions_loc)
+    answers_loc= numpy.array(range(numParticipants_loc*numQuestions_loc),dtype='U10').reshape(numParticipants_loc,numQuestions_loc)
     numAlternatives_loc = len(alternatives_loc)
    
     counterColumn = 0
@@ -70,9 +70,12 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
         columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
-
+        print(columnQuestion_loc)
         answers_loc[:,counterColumn] = columnQuestion_loc;
+        print(answers_loc[:,counterColumn])
         counterColumn+=1
+    print("test")
+    print(answers_loc)
     # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
     for alternative in range(0,numAlternatives_loc):
         letter = chr(97+alternative).capitalize()
@@ -189,7 +192,8 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
         else:
             #columnQuestion_loc = map(lambda x: "X" if x=="5" else x, columnQuestion_loc)
             columnQuestion_loc = [blankAnswer_loc if x=='5'  else x for x in columnQuestion_loc]
-            
+        
+        #print(columnQuestion_loc)
 
         counter_alternative = 0;
         for alternative_loc in alternatives_loc+[blankAnswer_loc]:           
