@@ -86,13 +86,15 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     #answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
     return answers_loc
 
-def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc,scoreWrongAnswer_loc):
+def calculateScoreAllPermutations(sheet_loc,blankAnswer_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc,scoreWrongAnswer_loc):
     # Calculate the score for each permutation and for each question 
     numSeries_loc = len(permutations_loc)
     numQuestions_loc = len(correctAnswers_loc)
     numAlternatives_loc = len(alternatives_loc)
     scoreQuestionsAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
-   
+    correctAnswersAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
+    wrongAnswersAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
+    blankAnswersAllPermutations_loc= numpy.zeros((numSeries_loc,numParticipants_loc,numQuestions_loc))
     #Calculate score for all permutations
                  
     for question_loc in range(1,numQuestions_loc+1):
@@ -106,13 +108,17 @@ def calculateScoreAllPermutations(sheet_loc,matrixAnswers_loc,correctAnswers_loc
             wrongAnswers = [x for x in alternatives_loc if x != correctAnswer]
             indicesCorrectAnswer_loc = [x for x in range(numParticipants_loc) if columnQuestion_loc[x]==correctAnswer]
             indicesWrongAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x] in set(wrongAnswers))]
+            indicesBlankAnswer_loc = [x for x in range(numParticipants_loc) if (columnQuestion_loc[x]==blankAnswer_loc)]
             #correctAnswers +1
             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
+            correctAnswersAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1] =1.0
             #wrong answers -1/(numAlternatives-1)
             scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]+= scoreWrongAnswer_loc  
+            wrongAnswersAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1] =1.0
             #blank answers => do nothing
+            blankAnswersAllPermutations_loc[permutation-1,indicesBlankAnswer_loc,numQuestionPermutations_loc-1] =1.0
         counter_alternative+=1
-    return scoreQuestionsAllPermutations_loc
+    return scoreQuestionsAllPermutations_loc,correctAnswersAllPermutations_loc,wrongAnswersAllPermutations_loc,blankAnswersAllPermutations_loc
 
 # def calculateScoreAllPermutations_old(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc):
 #     # Calculate the score for each permutation and for each question 
@@ -211,7 +217,7 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
             counter_alternative+=1
     return numQuestionsAlternatives_loc
    
-def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSeries_loc,numAlternatives_loc,scoreWrongAnswer_loc):
+def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,correctAnswersAllPermutations_loc,wrongAnswersAllPermutations_loc,blankAnswersAllPermutations_loc,columnSeries_loc,numAlternatives_loc,scoreWrongAnswer_loc):
     #print "entered getScoreQuestionsIndicatedSeries"    
     numParticipants_loc = len(scoreQuestionsAllPermutations_loc[0])
     numQuestions_loc = len(scoreQuestionsAllPermutations_loc[0][0])       
@@ -220,6 +226,9 @@ def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSer
     #print numQuestions_loc
     #print(numSeries)
     scoreQuestionsIndicatedSeries_loc= numpy.zeros((numParticipants_loc,numQuestions_loc))
+    correctAnswersIndicatedSeries_loc= numpy.zeros((numParticipants_loc,numQuestions_loc))
+    wrongAnswersIndicatedSeries_loc= numpy.zeros((numParticipants_loc,numQuestions_loc))
+    blankAnswersIndicatedSeries_loc= numpy.zeros((numParticipants_loc,numQuestions_loc))
     numberCorrectAnswers_loc = numpy.zeros((numParticipants_loc))
     numberWrongAnswers_loc = numpy.zeros((numParticipants_loc))
     numberBlankAnswers_loc = numpy.zeros((numParticipants_loc))
@@ -232,15 +241,24 @@ def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,columnSer
         
         #print(serieIndicated)
         scoreQuestionsIndicatedSeries_loc[participant,:] = scoreQuestionsAllPermutations_loc[serieIndicated-1,participant,:]
-       # print("test")
-        correctAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==1.0]
-        wrongAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==scoreWrongAnswer_loc]
-        blankAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==0.0]
-       # print(correctAnswer_loc)
-        numberCorrectAnswers_loc[participant] = len(correctAnswers_loc)
-        numberWrongAnswers_loc[participant] = len(wrongAnswers_loc)
-        numberBlankAnswers_loc[participant] = len(blankAnswers_loc)
+        correctAnswersIndicatedSeries_loc[participant,:] = correctAnswersAllPermutations_loc[serieIndicated-1,participant,:]
+        wrongAnswersIndicatedSeries_loc[participant,:] = wrongAnswersAllPermutations_loc[serieIndicated-1,participant,:]
+        blankAnswersIndicatedSeries_loc[participant,:] = blankAnswersAllPermutations_loc[serieIndicated-1,participant,:]
+        numberCorrectAnswers_loc[participant] = int(sum(correctAnswersIndicatedSeries_loc[participant,:]))
+        numberWrongAnswers_loc[participant] = int(sum(wrongAnswersIndicatedSeries_loc[participant,:]))
+        numberBlankAnswers_loc[participant] = int(sum(blankAnswersIndicatedSeries_loc[participant,:]))
+        #print("test")
+        #TODO => FIX, does not work if score wrong = score blank
+        #correctAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==1.0]
+        #wrongAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==scoreWrongAnswer_loc]
+        #blankAnswers_loc = [x for x in range(numQuestions_loc) if scoreQuestionsIndicatedSeries_loc[participant,x]==0.0]
+        #print(correctAnswer_loc)
+        #numberCorrectAnswers_loc[participant] = len(correctAnswers_loc)
+        #numberWrongAnswers_loc[participant] = len(wrongAnswers_loc)
+        #numberBlankAnswers_loc[participant] = len(blankAnswers_loc)
         #print(numberCorrectAnswers_loc[participant])
+        #print(numberWrongAnswers_loc[participant])
+        #print(numberBlankAnswers_loc[participant])
         
     averageScoreQuestions_loc = scoreQuestionsIndicatedSeries_loc.sum(axis=0)/float(numParticipants_loc)    
     return scoreQuestionsIndicatedSeries_loc, averageScoreQuestions_loc, numberCorrectAnswers_loc, numberWrongAnswers_loc, numberBlankAnswers_loc

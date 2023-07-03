@@ -28,7 +28,7 @@ def genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder):
         #print(outputFolder_onderdeelFull)
         shutil.make_archive(zipToCreate,"zip",outputFolder_onderdeelFull)
     
-def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,outputFolder):
+def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder):
     #print("begin genereerPUntenBestand")
     #lees punten van TOTAAL
     outputFolder_onderdeel = outputFolder +  "_TOTAAL/" + "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
@@ -79,10 +79,10 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
         punten_compose[namen_nieuw] = df[namen_nieuw]
         
     
-    geslaagdVariabele=bepaalGeslaagd(punten_compose,regelGeslaagd)
+    geslaagdVariabele=bepaalGeslaagd(punten_compose,regelGeslaagd,maxScores)
     punten_compose.insert(5,"Geslaagd",geslaagdVariabele)
     
-    feedbackgroep=bepaalFeedbackGroep(punten_compose,regelFeedbackgroep)
+    feedbackgroep=bepaalFeedbackGroep(punten_compose,regelFeedbackgroep,maxScores)
     punten_compose.insert(5,"FeedbackGroep",feedbackgroep)
     
     #print("test")
@@ -93,7 +93,7 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     punten_compose.to_excel(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
     #print("end genereerPUntenBestand")
     
-def bepaalFeedbackGroep(df,regelFeedbackgroep):
+def bepaalFeedbackGroep(df,regelFeedbackgroep,maxScores):
     #print("feedbackgroup begin")
     feedbackgroep = [""]* df.shape[0]
     feedbackgroepA = [False]* df.shape[0]
@@ -108,11 +108,11 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
         feedbackgroepA = [True]* df.shape[0]
     #feedbackgroepA als geslaagd op totaal, anders feedbackgroepB
     if regelFeedbackgroep == "geslaagdTotaal":            
-        feedbackgroepA = (df["TOTAAL"].values>=10)
+        feedbackgroepA = (df["TOTAAL"].values>=maxScores[0]/2)
         feedbackgroepB = [not x for x in feedbackgroepA]
     #feedbackgroepA als totaal geslaagd en score B geslaagd, anders feedbackgroepB
     if regelFeedbackgroep == "ia":            
-        feedbackgroepA = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
+        feedbackgroepA = (df["TOTAAL"].values>=maxScores[0]/2) & (df["scoreB"].values>=maxScores[2]/2)
         feedbackgroepB = [not x for x in feedbackgroepA]
     #feedbackgroepA als score >=10; feedbackgroepB als score tussen 5 en 10; feedbackgroepC als score <5
     if regelFeedbackgroep == "dw":            
@@ -135,15 +135,15 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep):
     #print("feedbackgroep end")
     return feedbackgroep
 
-def bepaalGeslaagd(df,regelGeslaagd):
+def bepaalGeslaagd(df,regelGeslaagd,maxScores):
     #print("geslaagd begin")
     geslaagdVariabele = [""]* df.shape[0]
     
     if regelGeslaagd == "geslaagdTotaal":            
-        geslaagdGroep = (df["TOTAAL"].values>=10)
+        geslaagdGroep = (df["TOTAAL"].values>=maxScores[0]/2)
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
     if regelGeslaagd == "ia":            
-        geslaagdGroep = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=10)
+        geslaagdGroep = (df["TOTAAL"].values>=maxScores[0]/2) & (df["scoreB"].values>=maxScores[2]/2)
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
     #A als (score_TOTAAL>=10 AND score_wiskunde>=8)
     if regelGeslaagd == "wf":            

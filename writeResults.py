@@ -1401,7 +1401,7 @@ def write_participantsList(outputbook_loc,nameSheet_loc,deelnemers_loc):
         sheetC.write(rowCounter,columnCounter,deelnemers_loc[i])
         rowCounter+=1
   
-def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,matrixAnswers_loc,correctAnswers_loc,deelnemers_loc,columnSeries_loc,jaar,toetsnaamOnderdeel):
+def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,matrixAnswers_loc,correctAnswers_loc,deelnemers_loc,columnSeries_loc,jaar,toetsnaamOnderdeel,blankAnswer_loc):
     fqsf= open(outputFolder_onderdeel_loc + '/antwoorden_'  + jaar + "_" +  toetsnaamOnderdeel +'.qsf','w')
     fqsf.write('Snapshot,Participant,Vendor,Group')
     for question in range(1,numQuestions_loc+1):
@@ -1417,7 +1417,7 @@ def write_qsf(outputFolder_onderdeel_loc,numAlternatives_loc,numQuestions_loc,ma
         correctAnswers_numbers = numpy.where(correctAnswers_numbers==letter, str(alternative+1), correctAnswers_numbers)
     
     #the blank answers => replace by numAlternatives+1
-    letter="X"
+    letter=blankAnswer_loc
     matrixAnswers_numbers = numpy.where(matrixAnswers_numbers==letter, str(numAlternatives_loc+1), matrixAnswers_numbers)
 
     #write line with answers of participant

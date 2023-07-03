@@ -46,12 +46,12 @@ import afwerkingOnderdelen
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2022"
-sessie = 24
-toets = "test" 
-editie= "augustus "+ jaar
-aantal_onderdelen = 2 #TODO read from file or as extra safety?
-numSeries= 2 # number of series TODO lezen van file or as extra safety?
+jaar = "2023"
+sessie = 25
+toets = "ir" 
+editie= "juli "+ jaar
+aantal_onderdelen = 0 #TODO read from file or as extra safety?
+numSeries= 4 # number of series TODO lezen van file or as extra safety?
 
 
 
@@ -87,12 +87,12 @@ else:
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-instellingen = ["all"]
+#instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-#instellingen = ["Leuven","Gent"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven"]
 
 numAlternatives = 4 #number of alternatives
 
@@ -126,6 +126,8 @@ else:
      permutationsUsed = True
 
 onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder)
+maxScores = numpy.loadtxt(outputFolder + "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="int",ndmin=1)
+
 
 for onderdeel in (["TOTAAL"] + onderdelen):
     print("-------------------------------------------------")
@@ -224,6 +226,9 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     
     deelnemers_all = []      
     scoreQuestionsAllPermutations_all = []
+    correctAnswersAllPermutations_all = []
+    wrongAnswersAllPermutations_all = []
+    blankAnswersAllPermutations_all = []
     numQuestionsAlternatives_all = []
     scoreQuestionsIndicatedSeries_all = []
     numberCorrect_all = []
@@ -293,12 +298,12 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         supportFunctions.checkMatrixAnswers(matrixAnswers,alternatives,blankAnswer)
         
         #get the score for all permutations for each of the questions
-        scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer)     
+        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer)     
         #scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations_old(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
         numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
         
         #get the scores for the indicated series
-        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,columnSeries,numAlternatives,scoreWrongAnswer)
+        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,columnSeries,numAlternatives,scoreWrongAnswer)
         
         #get the overall statistics
         totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
@@ -378,6 +383,9 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     
         deelnemers_all.append(deelnemers)
         scoreQuestionsAllPermutations_all.append(scoreQuestionsAllPermutations)
+        correctAnswersAllPermutations_all.append(correctAnswersAllPermutations)
+        wrongAnswersAllPermutations_all.append(wrongAnswersAllPermutations)
+        blankAnswersAllPermutations_all.append(blankAnswersAllPermutations)
         numQuestionsAlternatives_all.append(numQuestionsAlternatives)
         scoreQuestionsIndicatedSeries_all.append(scoreQuestionsIndicatedSeries)
         totalScoreDifferentPermutations_all.append(totalScoreDifferentPermutations)
@@ -400,6 +408,9 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     numQuestionsAlternatives_tot = sum(numQuestionsAlternatives_all)
     scoreQuestionsIndicatedSeries_tot = numpy.vstack(scoreQuestionsIndicatedSeries_all)
     totalScoreDifferentPermutations_tot = numpy.vstack(totalScoreDifferentPermutations_all)
+    correctAnswersAllPermutations_tot = numpy.hstack(correctAnswersAllPermutations_all)
+    wrongAnswersAllPermutations_tot = numpy.hstack(wrongAnswersAllPermutations_all)
+    blankAnswersAllPermutations_tot = numpy.hstack(blankAnswersAllPermutations_all)    
     columnSeries_tot = numpy.hstack(columnSeries_all)
     matrixAnswers_tot = numpy.vstack(matrixAnswers_all)
     numParticipants_stacked_tot = numpy.vstack(numParticipants_all)
@@ -409,10 +420,13 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     percentagePass_stacked_tot  = numpy.vstack(percentagePass_all)
     numParticipants_tot = sum(numParticipants_stacked_tot)[0]
     scoreCategories_tot = numpy.hstack(scoreCategories_all)
+    numberCorrectAnswers_tot = numpy.hstack(numberCorrectAnswers_all)
+    numberWrongAnswers_tot = numpy.hstack(numberWrongAnswers_all)
+    numberBlankAnswers_tot = numpy.hstack(numberBlankAnswers_all)
 
     totalScore_tot, averageScore_tot, medianScore_tot, standardDeviation_tot, percentagePass_tot = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries_tot,maxTotalScore)
     numParticipantsSeries_tot, averageScoreSeries_tot, medianScoreSeries_tot, standardDeviationSeries_tot, percentagePassSeries_tot, averageScoreQuestionsDifferentSeries_tot = supportFunctions.getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,maxTotalScore)
-    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,columnSeries_tot,numAlternatives,scoreWrongAnswer)
+    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,correctAnswersAllPermutations_tot,wrongAnswersAllPermutations_tot,blankAnswersAllPermutations_tot,columnSeries_tot,numAlternatives,scoreWrongAnswer)
         
     totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot,averageScoreUpper_tot, averageScoreMiddle_tot, averageScoreLower_tot, averageScoreQuestionsUpper_tot, averageScoreQuestionsMiddle_tot, averageScoreQuestionsLower_tot,numQuestionsAlternativesUpper_tot,numQuestionsAlternativesMiddle_tot,numQuestionsAlternativesLower_tot, scoreQuestionsUpper_tot, scoreQuestionsMiddle_tot, scoreQuestionsLower_tot,numUpper_tot, numMiddle_tot, numLower_tot= supportFunctions.calculateUpperLowerStatistics(matrixAnswers_tot,content,columnSeries_tot,totalScore_tot,scoreQuestionsIndicatedSeries_tot,correctAnswers,alternatives,blankAnswer,content_colNrs,permutations)
     distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDistributionStudents(totalScore_tot,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
@@ -431,7 +445,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     
 
     ## WRITING THE OUTPUT TO A FILE
-    writeResults.write_qsf(outputFolder_onderdeel_ps,numAlternatives,numQuestions,matrixAnswers_tot,correctAnswers,deelnemers_tot,columnSeries_tot,jaar,toetsnaamOnderdeel)
+    writeResults.write_qsf(outputFolder_onderdeel_ps,numAlternatives,numQuestions,matrixAnswers_tot,correctAnswers,deelnemers_tot,columnSeries_tot,jaar,toetsnaamOnderdeel,blankAnswer)
     writeResults.write_results(outputbook,outputbookperm,numQuestions,correctAnswers,alternatives,blankAnswer,
                       maxTotalScore,content,content_colNrs,
                       columnSeries_tot,deelnemers_tot,
@@ -645,7 +659,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
     # frapport.close()
     
-afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,outputFolder)
+afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder)
 afwerkingOnderdelen.kopieerQSF(jaar,toets,outputFolder)
 # Let op, zips creëren duurt wel even
 afwerkingOnderdelen.genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder)
