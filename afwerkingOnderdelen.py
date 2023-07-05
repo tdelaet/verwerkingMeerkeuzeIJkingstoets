@@ -121,11 +121,29 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep,maxScores):
         feedbackgroepC = (df["TOTAAL"].values<5)
     #feedbackgroepA als score >=10; feedbackgroepB als 4<= score_TOTAAL < 10, feedbackgroepC als score score_TOTAAL<=3 
     if regelFeedbackgroep == "bi":            
+        feedbackgroepA = (df["TOTAAL"].values>=12)
+        feedbackgroepB = (df["TOTAAL"].values<12) & (df["TOTAAL"].values>=10)
+        feedbackgroepC = (df["TOTAAL"].values<10)        
+        #feedbackgroep A score_TOTAAL >=12; 
+        #feedbackgroep B 10 <= score_TOTAAL<12;
+        #feedbackgroep C score_TOTAAL<10
+    if regelFeedbackgroep == "bwfa":            
         feedbackgroepA = (df["TOTAAL"].values>=10)
-        feedbackgroepB = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>=4)
-        feedbackgroepC = (df["TOTAAL"].values<=3)    
-
-        
+        feedbackgroepB = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>6)
+        feedbackgroepC = (df["TOTAAL"].values<=6)        
+        #feedbackgroep A score_TOTAAL >=10 
+        #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 6
+        #feedbackgroep C score_TOTAAL <=6
+    if regelFeedbackgroep == "ib":
+        feedbackgroepA = (df["TOTAAL"].values>=12)
+        feedbackgroepB = (df["TOTAAL"].values<12) & (df["TOTAAL"].values>=10)
+        feedbackgroepC = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>5)
+        feedbackgroepD = (df["TOTAAL"].values<=5) 
+        #feedbackgroep A score_Totaal>=12;
+        #feedbackgroep B 10<=score_Totaal<12;
+        #feedbackgroep C 5<score_Totaal<10;
+        #feedbackgroep D score_Totaal<=5
+    
     feedbackgroep = numpy.where(feedbackgroepA,"A",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepB,"B",feedbackgroep)
     feedbackgroep = numpy.where(feedbackgroepC,"C",feedbackgroep)

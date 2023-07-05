@@ -44,6 +44,7 @@ def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen
     maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal)
     # prepare OMR for subports    
     OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTotaal)
+    #print("end voorbereidingOnderdelen: "+ "voorbereidingOnderdelen")
     return onderdelen
 
 def sleutelOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):

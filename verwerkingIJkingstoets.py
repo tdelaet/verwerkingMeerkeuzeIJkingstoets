@@ -48,50 +48,57 @@ import afwerkingOnderdelen
 ### Variables to fill in
 jaar = "2023"
 sessie = 25
-toets = "ir" 
+toets = "la" 
 editie= "juli "+ jaar
-aantal_onderdelen = 0 #TODO read from file or as extra safety?
-numSeries= 4 # number of series TODO lezen van file or as extra safety?
+aantal_onderdelen = 4 #TODO read from file or as extra safety?
+numSeries= 1 # number of series TODO lezen van file or as extra safety?
 
 
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
 if toets=="ia":
-    regelFeedbackgroep = "ia"      #A als (TOTAAL >=10 & scoreB>=10)    
-    regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=10 & scoreB>=10)  
-elif toets=="dw":
-    regelFeedbackgroep = "dw"     #feedbackgroepA als score >=10; feedbackgroepB als score tussen 5 en 10; feedbackgroepC als score <5
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)  
+    regelFeedbackgroep = "ia"      #A als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)    
+    regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)  
 elif toets=="bi":
-    regelFeedbackgroep="bi" #score_TOTAAL >=10  4<= score_TOTAAL < 10 score_TOTAAL<=3 
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)
-elif toets=="wf":
-    regelFeedbackgroep="iedereenA"  
-    regelGeslaagd =  "wf" #A als (score_TOTAAL>=10 AND score_wiskunde>=8)
-elif toets=="ir" or toets=="bw" or toets=="fa" or toets=="la" or toets=="et":
-    regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=10)  
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-elif toets=="ww" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="ib" or toets=="id" or toets=="in":
+    regelFeedbackgroep="bi"
+    #feedbackgroep A score_TOTAAL >=12; 
+    #feedbackgroep B 10 <= score_TOTAAL<12;
+    #feedbackgroep C score_TOTAAL<10
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
+elif toets=="ib":
+    regelFeedbackgroep="ib"  
+    #feedbackgroep A score_Totaal>=12;
+    #feedbackgroep B 10<=score_Totaal<12;
+    #feedbackgroep C 5<score_Totaal<10;
+    #feedbackgroep D score_Totaal<=5
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
+elif toets=="bw" or toets=="fa":
+    #feedbackgroep A score_TOTAAL >=10 
+    #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 6
+    #feedbackgroep C score_TOTAAL <=6
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2)  
+    regelFeedbackgroep =  "bwfa"
+elif toets=="ir" or toets=="ww"  or toets=="la" or toets=="et":
+    regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
+elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="in":
     regelFeedbackgroep =  "iedereenA"
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10) 
-elif toets=="test":
-    regelFeedbackgroep="bi" #score_TOTAAL >=10  4<= score_TOTAAL < 10 score_TOTAAL<=3 
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=10)
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
 else:
     print ("ERROR found in input variables"   )
     sys.exit()
 
-
+    
 
 #instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-#instellingen = ["all"]
+instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven"]
 
 numAlternatives = 4 #number of alternatives
@@ -209,8 +216,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #categorie of questions
     categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toetsnaamOnderdeel,texinputFolder,numQuestions)
 
-    
-    #numpy.savetxt(outputFolder_onderdeel + "permutatie_"+ jaar +"_" + toetsnaamOnderdeel + ".txt",permutations,delimiter=',',fmt="%i")
+        #numpy.savetxt(outputFolder_onderdeel + "permutatie_"+ jaar +"_" + toetsnaamOnderdeel + ".txt",permutations,delimiter=',',fmt="%i")
     ############################
     ############################
     
@@ -218,12 +224,11 @@ for onderdeel in (["TOTAAL"] + onderdelen):
 
     #letters of answer alternatives
     alternatives = list(string.ascii_uppercase)[0:numAlternatives]
-    
-         
+       
     if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen,classificationQuestionsMod,categorieQuestions)):
         print ("ERROR found in input variables"   )
         sys.exit()
-    
+        
     deelnemers_all = []      
     scoreQuestionsAllPermutations_all = []
     correctAnswersAllPermutations_all = []
@@ -247,7 +252,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     numberCorrectAnswers_all = []
     numberWrongAnswers_all = []
     numberBlankAnswers_all = []
-      
+    
     for instelling in instellingen:  
         counter = 0
         print ("instelling: " + instelling)
