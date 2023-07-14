@@ -122,7 +122,7 @@ writeFeedbackStudents = False
 #####################################################################################
 #####################################################################################
 
-outputFolder = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets
+outputFolder = "../ijkingstoets-data/" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets
 if not os.path.exists(outputFolder):
         os.makedirs(outputFolder)
 
@@ -141,7 +141,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     print("VERWERKING ONDERDEEL " + onderdeel)
     print("-------------------------------------------------")
     toetsnaamOnderdeel = toets + "_" + onderdeel
-    folder_onderdeel = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toetsnaamOnderdeel
+    folder_onderdeel = "../ijkingstoets-data/" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toetsnaamOnderdeel
     # number of questions is length of the sleutel/correct answers
     numQuestions = len(numpy.loadtxt(folder_onderdeel + "/sleutel_"  + jaar +"_" + toetsnaamOnderdeel +".txt",delimiter=',',dtype="str",ndmin=1))
     print("aantal vragen "+ str(numQuestions))

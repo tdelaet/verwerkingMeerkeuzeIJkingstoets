@@ -31,7 +31,7 @@ def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen
         if not os.path.exists(outputFolderOnderdeelPrintEnScan):
             os.makedirs(outputFolderOnderdeelPrintEnScan)
         #save wich questions are in subpart
-        print(outputFolderOnderdeel)
+        #print(outputFolderOnderdeel)
         vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",delimiter=',',dtype="int",ndmin=1)
         numpy.savetxt(outputFolderOnderdeel + "/vragen_" + jaar+ "_"+ toets+ "_"+ onderdeel + ".txt",[vragen_onderdeel],delimiter=',',fmt="%i")
 
