@@ -48,10 +48,10 @@ import afwerkingOnderdelen
 ### Variables to fill in
 jaar = "2023"
 sessie = 25
-toets = "la" 
+toets = "in" 
 editie= "juli "+ jaar
 aantal_onderdelen = 4 #TODO read from file or as extra safety?
-numSeries= 1 # number of series TODO lezen van file or as extra safety?
+numSeries= 2 # number of series TODO lezen van file or as extra safety?
 
 
 
@@ -78,10 +78,10 @@ elif toets=="bw" or toets=="fa":
     #feedbackgroep C score_TOTAAL <=6
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2)  
     regelFeedbackgroep =  "bwfa"
-elif toets=="ir" or toets=="ww"  or toets=="la" or toets=="et":
+elif toets=="ir" or toets=="ww"  or toets=="la":
     regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
-elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="in":
+elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="in" or toets=="et":
     regelFeedbackgroep =  "iedereenA"
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
 else:
