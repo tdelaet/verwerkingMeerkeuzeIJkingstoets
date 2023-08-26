@@ -42,18 +42,17 @@ import writeResults
 import leesSleutelEnPermutaties
 import voorbereidingOnderdelen
 import afwerkingOnderdelen
+import plotFunctions
 
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
 jaar = "2023"
-sessie = 25
-toets = "in" 
-editie= "juli "+ jaar
+sessie = 26
+toets = "ia" 
+editie= "augustus "+ jaar
 aantal_onderdelen = 4 #TODO read from file or as extra safety?
-numSeries= 2 # number of series TODO lezen van file or as extra safety?
-
-
+numSeries= 4 # number of series TODO lezen van file or as extra safety?
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
 if toets=="ia":
@@ -90,11 +89,10 @@ else:
 
     
 
-#instellingen = ["Leuven","Kortrijk","Gent","Brussel","Howest"]
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-instellingen = ["all"]
+#instellingen = ["all"]
 #instellingen = ["all","online"]
 #instellingen = ["Leuven","Brussel","Gent"	]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
@@ -103,7 +101,7 @@ instellingen = ["all"]
 
 numAlternatives = 4 #number of alternatives
 
-#blankAnswerEncoded = "BLAN" 
+
 blankAnswer = "BLANK"  #how a blank answer is encoded in the OMR output
 #score voor fout antwoord
 # GISCORRECTIE
@@ -362,30 +360,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
             outputbook.save(outputFolder_instelling + 'output_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
             outputbookperm.save(outputFolder_instelling + 'output_permutations_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
             outputStudentbook.save(outputFolder_instelling + 'punten_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
-            #outputResults.save(outputFolder_instelling + 'resultaten_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
-                              
-            # plot the histogram of the total score
-            plt.figure(figsize=(15, 5))
-            n, bins, patches = plt.hist(totalScore,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
-            plt.title("histogram score " + instelling)
-            plt.xlabel("score (max " + str(maxTotalScore)+ ")")
-            plt.xlim([0-0.5,maxTotalScore+0.5])
-            plt.xticks(numpy.arange(1,maxTotalScore+1))
-            plt.ylabel("aantal studenten")
-            plt.text(maxTotalScore, numpy.max(n)-2, 
-                  'gemiddelde: ' + str(round(averageScore,2)) + "\n" +
-                  'mediaan: ' + str(int(medianScore))  + "\n" +
-                  'percentage geslaagd: ' + str(int(round(percentagePass,0))) + "%"  + "\n" +
-                  'aantal deelnemers: ' + str(numParticipants)
-                  ,
-                horizontalalignment='right',
-                verticalalignment='top',
-                bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
-            figManager = plt.get_current_fig_manager()
-            #figManager.window.showMaximized()    
-            plt.savefig(outputFolder_instelling + 'histogramGeheel_'  + jaar + "_" +  toets + "_" +instelling+'.png', bbox_inches='tight',dpi=300)
-            
-    
+
         deelnemers_all.append(deelnemers)
         scoreQuestionsAllPermutations_all.append(scoreQuestionsAllPermutations)
         correctAnswersAllPermutations_all.append(correctAnswersAllPermutations)
@@ -471,11 +446,9 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                       bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                       )    
     
-    
     writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
     writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
     writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
-    #writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"verwerking",numSeries,permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
     writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
     writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)
     
@@ -487,12 +460,6 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                                         categorieQuestions,scoreCategories_tot,
                                         averageScoreQuestions_tot,averageScoreQuestionsUpper_tot,averageScoreQuestionsMiddle_tot,averageScoreQuestionsLower_tot
                                         ,correctAnswers, numQuestionsAlternatives_tot)
-    # writeResults.write_feedbackPlatform(outputFolder_onderdeel,permutations,numParticipants_tot,deelnemers_tot, numQuestions,
-    #                                     alternatives,numAlternatives,content,content_colNrs,
-    #                                     totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,
-    #                                     categorieQuestions,scoreCategories_tot,
-    #                                     averageScoreQuestions_tot,averageScoreQuestionsUpper_tot,averageScoreQuestionsMiddle_tot,averageScoreQuestionsLower_tot
-    #                                     ,correctAnswers, numQuestionsAlternatives_tot,blankAnswer) 
     writeResults.write_participantsList(outputDeelnemersLijst,"Beoordelingen",deelnemers_tot)
 
     outputbook.save(outputFolder_onderdeel + 'output' +'_controleerVoorKwaliteitToets_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
@@ -505,166 +472,33 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     if writeFeedbackStudents:
         outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
 
-    def my_autopct(pct):
-        total=sum(numParticipants_all)
-        val=int(pct*total/100.0)
-        return '{p:.2f}%  ({v:d})'.format(p=pct,v=val)
-    
-    ##################PLOTTING##################
-    font = {'family' : 'normal',
-            'size'   : 12}
-    if (len(instellingen)!=1):
-        # plot the pie diagram of the different locations
-        plt.figure()
-        labels = instellingen    
-        plt.pie(numParticipants_all, labels=labels,
-                        autopct=my_autopct, shadow=True, startangle=90)    
-        plt.title('Aantal deelnemers', bbox={'facecolor':'0.8', 'pad':5})
-        plt.savefig(outputFolder_onderdeel + 'verdelingDeelnemers_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-    
-    # plot the histogram of the total score
-    fig=plt.figure(figsize=(15, 5))
-    ax=fig.add_subplot(111)
-    n, bins, patches = plt.hist(totalScore_tot,bins=numpy.arange(0-0.5,maxTotalScore+1,1))
-    plt.xlabel("score (max " + str(maxTotalScore)+ ")")
-    plt.xlim([0-0.5,maxTotalScore+0.5])
-    plt.xticks(numpy.arange(1,maxTotalScore+1))
-    plt.ylabel("aantal studenten")       
-    plt.text(0.966,0.9, 
-              'gemiddelde: ' + str(round(averageScore_tot,2)) + "\n" +
-              'mediaan: ' + str(int(medianScore_tot))  + "\n" +
-              'percentage geslaagd: ' + str(int(round(percentagePass_tot,0))) + "%"  + "\n" +
-              'aantal deelnemers: ' + str(numParticipants_tot)
-              ,transform=ax.transAxes,
-            horizontalalignment='right',
-            verticalalignment='top',
-            bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'),
-            fontsize=12)     
-    matplotlib.rc('font', **font)       
-    #figManager = plt.get_current_fig_manager()
-    #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramGeheel_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-    if verwerking=="tex":
-        plt.savefig(texoutputFolder + 'histogramGeheel_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-    
-    # plot the histogram of the total score UML
-    plt.figure(figsize=(15, 5))
-    n, bins, patches = plt.hist([totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot],bins=numpy.arange(0-0.5,maxTotalScore+1,1), stacked=True, color=['g', 'b', 'r'])
-    plt.title("histogram total score")
-    plt.xlabel("score (max " + str(maxTotalScore)+ ")")
-    plt.xlim([0-0.5,maxTotalScore+0.5])
-    plt.ylabel("aantal studenten")
-    plt.text(maxTotalScore, numpy.max(n)-0.5, 
-              'gemiddelde: ' + str(round(averageScore_tot,2)) + "\n" +
-              'mediaan: ' + str(int(medianScore_tot))  + "\n" +
-              'percentage geslaagd: ' + str(int(round(percentagePass_tot,0))) + "%"  + "\n" +
-              'aantal deelnemers: ' + str(numParticipants_tot) +"\n" +
-              'Upper gemiddelde: ' + str(round(averageScoreUpper_tot,2))  + "\n" +
-              'Middle gemiddelde: ' + str(round(averageScoreMiddle_tot,2)) + "\n" +
-              'Lower gemiddelde: ' + str(round(averageScoreLower_tot,2)) 
-              ,horizontalalignment='right'
-              , verticalalignment='top'
-              , bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=1'))
-    figManager = plt.get_current_fig_manager()
-    #figManager.window.showMaximized()            
-    plt.savefig(outputFolder_onderdeel + 'histogramGeheelUML_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-
-    #plot histogram for different questions
-    numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
-    numRowsPict = int(numpy.ceil(numQuestions/numColsPict))
-    if (numRowsPict*numColsPict < numQuestions):
-        numRowsPict+=1
-    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict,figsize=(15, 15))
-    fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
-    binsHist = numpy.array([-3.0/(2*(numAlternatives-1)),-1.0/(2*(numAlternatives-1)),0.5,1.5])
-    for question in range(1,numQuestions+1):
-        ax = plt.subplot(numRowsPict,numColsPict,question)
-        n, bins, patches = plt.hist(scoreQuestionsIndicatedSeries_tot[:,question-1],bins=binsHist)
-        plt.xticks([round(-1/(numAlternatives-1),2), 0,1])
-        plt.title("vraag " + str(question))
-        plt.xlabel("score")
-        plt.xlim([-2.0/(numAlternatives-1),1+1.0/(numAlternatives-1)])
-        plt.ylabel("aantal studenten")
-    matplotlib.rc('font', **font)
-    figManager = plt.get_current_fig_manager()
-    #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramVragen_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-       
-    #plot histogram for different questions UML
-    numColsPict = int(numpy.ceil(numpy.sqrt(numQuestions)))
-    numRowsPict = int(numpy.ceil(numQuestions/numColsPict))
-    if (numRowsPict*numColsPict < numQuestions):
-        numRowsPict+=1
-    fig, axes = plt.subplots(nrows=numRowsPict, ncols=numColsPict,figsize=(15, 15))
-    fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
-    
-    for question in range(1,numQuestions+1):
-        ax = plt.subplot(numRowsPict,numColsPict,question)
-        correctUpper =  sum(scoreQuestionsUpper_tot[:,question-1] == 1.0)/len(scoreQuestionsUpper_tot[:,question-1])
-        if len(scoreQuestionsMiddle_tot[:,question-1])!=0:    
-            correctMiddle = sum(scoreQuestionsMiddle_tot[:,question-1] == 1.0)/len(scoreQuestionsMiddle_tot[:,question-1])
-        else: 
-            correctMiddle =0.0
-        correctLower = sum(scoreQuestionsLower_tot[:,question-1] == 1.0)/len(scoreQuestionsLower_tot[:,question-1])                        
-        plt.bar(["lower","middle","upper"],[correctLower,correctMiddle,correctUpper],width=0.8)
-        plt.title("vraag " + str(question))
-        plt.ylabel("%correct")
-        plt.ylim([0,1])
-    figManager = plt.get_current_fig_manager()
-    #figManager.window.showMaximized()    
-    plt.savefig(outputFolder_onderdeel + 'histogramVragenUML_'  + jaar + "_" +  toetsnaamOnderdeel + '.png', bbox_inches='tight',dpi=300)
-    
-    # #feedback file schrijven
-    # fin = open(texinputFolder + 'feedbackdraft.tex','r')
-    # fout= open(texoutputFolder + 'feedback.tex','w')
-    # inhoud=fin.read()
-    # inhoud=inhoud.replace('<editie>',editie)
-    # inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
-    # inhoud=inhoud.replace('<G>', str(int(distributionStudentsHigh_tot[1])))
-    # inhoud=inhoud.replace('<N1>', str(round(distributionStudentsHigh_tot[5]/numParticipants_tot*100,1)))
-    # inhoud=inhoud.replace('<N2>', str(round(distributionStudentsHigh_tot[4]/numParticipants_tot*100,1)))
-    # inhoud=inhoud.replace('<N3>', str(round(distributionStudentsHigh_tot[3]/numParticipants_tot*100,1)))
-    # inhoud=inhoud.replace('<N4>', str(round(distributionStudentsHigh_tot[2]/numParticipants_tot*100,1)))
-    # inhoud=inhoud.replace('<N5>', str(round(distributionStudentsHigh_tot[1]/numParticipants_tot*100,1)))
-    # inhoud=inhoud.replace('<N6>', str(round(distributionStudentsLow_tot[0]/numParticipants_tot*100,1)))
-    # fout.write(inhoud)
-    # fin.close()
-    # fout.close()
-    
-    # #statistische gegevens in tex-file schrijven
-    # nameFile = [[] for i in range(int(numQuestions))]
-    # frapport = open(texoutputFolder + 'rapportinput.tex','w')
-    # for vraag in range(0,numQuestions):
-    #     percCorrectr = int(round(numQuestionsAlternatives_tot[vraag,alternatives.index(correctAnswers[vraag])]/numParticipants_tot*100,0))
-    #     percBlankr = int(round(numQuestionsAlternatives_tot[vraag,numAlternatives]/numParticipants_tot*100,0))
-    #     percUpperr = int(round(numQuestionsAlternativesUpper_tot[vraag,alternatives.index(correctAnswers[vraag])]/numUpper_tot*100,0))
-    #     percLowerr = int(round(numQuestionsAlternativesLower_tot[vraag,alternatives.index(correctAnswers[vraag])]/numLower_tot*100,0))
-    #     if not os.path.isfile(texinputFolder + nameQuestions[vraag] + '.tex'):
-    #         fin = open(texinputFolder + 'vraagdraft.tex','r')
-    #         nameFile[vraag]="vraag" + str(int(vraag+1))
-    #     else:
-    #         fin = open(texinputFolder + nameQuestions[vraag] + '.tex','r')
-    #         nameFile[vraag]=nameQuestions[vraag]
-    #     inhoud=fin.read()
-    #     inhoud=inhoud.replace('<vraagnr>',str(int(vraag+1)))
-    #     inhoud=inhoud.replace('<editie>',editie)
-    #     inhoud=inhoud.replace('<aantal>',str(numParticipants_tot))
-    #     inhoud=inhoud.replace('<juist>',str(percCorrectr))
-    #     inhoud=inhoud.replace('<blanco>',str(percBlankr))
-    #     ULABCD = 'upper/lower:'+str(percUpperr)+'/'+str(percLowerr)+'\\newline percentages ABCD:'
-    #     ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives_tot[vraag,0]/numParticipants_tot*100,0)))+'/'
-    #     ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives_tot[vraag,1]/numParticipants_tot*100,0)))+'/'
-    #     ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives_tot[vraag,2]/numParticipants_tot*100,0)))+'/'
-    #     ULABCD = ULABCD+ str(int(round(numQuestionsAlternatives_tot[vraag,3]/numParticipants_tot*100,0)))
-    #     inhoud=inhoud.replace('<ul>',ULABCD)
-    #     fout= open(texoutputFolder + nameFile[vraag] + '_stat.tex','w')
-    #     fout.write(inhoud)
-    #     fin.close()
-    #     fout.close()
-    #     frapport.write("\\input{vraag" + str(int(vraag+1))  + "_stat}\n" )
-    # frapport.close()
-    
-afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder)
+   
+punten_compose,geslaagdVariabele = afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder)
 afwerkingOnderdelen.kopieerQSF(jaar,toets,outputFolder)
+
+teller=0
+for onderdeel in (["TOTAAL"] + onderdelen):
+    print("-------------------------------------------------")
+    print("Plotting ONDERDEEL " + onderdeel)
+    print("-------------------------------------------------")
+    toetsnaamOnderdeel = toets + "_" + onderdeel
+    if onderdeel == "TOTAAL":
+        totalScore_tot=punten_compose[onderdeel]
+        percentagePassed = 100*sum(geslaagdVariabele=="True")/float(len(totalScore_tot))
+    else:
+        totalScore_tot=punten_compose["score"+onderdeel]
+        percentagePassed = 100*sum(score>= maxScores[teller]/2.0 for score in totalScore_tot)/float(len(totalScore_tot) )
+    print("percentage passed " + str(int(percentagePassed)))
+    folder_onderdeel = "../ijkingstoets-data/" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toetsnaamOnderdeel  
+    #where output of processing is saved
+    outputFolder_onderdeel = folder_onderdeel + "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
+    # plot the histogram of the total score
+    saveNameFig = outputFolder_onderdeel + 'histogramGeheel_'  + jaar + "_" +  toetsnaamOnderdeel + '.png'
+    plotFunctions.plotHistogram(saveNameFig,maxScores[teller],totalScore_tot,percentagePassed)
+    
+    saveNameFig = outputFolder_onderdeel + 'verdelingDeelnemers_'  + jaar + "_" +  toetsnaamOnderdeel + '.png'
+    plotFunctions.plotPieParticipants(saveNameFig,instellingen,numParticipants_all) 
+    teller=teller+1
+    
 # Let op, zips creëren duurt wel even
 afwerkingOnderdelen.genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder)

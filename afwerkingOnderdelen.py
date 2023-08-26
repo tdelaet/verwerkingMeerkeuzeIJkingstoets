@@ -85,13 +85,9 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     feedbackgroep=bepaalFeedbackGroep(punten_compose,regelFeedbackgroep,maxScores)
     punten_compose.insert(5,"FeedbackGroep",feedbackgroep)
     
-    #print("test")
-    #punten_compose["nummer","FeedbackGroep","Geslaagd"].to_excel("../" + jaar + "_" +  toets +"/resultaten.xlsx",sheet_name="punten",index=False)
-    #print(punten_compose)
     punten_compose.to_csv(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".csv", index = False) 
-    #print("tussen")
     punten_compose.to_excel(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
-    #print("end genereerPUntenBestand")
+    return punten_compose,geslaagdVariabele
     
 def bepaalFeedbackGroep(df,regelFeedbackgroep,maxScores):
     #print("feedbackgroup begin")
@@ -165,7 +161,7 @@ def bepaalGeslaagd(df,regelGeslaagd,maxScores):
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
     #A als (score_TOTAAL>=10 AND score_wiskunde>=8)
     if regelGeslaagd == "wf":            
-        geslaagdGroep = (df["TOTAAL"].values>=10) & (df["scoreB"].values>=8)
+        geslaagdGroep = (df["TOTAAL"].values>=maxScores[0]/2) & (df["scoreB"].values>=8)
         nietGeslaagdGroep = [not x for x in geslaagdGroep]
 
     geslaagdVariabele = numpy.where(geslaagdGroep,True,geslaagdVariabele)
@@ -173,4 +169,3 @@ def bepaalGeslaagd(df,regelGeslaagd,maxScores):
     
     #print("geslaagd end")
     return geslaagdVariabele
-    
