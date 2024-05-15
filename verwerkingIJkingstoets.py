@@ -47,9 +47,9 @@ import plotFunctions
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2023"
+jaar = "9999"
 sessie = 26
-toets = "ia" 
+toets = "fa" 
 editie= "augustus "+ jaar
 aantal_onderdelen = 4 #TODO read from file or as extra safety?
 numSeries= 4 # number of series TODO lezen van file or as extra safety?
@@ -90,24 +90,19 @@ else:
     
 
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-#instellingen = ["all"]
-#instellingen = ["all","online"]
-#instellingen = ["Leuven","Brussel","Gent"	]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel-extra"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
+#instellingen = ["all","extra"]
+#instellingen = ["all","online"]#
+instellingen = ["all"]
 #instellingen = ["Leuven"]
 
 numAlternatives = 4 #number of alternatives
 
 
 blankAnswer = "BLANK"  #how a blank answer is encoded in the OMR output
-#score voor fout antwoord
-# GISCORRECTIE
-#scoreWrongAnswer = -1.0/(float(numAlternatives)-1.0)
-# AFSCHAFFING GISCORRECTIE
-scoreWrongAnswer = 0
+scoreBlankAnswer = -1.0/(float(numAlternatives)-1.0) #score for a blank answer
+scoreWrongAnswer = -1.0/(float(numAlternatives)-1.0) # score for a wrong answer
 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 #verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven
@@ -301,12 +296,12 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         supportFunctions.checkMatrixAnswers(matrixAnswers,alternatives,blankAnswer)
         
         #get the score for all permutations for each of the questions
-        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer)     
+        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer,scoreBlankAnswer)     
         #scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations_old(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
         numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
         
         #get the scores for the indicated series
-        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,columnSeries,numAlternatives,scoreWrongAnswer)
+        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,columnSeries)
         
         #get the overall statistics
         totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
@@ -406,7 +401,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
 
     totalScore_tot, averageScore_tot, medianScore_tot, standardDeviation_tot, percentagePass_tot = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries_tot,maxTotalScore)
     numParticipantsSeries_tot, averageScoreSeries_tot, medianScoreSeries_tot, standardDeviationSeries_tot, percentagePassSeries_tot, averageScoreQuestionsDifferentSeries_tot = supportFunctions.getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,maxTotalScore)
-    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,correctAnswersAllPermutations_tot,wrongAnswersAllPermutations_tot,blankAnswersAllPermutations_tot,columnSeries_tot,numAlternatives,scoreWrongAnswer)
+    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,correctAnswersAllPermutations_tot,wrongAnswersAllPermutations_tot,blankAnswersAllPermutations_tot,columnSeries_tot)
         
     totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot,averageScoreUpper_tot, averageScoreMiddle_tot, averageScoreLower_tot, averageScoreQuestionsUpper_tot, averageScoreQuestionsMiddle_tot, averageScoreQuestionsLower_tot,numQuestionsAlternativesUpper_tot,numQuestionsAlternativesMiddle_tot,numQuestionsAlternativesLower_tot, scoreQuestionsUpper_tot, scoreQuestionsMiddle_tot, scoreQuestionsLower_tot,numUpper_tot, numMiddle_tot, numLower_tot= supportFunctions.calculateUpperLowerStatistics(matrixAnswers_tot,content,columnSeries_tot,totalScore_tot,scoreQuestionsIndicatedSeries_tot,correctAnswers,alternatives,blankAnswer,content_colNrs,permutations)
     distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDistributionStudents(totalScore_tot,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)

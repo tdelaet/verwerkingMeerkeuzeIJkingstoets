@@ -86,7 +86,7 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     #answers_loc = numpy.where(answers_loc==str(numAlternatives_loc+1), letter, answers_loc)
     return answers_loc
 
-def calculateScoreAllPermutations(sheet_loc,blankAnswer_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc,scoreWrongAnswer_loc):
+def calculateScoreAllPermutations(sheet_loc,blankAnswer_loc,matrixAnswers_loc,correctAnswers_loc,permutations_loc,alternatives_loc,numParticipants_loc,columnSeries_loc,content_colNrs_loc,scoreWrongAnswer_loc,scoreBlankAnswer_loc):
     # Calculate the score for each permutation and for each question 
     numSeries_loc = len(permutations_loc)
     numQuestions_loc = len(correctAnswers_loc)
@@ -112,10 +112,11 @@ def calculateScoreAllPermutations(sheet_loc,blankAnswer_loc,matrixAnswers_loc,co
             #correctAnswers +1
             scoreQuestionsAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1]+=1.0
             correctAnswersAllPermutations_loc[permutation-1,indicesCorrectAnswer_loc,numQuestionPermutations_loc-1] =1.0
-            #wrong answers -1/(numAlternatives-1)
+            #wrong answers assign score wrong answers
             scoreQuestionsAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1]+= scoreWrongAnswer_loc  
             wrongAnswersAllPermutations_loc[permutation-1,indicesWrongAnswer_loc,numQuestionPermutations_loc-1] =1.0
-            #blank answers => do nothing
+            #blank answers assign score blank answers
+            scoreQuestionsAllPermutations_loc[permutation-1,indicesBlankAnswer_loc,numQuestionPermutations_loc-1]+= scoreBlankAnswer_loc  
             blankAnswersAllPermutations_loc[permutation-1,indicesBlankAnswer_loc,numQuestionPermutations_loc-1] =1.0
         counter_alternative+=1
     return scoreQuestionsAllPermutations_loc,correctAnswersAllPermutations_loc,wrongAnswersAllPermutations_loc,blankAnswersAllPermutations_loc
@@ -217,7 +218,7 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
             counter_alternative+=1
     return numQuestionsAlternatives_loc
    
-def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,correctAnswersAllPermutations_loc,wrongAnswersAllPermutations_loc,blankAnswersAllPermutations_loc,columnSeries_loc,numAlternatives_loc,scoreWrongAnswer_loc):
+def getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_loc,correctAnswersAllPermutations_loc,wrongAnswersAllPermutations_loc,blankAnswersAllPermutations_loc,columnSeries_loc):
     #print "entered getScoreQuestionsIndicatedSeries"    
     numParticipants_loc = len(scoreQuestionsAllPermutations_loc[0])
     numQuestions_loc = len(scoreQuestionsAllPermutations_loc[0][0])       
@@ -420,9 +421,10 @@ def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
     #print( matrixAnswers_loc)
     #print (alternatives_loc)
     #print( blankAnswer_loc)
-    if False in [ e in alternatives_loc+[blankAnswer_loc]  for e in matrixAnswers_loc.reshape(-1) ]:
-        print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc]))
-        sys.exit()
+    for e in matrixAnswers_loc.reshape(-1):
+        if not(e in alternatives_loc+[blankAnswer_loc]):
+            print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])+ " but also contains " + e)
+            sys.exit()
 
 def getScoreCategories(scoreQuestionsIndicatedSeries_loc,categorieQuestions_loc):
     scoreCategories_loc = []
