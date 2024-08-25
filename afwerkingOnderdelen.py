@@ -123,7 +123,7 @@ def bepaalFeedbackGroep(df,regelFeedbackgroep,maxScores):
         #feedbackgroep A score_TOTAAL >=12; 
         #feedbackgroep B 10 <= score_TOTAAL<12;
         #feedbackgroep C score_TOTAAL<10
-    if regelFeedbackgroep == "bwfa":            
+    if regelFeedbackgroep == "bwfala":            
         feedbackgroepA = (df["TOTAAL"].values>=10)
         feedbackgroepB = (df["TOTAAL"].values<10) & (df["TOTAAL"].values>6)
         feedbackgroepC = (df["TOTAAL"].values<=6)        

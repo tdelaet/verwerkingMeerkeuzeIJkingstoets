@@ -47,15 +47,18 @@ import plotFunctions
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "9999"
-sessie = 26
-toets = "fa" 
+jaar = "2024"
+sessie = 28
 editie= "augustus "+ jaar
-aantal_onderdelen = 4 #TODO read from file or as extra safety?
+
+
+toets = "ir" 
+aantal_onderdelen = 1 #TODO read from file or as extra safety?
 numSeries= 4 # number of series TODO lezen van file or as extra safety?
+neutralized=[] #%TODO: read from file or something else?
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
-if toets=="ia":
+if toets=="ww":
     regelFeedbackgroep = "ia"      #A als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)    
     regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)  
 elif toets=="bi":
@@ -76,26 +79,36 @@ elif toets=="bw" or toets=="fa":
     #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 6
     #feedbackgroep C score_TOTAAL <=6
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2)  
-    regelFeedbackgroep =  "bwfa"
-elif toets=="ir" or toets=="ww"  or toets=="la":
+    regelFeedbackgroep =  "bwfala"
+elif toets=="ir" or toets=="ww" or toets=="rw" or toets =="la":
     regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
-elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi" or toets=="hw" or toets=="in" or toets=="et":
+elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi"  or toets=="hw" or toets=="in" or toets=="et":
     regelFeedbackgroep =  "iedereenA"
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
 else:
     print ("ERROR found in input variables"   )
     sys.exit()
 
-    
-
+#instellingen = ["all"]
+instellingen = ["Brussel","Kortrijk","Gent","Leuven"]
+#instellingen = ["Antwerpen","Brussel","Gent","LK","LN","LZ"] #ew
+#instellingen = ["Gent","LB","LK","LL","LN"] #hw
+#instellingen = ["Antw","BB","Gent1","Gent2","Gent3","Gent4","LB","LK","LL","LN"] #hi
+#instellingen = ["Antwerpen","Brussel","Gent","Leuven","LK"] #wb
+#instellingen = ["Antw","Brussel","Gent","Leuven","LK"] #wf
 #instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk"]
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel_2"]
 #instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
 #instellingen = ["all","extra"]
 #instellingen = ["all","online"]#
-instellingen = ["all"]
-#instellingen = ["Leuven"]
+#instellingen = ["Leuven","Kortrijk","Gent"]
+#instellingen = ["Antwerpen_2"]
+#BW instellingen = ["Antwerpen","Antwerpen_2","Brussel","Gent","LK","LZ","UH"] #bw
+#instellingen = ["Antwerpen","Antwerpen-2extra","Brussel","Gent","LK","LZ"]
+# instellingen = ["Antwerpen","Brussel","Gent","Leuven","LO"] #rw
+#instellingen = ["Brussel","Antwerpen","Kortrijk","Gent","Leuven"]
+#instellingen = ["Antwerpen","Brussel","Gent","Gent-Kor","Hasselt","LE","LG","LO","LT","LW","LT-extra"] #in
 
 numAlternatives = 4 #number of alternatives
 
@@ -103,6 +116,7 @@ numAlternatives = 4 #number of alternatives
 blankAnswer = "BLANK"  #how a blank answer is encoded in the OMR output
 scoreBlankAnswer = -1.0/(float(numAlternatives)-1.0) #score for a blank answer
 scoreWrongAnswer = -1.0/(float(numAlternatives)-1.0) # score for a wrong answer
+scoreNeutralizedAnswer = 1.0
 
 verwerking = "text" #als sleutel en permutatie als txt gegeven
 #verwerking = "tex" #als sleutel en permutatie als tex zijn gegeven
@@ -227,6 +241,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     correctAnswersAllPermutations_all = []
     wrongAnswersAllPermutations_all = []
     blankAnswersAllPermutations_all = []
+    neutralizedAnswersAllPermutations_all = []
     numQuestionsAlternatives_all = []
     scoreQuestionsIndicatedSeries_all = []
     numberCorrect_all = []
@@ -245,6 +260,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     numberCorrectAnswers_all = []
     numberWrongAnswers_all = []
     numberBlankAnswers_all = []
+    numberNeutralizedAnswers_all = []    
     
     for instelling in instellingen:  
         counter = 0
@@ -296,12 +312,12 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         supportFunctions.checkMatrixAnswers(matrixAnswers,alternatives,blankAnswer)
         
         #get the score for all permutations for each of the questions
-        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer,scoreBlankAnswer)     
+        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,neutralizedAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer,scoreBlankAnswer,scoreNeutralizedAnswer,neutralized)     
         #scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations_old(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
         numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
         
         #get the scores for the indicated series
-        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,columnSeries)
+        scoreQuestionsIndicatedSeries, averageScoreQuestions, numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers, numberNeutralizedAnswers =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,neutralizedAnswersAllPermutations,columnSeries)
         
         #get the overall statistics
         totalScore, averageScore, medianScore, standardDeviation, percentagePass = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries,maxTotalScore)
@@ -361,6 +377,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         correctAnswersAllPermutations_all.append(correctAnswersAllPermutations)
         wrongAnswersAllPermutations_all.append(wrongAnswersAllPermutations)
         blankAnswersAllPermutations_all.append(blankAnswersAllPermutations)
+        neutralizedAnswersAllPermutations_all.append(neutralizedAnswersAllPermutations)
         numQuestionsAlternatives_all.append(numQuestionsAlternatives)
         scoreQuestionsIndicatedSeries_all.append(scoreQuestionsIndicatedSeries)
         totalScoreDifferentPermutations_all.append(totalScoreDifferentPermutations)
@@ -376,6 +393,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         numberCorrectAnswers_all.append(numberCorrectAnswers)
         numberWrongAnswers_all.append(numberWrongAnswers)
         numberBlankAnswers_all.append(numberBlankAnswers)
+        numberNeutralizedAnswers_all.append(numberNeutralizedAnswers)
 
     
     deelnemers_tot = numpy.hstack(deelnemers_all)
@@ -385,7 +403,8 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     totalScoreDifferentPermutations_tot = numpy.vstack(totalScoreDifferentPermutations_all)
     correctAnswersAllPermutations_tot = numpy.hstack(correctAnswersAllPermutations_all)
     wrongAnswersAllPermutations_tot = numpy.hstack(wrongAnswersAllPermutations_all)
-    blankAnswersAllPermutations_tot = numpy.hstack(blankAnswersAllPermutations_all)    
+    blankAnswersAllPermutations_tot = numpy.hstack(blankAnswersAllPermutations_all)
+    neutralizedAnswersAllPermutations_tot = numpy.hstack(neutralizedAnswersAllPermutations_all)        
     columnSeries_tot = numpy.hstack(columnSeries_all)
     matrixAnswers_tot = numpy.vstack(matrixAnswers_all)
     numParticipants_stacked_tot = numpy.vstack(numParticipants_all)
@@ -398,10 +417,11 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     numberCorrectAnswers_tot = numpy.hstack(numberCorrectAnswers_all)
     numberWrongAnswers_tot = numpy.hstack(numberWrongAnswers_all)
     numberBlankAnswers_tot = numpy.hstack(numberBlankAnswers_all)
-
+    numberNeutralizedAnswers_tot = numpy.hstack(numberNeutralizedAnswers_all)
+    
     totalScore_tot, averageScore_tot, medianScore_tot, standardDeviation_tot, percentagePass_tot = supportFunctions.getOverallStatistics(scoreQuestionsIndicatedSeries_tot,maxTotalScore)
     numParticipantsSeries_tot, averageScoreSeries_tot, medianScoreSeries_tot, standardDeviationSeries_tot, percentagePassSeries_tot, averageScoreQuestionsDifferentSeries_tot = supportFunctions.getOverallStatisticsDifferentSeries(totalScoreDifferentPermutations_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,maxTotalScore)
-    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,correctAnswersAllPermutations_tot,wrongAnswersAllPermutations_tot,blankAnswersAllPermutations_tot,columnSeries_tot)
+    scoreQuestionsIndicatedSeries_tot, averageScoreQuestions_tot, numberCorrectAnswers_tot, numberWrongAnswers_tot, numberBlankAnswers_tot, numberNeutralizedAnswers_tot =  supportFunctions.getScoreQuestionsIndicatedSeries(scoreQuestionsAllPermutations_tot,correctAnswersAllPermutations_tot,wrongAnswersAllPermutations_tot,blankAnswersAllPermutations_tot,neutralizedAnswersAllPermutations_tot,columnSeries_tot)
         
     totalScoreUpper_tot,totalScoreMiddle_tot,totalScoreLower_tot,averageScoreUpper_tot, averageScoreMiddle_tot, averageScoreLower_tot, averageScoreQuestionsUpper_tot, averageScoreQuestionsMiddle_tot, averageScoreQuestionsLower_tot,numQuestionsAlternativesUpper_tot,numQuestionsAlternativesMiddle_tot,numQuestionsAlternativesLower_tot, scoreQuestionsUpper_tot, scoreQuestionsMiddle_tot, scoreQuestionsLower_tot,numUpper_tot, numMiddle_tot, numLower_tot= supportFunctions.calculateUpperLowerStatistics(matrixAnswers_tot,content,columnSeries_tot,totalScore_tot,scoreQuestionsIndicatedSeries_tot,correctAnswers,alternatives,blankAnswer,content_colNrs,permutations)
     distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDistributionStudents(totalScore_tot,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
