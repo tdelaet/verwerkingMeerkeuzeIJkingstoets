@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import sys
 
-def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder):
+def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder,neutralized):
     #print("voorbereidingOnderdelen: "+ "voorbereidingOnderdelen")
     #prepare main outputfolder
     #outputFolder = "../" + jaar + "/sessie " + str(sessie) + "/" + jaar + "_" +  toets
@@ -42,10 +42,41 @@ def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen
         permutatieOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal)
     # prepare maxScore of subparts
     maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal)
-    # prepare OMR for subports    
+    # prepare neutralized of subparts
+    if len(neutralized)>0:
+        neutralizedOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal,neutralized)
+    # prepare OMR for subparts    
     OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTotaal)
     #print("end voorbereidingOnderdelen: "+ "voorbereidingOnderdelen")
     return onderdelen
+
+def neutralizedOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal,neutralized):
+    #save neutralized in TOTAAL
+    numpy.savetxt(outputFolderTotaal + "/neutralized_" + jaar+ "_"+ toets + "_TOTAAL.txt",neutralized,delimiter=',',fmt="%s")
+       #prepare neutralized for subparts
+    for onderdeel in onderdelen:
+        neutralized_onderdeel_loc =numpy.array([], dtype=numpy.uint8)
+        vragen_onderdeel = numpy.loadtxt(outputFolder + "/onderdelen/" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",delimiter=',',dtype="int",ndmin=1)
+        #print("vragen onderdeel: ")
+        #print(vragen_onderdeel)
+        # get neutralized with just questions of onderdeel
+        #if (vragen_onderdeel.ndim==0):
+        #    correctAnswers_loc = correctAnswers[vragen_onderdeel]
+        #else:
+        for n in neutralized:
+            #print("check for " + str(n))
+            number_loc = numpy.where(vragen_onderdeel==n)[0]
+
+            if number_loc.size>0:
+                #print("in if")
+                #print("number_loc ")
+                #print(number_loc[0]+1)
+                neutralized_onderdeel_loc = numpy.append(neutralized_onderdeel_loc,number_loc[0]+1)
+        #print(neutralized_onderdeel_loc)        
+        # save neutralized of questions of subpart
+        outputFolderOnderdeel = outputFolder + "_"+ onderdeel
+        numpy.savetxt(outputFolderOnderdeel + "/neutralized_" + jaar+ "_"+ toets+ "_"+ onderdeel.capitalize() + ".txt",[neutralized_onderdeel_loc],delimiter=',',fmt="%s")
+
 
 def sleutelOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal):
     #get sleutel and save to TOTAAL folder

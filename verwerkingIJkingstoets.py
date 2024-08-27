@@ -43,6 +43,7 @@ import leesSleutelEnPermutaties
 import voorbereidingOnderdelen
 import afwerkingOnderdelen
 import plotFunctions
+import warnings
 
 #####################################################################################
 #####################################################################################
@@ -52,13 +53,17 @@ sessie = 28
 editie= "augustus "+ jaar
 
 
-toets = "ir" 
-aantal_onderdelen = 1 #TODO read from file or as extra safety?
+toets = "fa" 
+aantal_onderdelen = 4 #TODO read from file or as extra safety?
 numSeries= 4 # number of series TODO lezen van file or as extra safety?
-neutralized=[] #%TODO: read from file or something else?
+neutralized=[22] #%TODO: read from file or something else?
+
+
+
+
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
-if toets=="ww":
+if toets=="ia":
     regelFeedbackgroep = "ia"      #A als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)    
     regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)  
 elif toets=="bi":
@@ -90,8 +95,8 @@ else:
     print ("ERROR found in input variables"   )
     sys.exit()
 
-#instellingen = ["all"]
-instellingen = ["Brussel","Kortrijk","Gent","Leuven"]
+instellingen = ["all"]
+#instellingen = ["Brussel","Kortrijk","Gent","Leuven"]
 #instellingen = ["Antwerpen","Brussel","Gent","LK","LN","LZ"] #ew
 #instellingen = ["Gent","LB","LK","LL","LN"] #hw
 #instellingen = ["Antw","BB","Gent1","Gent2","Gent3","Gent4","LB","LK","LL","LN"] #hi
@@ -139,7 +144,7 @@ if numSeries==1:
 else:
      permutationsUsed = True
 
-onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder)
+onderdelen = voorbereidingOnderdelen.voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen,instellingen,outputFolder,neutralized)
 maxScores = numpy.loadtxt(outputFolder + "/onderdelen/maxScores_" + jaar+ "_"+ toets+ ".txt",delimiter=',',dtype="int",ndmin=1)
 
 
@@ -155,6 +160,8 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     maxTotalScore = numpy.loadtxt(folder_onderdeel + "/maxScore_" + jaar+ "_"+ toetsnaamOnderdeel + ".txt",delimiter=',',dtype="int",ndmin=1)[0]
     print ("maximum score "+ str(maxTotalScore))
     
+    
+        
     #nameFile = "../OMR/test" #name of excel file with scanned forms
     nameSheet = "outputScan" #sheet name of excel file with scanned forms
     
@@ -209,11 +216,19 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                 permutations[0,question] = question + 1
         else:
             permutations = numpy.loadtxt(folder_onderdeel +  "/permutatie_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=numpy.float)
-     
+    
+    neutralized_onderdeel=[]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        neutralized_onderdeel = numpy.loadtxt(folder_onderdeel +  "/neutralized_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=numpy.float)
+ 
     print("sleutel: ")
     print(correctAnswers)
     print("permutaties: ")
     print(permutations)
+    print("geneutralizeerd: ")
+    print(neutralized_onderdeel)
+
 
     ### Important for tex processing, of texinputFolders does not exists, produces "empty" list
     #name of questions
@@ -312,7 +327,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
         supportFunctions.checkMatrixAnswers(matrixAnswers,alternatives,blankAnswer)
         
         #get the score for all permutations for each of the questions
-        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,neutralizedAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer,scoreBlankAnswer,scoreNeutralizedAnswer,neutralized)     
+        scoreQuestionsAllPermutations,correctAnswersAllPermutations,wrongAnswersAllPermutations,blankAnswersAllPermutations,neutralizedAnswersAllPermutations= supportFunctions.calculateScoreAllPermutations(sheet,blankAnswer,matrixAnswers,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs,scoreWrongAnswer,scoreBlankAnswer,scoreNeutralizedAnswer,neutralized_onderdeel)     
         #scoreQuestionsAllPermutations= supportFunctions.calculateScoreAllPermutations_old(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)     
         numQuestionsAlternatives = supportFunctions.getNumberAlternatives(sheet,content,permutations,columnSeries,scoreQuestionsIndicatedSeries,alternatives,blankAnswer,content_colNrs)
         
@@ -461,8 +476,8 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                       bordersDistributionStudentsLow,bordersDistributionStudentsHigh,distributionStudentsLow_tot,distributionStudentsHigh_tot
                       )    
     
-    writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
-    writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot)           
+    writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot,numberNeutralizedAnswers_tot)            
+    writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants_tot,deelnemers_tot, numQuestions,numAlternatives,content,content_colNrs,totalScore_tot,scoreQuestionsIndicatedSeries_tot,columnSeries_tot,matrixAnswers_tot,numberCorrectAnswers_tot,numberWrongAnswers_tot,numberBlankAnswers_tot,numberNeutralizedAnswers_tot)           
     writeResults.write_overallStatisticsInstellingen(outputInstellingen,"instellingen",instellingen,numParticipants_tot,numParticipants_stacked_tot,averageScore_tot,averageScore_stacked_tot,medianScore_tot,medianScore_stacked_tot,standardDeviation_tot,standardDeviation_stacked_tot,percentagePass_tot,percentagePass_stacked_tot)
     writeResults.write_scoreStudentsNonPermutated(outputStudentbook,"punten_reeks1",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,alternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers)
     writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers_tot,totalScore_tot, categorieQuestions, scoreCategories_tot)

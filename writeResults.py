@@ -671,7 +671,7 @@ def write_histogramQuestions(outputbook_loc,nameSheet_loc,numQuestions_loc,score
         
     return questionClassification
 
-def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc):
+def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc,numberNeutralizedAnswers_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     columnCounter = 0;
@@ -705,11 +705,11 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
     columnCounter+=1;
     
     rowCounter = 0;
-    #number of correct Answers
+    #number of correct Answers %TODO added neutralized answers, write separate
     sheetC.write(rowCounter,columnCounter,"aantal juist",style=easyxf(style_header)) 
     rowCounter+=1
     for i in range(len(numberCorrectAnswers_loc)):
-        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i])
+        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i]+numberNeutralizedAnswers_loc[i])
         rowCounter+=1
     columnCounter+=1;
     
@@ -766,7 +766,7 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
                 rowCounter+=1                    
             columnCounter+=1;    
             
-def write_resultsFile(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc):
+def write_resultsFile(outputbook_loc,nameSheet_loc,permutations_loc,numParticipants_loc,deelnemers_loc, numQuestions_loc,numAlternatives_loc,content_loc,content_colNrs_loc,totalScore_loc,scoreQuestionsIndicatedSeries_loc,columnSeries_loc,matrixAnswers,numberCorrectAnswers_loc,numberWrongAnswers_loc,numberBlankAnswers_loc,numberNeutralizedAnswers_loc):
     sheetC = outputbook_loc.add_sheet(nameSheet_loc)
 
     columnCounter = 0;
@@ -800,11 +800,11 @@ def write_resultsFile(outputbook_loc,nameSheet_loc,permutations_loc,numParticipa
     columnCounter+=1;
     
     rowCounter = 0;
-    #number of correct Answers
+    #number of correct Answers %TODO added neutralized answers here
     sheetC.write(rowCounter,columnCounter,"aantal juist",style=easyxf(style_header)) 
     rowCounter+=1
     for i in range(len(numberCorrectAnswers_loc)):
-        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i])
+        sheetC.write(rowCounter,columnCounter,numberCorrectAnswers_loc[i]+numberNeutralizedAnswers_loc[i])
         rowCounter+=1
     columnCounter+=1;
     
