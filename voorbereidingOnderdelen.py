@@ -43,8 +43,8 @@ def voorbereidingOnderdelen(jaar,toets,sessie,permutationsUsed,aantal_onderdelen
     # prepare maxScore of subparts
     maxScoreOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal)
     # prepare neutralized of subparts
-    if len(neutralized)>0:
-        neutralizedOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal,neutralized)
+    #if len(neutralized)>0:
+    neutralizedOnderdelen(jaar,toets,onderdelen,outputFolder,outputFolderTotaal,neutralized)
     # prepare OMR for subparts    
     OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTotaal)
     #print("end voorbereidingOnderdelen: "+ "voorbereidingOnderdelen")

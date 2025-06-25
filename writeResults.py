@@ -5,6 +5,8 @@ Created on Wed May 21 14:58:24 2014
 @author: tdelaet
 """
 
+
+#### HIERONDER NOG MET XLWT
 from xlwt import  easyxf
 import numpy
 
@@ -700,7 +702,7 @@ def write_scoreStudents(outputbook_loc,nameSheet_loc,permutations_loc,numPartici
     sheetC.write(rowCounter,columnCounter,"reeks",style=easyxf(style_header)) 
     rowCounter+=1
     for i in range(len(totalScore_loc)):
-        sheetC.write(rowCounter,columnCounter,columnSeries_loc[i])
+        sheetC.write(rowCounter,columnCounter,int(columnSeries_loc[i]))
         rowCounter+=1
     columnCounter+=1;
     
@@ -795,7 +797,7 @@ def write_resultsFile(outputbook_loc,nameSheet_loc,permutations_loc,numParticipa
     sheetC.write(rowCounter,columnCounter,"reeks",style=easyxf(style_header)) 
     rowCounter+=1
     for i in range(len(totalScore_loc)):
-        sheetC.write(rowCounter,columnCounter,columnSeries_loc[i])
+        sheetC.write(rowCounter,columnCounter,int(columnSeries_loc[i]))
         rowCounter+=1
     columnCounter+=1;
     

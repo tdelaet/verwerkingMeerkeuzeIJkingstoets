@@ -5,7 +5,9 @@ Created on Wed May 21 14:37:18 2014
 @author: tdelaet
 """
 
-from xlrd import open_workbook, biffh
+
+from openpyxl import load_workbook
+
 import sys
 
 def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternatives_loc,numSeries_loc,correctAnswers_loc,permutations_loc,nameQuestions_loc,locations_loc,classificationQuestionsMod_loc,categorieQuestions_loc):
@@ -18,20 +20,26 @@ def checkInputVariables(nameFile_loc,nameSheet_loc,numQuestions_loc,numAlternati
     checkCategorieQuestions(numQuestions_loc,categorieQuestions_loc) 
     )
             
-def checkFileAndSheet(nameFile_loc,nameSheet_loc,locations_loc):
+
+def checkFileAndSheet(nameFile_loc, nameSheet_loc, locations_loc):
     for location in locations_loc:
         try:
-            book = open_workbook(nameFile_loc+"_"+location+ ".xls" )
-            book.sheet_by_name(nameSheet_loc)
-        except IOError:
-            print ("the selected file " + nameFile_loc +  " can not be opened as a workbook")
+            file_path = f"{nameFile_loc}_{location}.xlsx"
+            book=load_workbook(filename=file_path,read_only=True,data_only=True)
+            if nameSheet_loc not in book.sheetnames:
+                print(f"The selected sheet '{nameSheet_loc}' in '{file_path}' cannot be found.")
+                sys.exit()
+                return False
+        except FileNotFoundError:
+            print(f"The selected file '{file_path}' cannot be opened as a workbook.")
             sys.exit()
             return False
-        except biffh.XLRDError:
-            print ("the selected sheet " + nameSheet_loc +  " in " + nameFile_loc+"_"+location+ ".xlsx "+" can not be opened")
+        except Exception as e:
+            print(f"An error occurred while opening '{file_path}': {e}")
             sys.exit()
             return False
-    return True;    
+    return True
+ 
         
             
 def checkCorrectAnswers(numQuestions_loc, numAlternatives_loc, correctAnswers_loc):

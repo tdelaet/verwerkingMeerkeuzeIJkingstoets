@@ -35,20 +35,38 @@ def common_elements(list1, list2):
 #            break
 #    return indices
 
+# XLRD
+# def giveContentColNrs(content_loc, sheet_loc):
+#     content_colNrs_loc = [0] * len(content_loc);
+#     firstRowValues_loc = sheet_loc.row_values(0)
+#     indexC_loc =0
+#     # check if all content is present
+#     for x in content_loc:
+#         try:
+#             content_colNrs_loc[indexC_loc] = firstRowValues_loc.index(x)
+#             indexC_loc += 1
+#         except ValueError:
+#             print ("the expected content " + x + " is not present in the selected sheet")
+#             sys.exit()
+#             break;
+#     return content_colNrs_loc
+
+#OPENPYXL
 def giveContentColNrs(content_loc, sheet_loc):
-    content_colNrs_loc = [0] * len(content_loc);
-    firstRowValues_loc = sheet_loc.row_values(0)
-    indexC_loc =0
-    # check if all content is present
+    content_colNrs_loc = [0] * len(content_loc)
+    first_row = next(sheet_loc.iter_rows(min_row=1, max_row=1, values_only=True))
+    indexC_loc = 0
+
     for x in content_loc:
         try:
-            content_colNrs_loc[indexC_loc] = firstRowValues_loc.index(x)
+            content_colNrs_loc[indexC_loc] = first_row.index(x)
             indexC_loc += 1
         except ValueError:
-            print ("the expected content " + x + " is not present in the selected sheet")
+            print(f"The expected content '{x}' is not present in the selected sheet.")
             sys.exit()
-            break;
+            break
     return content_colNrs_loc
+
     
 def checkForUniqueParticipants(particpants):
     setd = set([x for x in particpants if particpants.count(x) > 1])
@@ -69,7 +87,15 @@ def getMatrixAnswers(sheet_loc,contentBook_loc,correctAnswers_loc,permutations_l
     for question_loc in range(1,numQuestions_loc+1):
         name_question_serie1 = "Vraag" + str(question_loc)
         colNr_loc = content_colNrs_loc[contentBook_loc.index(name_question_serie1)]
-        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #XLRD
+        #columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #OPENPYXL Extract values from column `colNr_loc`, from row 2 to numParticipants_loc + 1
+        columnQuestion_loc = [
+            row[colNr_loc] for row in sheet_loc.iter_rows(
+                min_row=2, max_row=numParticipants_loc + 1, values_only=True
+            )
+        ]
+
         #print(columnQuestion_loc)
         answers_loc[:,counterColumn] = columnQuestion_loc;
         #print(answers_loc[:,counterColumn])
@@ -189,7 +215,11 @@ def getNumberAlternatives(sheet_loc,content_loc,permutations_loc,columnSeries_lo
         name_question_serie1 = "Vraag" + str(question_loc)       
         colNr_loc = content_colNrs_loc[content_loc.index(name_question_serie1)]
         #get the answers for the participants (so skip for row with name of first row)
-        columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #XLRD
+        #columnQuestion_loc=sheet_loc.col_values(colNr_loc,1,numParticipants_loc+1)
+        #OPENPYXL
+        columnQuestion_loc = [row[colNr_loc] for row in sheet_loc.iter_rows(min_row=2, max_row=numParticipants_loc + 1, values_only=True)]
+
         #TODO: replace with matrixAnswers
         # replace OMR output 1, 2, 3 , 4 , 5 , 6 with A, B, C, D, E, X
         #columnQuestion_loc = map(lambda x: "A" if x=="1" else x, columnQuestion_loc)
@@ -426,7 +456,9 @@ def checkMatrixAnswers(matrixAnswers_loc,alternatives_loc,blankAnswer_loc):
     #print( blankAnswer_loc)
     for e in matrixAnswers_loc.reshape(-1):
         if not(e in alternatives_loc+[blankAnswer_loc]):
-            print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])+ " but also contains " + e)
+            print ("ERROR: The matrix of answers does not only contain the elements " + str(alternatives_loc + [blankAnswer_loc])+ " but also contains " + e + "at location: ")
+            loc=numpy.where(matrixAnswers_loc==e)
+            print(loc)
             sys.exit()
 
 def getScoreCategories(scoreQuestionsIndicatedSeries_loc,categorieQuestions_loc):

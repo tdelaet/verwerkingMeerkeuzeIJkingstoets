@@ -26,19 +26,30 @@ assumptions:
             - IF different series/permutations are used: permutatie_jaar_toets.txt (e.g. permutatie_2021_ia21.txt)
     - Below fill in variables jaar, toets, sessie, editie, aantal_onderdelen, numSeries, numAlternatives, blankAnswer, verwerking
 """
-from xlrd import open_workbook
+
 import string
 import numpy
 import matplotlib.pyplot as plt
-from xlwt import Workbook
-import matplotlib
+import matplotlib.font_manager
+
+
+
+plt.rcParams['font.family'] = 'DeJavu Serif'
+plt.rcParams['font.serif'] = ['Times New Roman']
+
+#from xlwt import Workbook
+#import xlwt
+#from xlrd import open_workbook
+from openpyxl import load_workbook, Workbook
 import os
 import sys
 import pandas as pd
+import numpy as np
 
-import checkInputVariables
+
+import checkInputVariables_openpyxl
 import supportFunctions
-import writeResults
+import writeResults_openpyxl as writeResults
 import leesSleutelEnPermutaties
 import voorbereidingOnderdelen
 import afwerkingOnderdelen
@@ -48,15 +59,15 @@ import warnings
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2024"
-sessie = 28
-editie= "augustus "+ jaar
+jaar = "2025"
+sessie = 29
+editie= "juli "+ jaar
 
 
-toets = "fa" 
-aantal_onderdelen = 4 #TODO read from file or as extra safety?
+toets = "ir" 
+aantal_onderdelen = 1 #TODO read from file or as extra safety?
 numSeries= 4 # number of series TODO lezen van file or as extra safety?
-neutralized=[22] #%TODO: read from file or something else?
+neutralized=[] #%TODO: read from file or something else?
 
 
 
@@ -95,8 +106,8 @@ else:
     print ("ERROR found in input variables"   )
     sys.exit()
 
-instellingen = ["all"]
-#instellingen = ["Brussel","Kortrijk","Gent","Leuven"]
+#instellingen = ["all"]
+instellingen = ["Brussel","Brussel_2","Kortrijk","Gent","Leuven"]
 #instellingen = ["Antwerpen","Brussel","Gent","LK","LN","LZ"] #ew
 #instellingen = ["Gent","LB","LK","LL","LN"] #hw
 #instellingen = ["Antw","BB","Gent1","Gent2","Gent3","Gent4","LB","LK","LL","LN"] #hi
@@ -215,12 +226,12 @@ for onderdeel in (["TOTAAL"] + onderdelen):
             for question in range(0,numQuestions):
                 permutations[0,question] = question + 1
         else:
-            permutations = numpy.loadtxt(folder_onderdeel +  "/permutatie_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=numpy.float)
+            permutations = numpy.loadtxt(folder_onderdeel +  "/permutatie_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=float)
     
     neutralized_onderdeel=[]
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        neutralized_onderdeel = numpy.loadtxt(folder_onderdeel +  "/neutralized_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=numpy.float)
+        neutralized_onderdeel = numpy.loadtxt(folder_onderdeel +  "/neutralized_" + jaar+ "_"+ toetsnaamOnderdeel+ ".txt",delimiter=',',dtype=float)
  
     print("sleutel: ")
     print(correctAnswers)
@@ -238,7 +249,7 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #categorie of questions
     categorieQuestions = leesSleutelEnPermutaties.leesCategorieVragen(jaar,toetsnaamOnderdeel,texinputFolder,numQuestions)
 
-        #numpy.savetxt(outputFolder_onderdeel + "permutatie_"+ jaar +"_" + toetsnaamOnderdeel + ".txt",permutations,delimiter=',',fmt="%i")
+    #numpy.savetxt(outputFolder_onderdeel + "permutatie_"+ jaar +"_" + toetsnaamOnderdeel + ".txt",permutations,delimiter=',',fmt="%i")
     ############################
     ############################
     
@@ -247,9 +258,10 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     #letters of answer alternatives
     alternatives = list(string.ascii_uppercase)[0:numAlternatives]
        
-    if not( checkInputVariables.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen,classificationQuestionsMod,categorieQuestions)):
+    if not( checkInputVariables_openpyxl.checkInputVariables(nameFile,nameSheet,numQuestions,numAlternatives,numSeries,correctAnswers,permutations,nameQuestions,instellingen,classificationQuestionsMod,categorieQuestions)):
         print ("ERROR found in input variables"   )
         sys.exit()
+    print("after checkInputVariables_openpyxl")
         
     deelnemers_all = []      
     scoreQuestionsAllPermutations_all = []
@@ -280,47 +292,98 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     for instelling in instellingen:  
         counter = 0
         print ("instelling: " + instelling)
-        # read file and get sheet
-        book= open_workbook(nameFile+"_"+ instelling+".xlsx")
-        sheet = book.sheet_by_name(nameSheet)
+        #read file and get sheet
+        # book= open_workbook(nameFile+"_"+ instelling+".xlsx") #TODO check if can set back to xslx (newer version python)
+        # sheet = book.sheet_by_name(nameSheet)
             
-        #number of rows and columns
-        num_rows = sheet.nrows;
-        num_cols = sheet.ncols;
+        # #number of rows and columns
+        # num_rows = sheet.nrows;
+        # num_cols = sheet.ncols;
      
-        #number of participants = number of rows-1
-        numParticipants = num_rows-1;
+        # #number of participants = number of rows-1
+        # numParticipants = num_rows-1;
         
-        #Load the first row => name indicating 
-        firstRow =  sheet.row(0) 
-        firstRowValues = sheet.row_values(0)
+        # #Load the first row => name indicating 
+        # firstRow =  sheet.row(0) 
+        # firstRowValues = sheet.row_values(0)
         
-        content_colNrs = supportFunctions.giveContentColNrs(content, sheet);
+        # content_colNrs = supportFunctions.giveContentColNrs(content, sheet);
         
-        #prepare a matrix to store the score of a student with all possible permutations
-        scoreQuestionsIndicatedSeries= numpy.zeros((numParticipants,numQuestions))
+        # #prepare a matrix to store the score of a student with all possible permutations
+        # scoreQuestionsIndicatedSeries= numpy.zeros((numParticipants,numQuestions))
         
-        # prepare output excels
-        outputbook = Workbook(style_compression=2)
-        outputbookperm = Workbook(style_compression=2)
-        outputStudentbook = Workbook(style_compression=2)
-        outputResults = Workbook(style_compression=2)
+        # # prepare output excels
+        # outputbook = Workbook(style_compression=2)
+        # outputbookperm = Workbook(style_compression=2)
+        # outputStudentbook = Workbook(style_compression=2)
+        # outputResults = Workbook(style_compression=2)
+        
+        # PYXLW Laad het bestaande Excel-bestand
+        book = load_workbook(filename=nameFile + "_" + instelling + ".xlsx")
+        sheet = book[nameSheet]
+        
+        # Aantal rijen en kolommen
+        num_rows = sheet.max_row
+        num_cols = sheet.max_column
+        
+        # Aantal deelnemers = aantal rijen - 1 (eerste rij is header)
+        numParticipants = num_rows - 1
+        
+        # Eerste rij (kopteksten)
+        firstRow = list(sheet.iter_rows(min_row=1, max_row=1))[0]
+        firstRowValues = [cell.value for cell in firstRow]
+        
+        # Kolomnummers bepalen (je functie blijft hetzelfde)
+        content_colNrs = supportFunctions.giveContentColNrs(content, sheet)
+        
+        # Matrix voorbereiden voor scores
+        scoreQuestionsIndicatedSeries = np.zeros((numParticipants, numQuestions))
+        
+        # Nieuwe werkboeken aanmaken
+        outputbook = Workbook()
+        outputbookperm = Workbook()
+        outputStudentbook = Workbook()
+        outputResults = Workbook()
+
+        
+        
         if writeFeedbackStudents:
             outputFeedbackbook = Workbook(style_compression=2)
         
         name = "ijkID"
         studentenNrCol= content_colNrs[content.index(name)]
-        deelnemers=sheet.col_values(studentenNrCol,1,num_rows)
+        #XLRD
+        # deelnemers=sheet.col_values(studentenNrCol,1,num_rows)
+        
+        # if not supportFunctions.checkForUniqueParticipants(deelnemers):
+        #     print ("ERROR: Duplicate participants found")
+        #     sys.exit()
+        
+        # name = "vragenreeks"
+        # #get the column in which the vragenreeks is stored
+        # colNrSerie = content_colNrs[content.index(name)]
+        # #get the series for the participants (so skip for row with name of first row)
+        # columnSeries=sheet.col_values(colNrSerie,1,num_rows)
+        
+        #OPENPYXL
+        # Get all rows from the sheet (excluding the header row)
+        rows = list(sheet.iter_rows(min_row=2, values_only=True))
+        num_rows = len(rows) + 1  # +1 because we skipped the header
+        
+        # Get the column of participant names (deelnemers)
+        deelnemers = [row[studentenNrCol] for row in rows]
         
         if not supportFunctions.checkForUniqueParticipants(deelnemers):
-            print ("ERROR: Duplicate participants found")
+            print("ERROR: Duplicate participants found")
             sys.exit()
         
         name = "vragenreeks"
-        #get the column in which the vragenreeks is stored
+        # Get the column index for "vragenreeks"
         colNrSerie = content_colNrs[content.index(name)]
-        #get the series for the participants (so skip for row with name of first row)
-        columnSeries=sheet.col_values(colNrSerie,1,num_rows)
+        
+        # Get the series for the participants
+        columnSeries = [row[colNrSerie] for row in rows]
+
                   
         # get matrix of answers
         matrixAnswers = supportFunctions.getMatrixAnswers(sheet,content,correctAnswers,permutations,alternatives,numParticipants,columnSeries,content_colNrs)  
@@ -375,17 +438,28 @@ for onderdeel in (["TOTAAL"] + onderdelen):
             
                          
             ## WRITING A FILE TO UPLOAD TO TOLEDO WITH THE GRADES
-            writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)           
+            writeResults.write_scoreStudents(outputStudentbook,"punten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers,numberNeutralizedAnswers)           
             #writeResults.write_resultsFile(outputResults,"resultaten",permutations,numParticipants,deelnemers, numQuestions,numAlternatives,content,content_colNrs,totalScore,scoreQuestionsIndicatedSeries,columnSeries,matrixAnswers,numberCorrectAnswers, numberWrongAnswers, numberBlankAnswers)                   
 
             writeResults.write_scoreCategoriesStudents(outputStudentbook,"percentageCategorien",deelnemers, totalScore, categorieQuestions, scoreCategories)
             
+            # outputFolder_instelling = outputFolder_onderdeel + instelling + "/"
+            # if not os.path.exists(outputFolder_instelling):
+            #     os.makedirs(outputFolder_instelling)    
+            # outputbook.save(outputFolder_instelling + 'output_'  + jaar + "_" +  toets + "_" +instelling+'.xlsx') 
+            # outputbookperm.save(outputFolder_instelling + 'output_permutations_'  + jaar + "_" +  toets + "_" +instelling+'.xlsx') 
+            # outputStudentbook.save(outputFolder_instelling + 'punten_'  + jaar + "_" +  toets + "_" +instelling+'.xlsx') 
+            
+            # Create the output folder if it doesn't exist
             outputFolder_instelling = outputFolder_onderdeel + instelling + "/"
             if not os.path.exists(outputFolder_instelling):
-                os.makedirs(outputFolder_instelling)    
-            outputbook.save(outputFolder_instelling + 'output_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
-            outputbookperm.save(outputFolder_instelling + 'output_permutations_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
-            outputStudentbook.save(outputFolder_instelling + 'punten_'  + jaar + "_" +  toets + "_" +instelling+'.xls') 
+                os.makedirs(outputFolder_instelling)
+            
+            # Save the workbooks
+            outputbook.save(outputFolder_instelling + 'output_' + jaar + "_" + toets + "_" + instelling + '.xlsx')
+            outputbookperm.save(outputFolder_instelling + 'output_permutations_' + jaar + "_" + toets + "_" + instelling + '.xlsx')
+            outputStudentbook.save(outputFolder_instelling + 'punten_' + jaar + "_" + toets + "_" + instelling + '.xlsx')
+
 
         deelnemers_all.append(deelnemers)
         scoreQuestionsAllPermutations_all.append(scoreQuestionsAllPermutations)
@@ -442,16 +516,26 @@ for onderdeel in (["TOTAAL"] + onderdelen):
     distributionStudentsHigh_tot,distributionStudentsLow_tot= supportFunctions.getDistributionStudents(totalScore_tot,bordersDistributionStudentsLow,bordersDistributionStudentsHigh)
 
     
-    # write to excel_file
-    outputbook = Workbook(style_compression=2)
-    outputbookperm = Workbook(style_compression=2)
-    outputStudentbook = Workbook(style_compression=2)  
-    outputResults = Workbook(style_compression=2)  
-    outputInstellingen = Workbook(style_compression=2)  
+    # # write to excel_file
+    # outputbook = xlwt.Workbook(style_compression=2)
+    # outputbookperm = xlwt.Workbook(style_compression=2)
+    # outputStudentbook = xlwt.Workbook(style_compression=2)  
+    # outputResults = xlwt.Workbook(style_compression=2)  
+    # outputInstellingen = xlwt.Workbook(style_compression=2)  
+    # if writeFeedbackStudents:
+    #     outputFeedbackbook = xlwt.Workbook(style_compression=2)
+    # outputFeedbackPlatformbook = xlwt.Workbook(style_compression=2)
+    # outputDeelnemersLijst = xlwt.Workbook(style_compression=2)
+    # Nieuwe werkboeken aanmaken
+    outputbook = Workbook()
+    outputbookperm = Workbook()
+    outputStudentbook = Workbook()
+    outputResults = Workbook()
+    outputInstellingen = Workbook() 
     if writeFeedbackStudents:
-        outputFeedbackbook = Workbook(style_compression=2)
-    outputFeedbackPlatformbook = Workbook(style_compression=2)
-    outputDeelnemersLijst = Workbook(style_compression=2)
+         outputFeedbackbook = Workbook()
+    outputFeedbackPlatformbook = Workbook()
+    outputDeelnemersLijst = Workbook()
     
 
     ## WRITING THE OUTPUT TO A FILE
@@ -492,15 +576,15 @@ for onderdeel in (["TOTAAL"] + onderdelen):
                                         ,correctAnswers, numQuestionsAlternatives_tot)
     writeResults.write_participantsList(outputDeelnemersLijst,"Beoordelingen",deelnemers_tot)
 
-    outputbook.save(outputFolder_onderdeel + 'output' +'_controleerVoorKwaliteitToets_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-    outputbookperm.save(outputFolder_onderdeel + 'output_controleerVoorFouteReeksen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+    outputbook.save(outputFolder_onderdeel + 'output' +'_controleerVoorKwaliteitToets_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
+    outputbookperm.save(outputFolder_onderdeel + 'output_controleerVoorFouteReeksen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
     if (len(instellingen)!=1):
-        outputInstellingen.save(outputFolder_onderdeel + 'instellingen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-    outputStudentbook.save(outputFolder_onderdeel + 'punten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-    outputResults.save(outputFolder_onderdeel + '../resultaten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
-    outputDeelnemersLijst.save(outputFolder_onderdeel_ps + 'deelnemerslijst_KULoket_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+        outputInstellingen.save(outputFolder_onderdeel + 'instellingen_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
+    outputStudentbook.save(outputFolder_onderdeel + 'punten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
+    outputResults.save(outputFolder_onderdeel + '../resultaten_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
+    outputDeelnemersLijst.save(outputFolder_onderdeel_ps + 'deelnemerslijst_KULoket_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
     if writeFeedbackStudents:
-        outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback_'  + jaar + "_" +  toetsnaamOnderdeel + '.xls')  
+        outputFeedbackbook.save(outputFolder_onderdeel+ 'feedback_'  + jaar + "_" +  toetsnaamOnderdeel + '.xlsx')  
 
    
 punten_compose,geslaagdVariabele = afwerkingOnderdelen.genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder)

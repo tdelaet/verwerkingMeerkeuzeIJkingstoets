@@ -29,13 +29,15 @@ def genereerZIPs(jaar,toets,sessie,onderdelen,outputFolder):
         shutil.make_archive(zipToCreate,"zip",outputFolder_onderdeelFull)
     
 def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelGeslaagd,maxScores,outputFolder):
-    #print("begin genereerPUntenBestand")
+    print("begin genereerPUntenBestand")
     #lees punten van TOTAAL
-    outputFolder_onderdeel = outputFolder +  "_TOTAAL/" + "/output_" + jaar+ "_" +  toets + "_TOTAAL/"
-    #print("genereerPuntenbestand " + outputFolder_onderdeel )
-    puntenFilename= outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_TOTAAL.xls"
-    punten_onderdeel = pd.read_excel(puntenFilename)#,dtype=str)
+    outputFolder_onderdeel = outputFolder +  "_TOTAAL/" + "output_" + jaar+ "_" +  toets + "_TOTAAL/"
+    print("genereerPuntenbestand " + outputFolder_onderdeel )
+    puntenFilename= outputFolder_onderdeel + "punten_" + jaar+ "_" +  toets + "_TOTAAL.xlsx"
+    print("puntenFilename= " + puntenFilename)
+    punten_onderdeel = pd.read_excel(puntenFilename,"punten")#,dtype=str)
 
+    print("punten_onderdeel = " + punten_onderdeel.columns[0] )
     columns_punten = [punten_onderdeel.columns[x] for x in [0,1,3,4,5]]
     punten_compose=punten_onderdeel[columns_punten]
     namen_nieuw = ["nummer","TOTAAL","juist","fout","blanco"]
@@ -58,11 +60,11 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
              sys.exit()
         toetsnaamOnderdeel = toets + "_" + onderdeel
         outputFolder_onderdeel = "/output_" + jaar + "_" + toetsnaamOnderdeel + "/"
-        puntenFilename= onderdeelFolder + outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_" + onderdeel + ".xls"
+        puntenFilename= onderdeelFolder + outputFolder_onderdeel + "punten_" + jaar + "_" +  toets + "_" + onderdeel + ".xlsx"
         if not os.path.exists(puntenFilename):
              print("Error: file " + puntenFilename + " does not exist")
              sys.exit()
-        punten_onderdeel = pd.read_excel(puntenFilename)
+        punten_onderdeel = pd.read_excel(puntenFilename,"punten")
         columns_punten = [punten_onderdeel.columns[x] for x in [1,3,4,5]]
         punten_onderdeel_selected=punten_onderdeel[columns_punten]
         namen_nieuw = ["score" + onderdeel,"juist"+ onderdeel,"fout"+ onderdeel,"blanco"+ onderdeel]
@@ -86,7 +88,7 @@ def genereerPuntenBestand(jaar,toets,sessie,onderdelen,regelFeedbackgroep,regelG
     punten_compose.insert(5,"FeedbackGroep",feedbackgroep)
     
     punten_compose.to_csv(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".csv", index = False) 
-    punten_compose.to_excel(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".xls",sheet_name="punten",index=False)
+    punten_compose.to_excel(outputFolder +"/resultaten_"+ jaar + "_" + toets + ".xlsx",sheet_name="punten",index=False)
     return punten_compose,geslaagdVariabele
     
 def bepaalFeedbackGroep(df,regelFeedbackgroep,maxScores):
