@@ -59,72 +59,134 @@ import warnings
 #####################################################################################
 #####################################################################################
 ### Variables to fill in
-jaar = "2025"
-sessie = 29
+jaar = "2026"
+sessie = 31
 editie= "juli "+ jaar
 
 
+
+#################################################
+# =============================================================================
+# toets = "ia" 
+# aantal_onderdelen = 4 #TODO read from file or as extra safety?
+# numSeries= 4 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Gent","Brussel","Kortrijk"] #ir en ia
+# 
+# =============================================================================
+# #################################################
 toets = "ir" 
-aantal_onderdelen = 1 #TODO read from file or as extra safety?
-numSeries= 4 # number of series TODO lezen van file or as extra safety?
-neutralized=[] #%TODO: read from file or something else?
+aantal_onderdelen = 0 #todo read from file or as extra safety?
+numSeries= 4 # number of series todo lezen van file or as extra safety?
+neutralized=[] #%todo: read from file or something else?
+instellingen = ["Leuven","Gent","Brussel","Kortrijk"] #ir en ia
+#instellingen = ["Leuven","Kortrijk","Brussel","Gent"] #ir en ia
+
+# #################################################
+# toets = "ww" 
+# aantal_onderdelen = 1 #TODO read from file or as extra safety?
+# numSeries= 4 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Gent","Brussel","Kortrijk","Antwerpen","Hasselt"]
 
 
+# #################################################
+# toets = "ib" 
+# aantal_onderdelen = 4 #TODO read from file or as extra safety?
+# numSeries= 1 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Gent"]
 
 
+#################################################
+#toets = "ir" 
+#aantal_onderdelen = 1 #todo read from file or as extra safety?
+#numseries= 4 # number of series todo lezen van file or as extra safety?
+#neutralized=[] #%todo: read from file or something else?
+#instellingen = ["Leuven","Gent","Brussel","Kortrijk","Antwerpen","Hasselt","Antwerpen2","Leuven-Sophie"]
+
+# #################################################
+# toets = "bi" 
+# aantal_onderdelen = 2 #TODO read from file or as extra safety?
+# numSeries= 2 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Gent","Brussel","Kortrijk","Antwerpen"]
+
+# #################################################
+# toets = "fa" 
+# aantal_onderdelen = 4 #TODO read from file or as extra safety?
+# numSeries= 4 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Gent","Brussel","Kortrijk","Antwerpen"]
+
+
+# #################################################
+# toets = "in" 
+# aantal_onderdelen = 4 #TODO read from file or as extra safety?
+# numSeries= 2 # number of series TODO lezen van file or as extra safety?
+# neutralized=[] #%TODO: read from file or something else?
+# instellingen = ["Leuven","Leuven_Brugge", "Leuven_Geel", "Leuven_Gent", "Leuven_Sint-Katelijne-Waver","Gent","Gent_Kortrijk","Brussel","Antwerpen","Hasselt"]
+
+#instellingen = ["all"] #ww
+#instellingen = ["AE","BB","GR","LH","LK"] #wb
+#instellingen = ["LZ"] #la
+#instellingen = ["GC","LE"] #ib
+#instellingen = ["LT"] #et
+#instellingen = ["AE","BB","GD","LH","LK"] #bi
+#instellingen = ["AE","BB","GR","LH","LK"] #wf
+#instellingen = ["AE","BB","GZ","LH","LO","UH"] #rw
+#instellingen = ["AE","BJ","GZ","LK","LZ","UH"] #bw
+#instellingen = ["AE","BJ","GH","LK","LZ"] #fa
+#instellingen = ["GT","LB","LK","LL","LN"] #hw
+#instellingen = ["AA","BB","GT","LB","LK","LL","LN"] #hi
+#instellingen = ["AA","AA_2","BB","GT","LB","LK","LL","LN"] #ew
+#instellingen = ["AG","BB","CD","GB","GK","LE","LG","LO","LT","LW"] #in
 
 # For actual rules see "afwerkingOnderdelen.py" bepaalGeslaagd en bepaalFeedbackGroep
-if toets=="ia":
+if toets=="ia" or toets=="hw" or toets=="hi" or toets=="ew":
     regelFeedbackgroep = "ia"      #A als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)    
     regelGeslaagd = "ia"      #geslaagd als (TOTAAL >=maxTOTAAL/2 & scoreB>=maxScoreB/2)  
 elif toets=="bi":
-    regelFeedbackgroep="bi"
-    #feedbackgroep A score_TOTAAL >=12; 
-    #feedbackgroep B 10 <= score_TOTAAL<12;
-    #feedbackgroep C score_TOTAAL<10
-    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
-elif toets=="ib":
-    regelFeedbackgroep="ib"  
+    regelFeedbackgroep="biib"  
     #feedbackgroep A score_Totaal>=12;
     #feedbackgroep B 10<=score_Totaal<12;
-    #feedbackgroep C 5<score_Totaal<10;
-    #feedbackgroep D score_Totaal<=5
+    #feedbackgroep C 5<=score_Totaal<10;
+    #feedbackgroep D score_Totaal<5
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
-elif toets=="bw" or toets=="fa":
+elif toets=="ib":
+    regelFeedbackgroep="biib"  
+    #feedbackgroep A score_A>=12;
+    #feedbackgroep B 10<=score_A<12;
+    #feedbackgroep C 5<=score_A<10;
+    #feedbackgroep D score_A<5
+    regelGeslaagd =  "ib" #A als (score_A >=10) 
+elif toets=="bw":
     #feedbackgroep A score_TOTAAL >=10 
     #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 6
     #feedbackgroep C score_TOTAAL <=6
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2)  
-    regelFeedbackgroep =  "bwfala"
-elif toets=="ir" or toets=="ww" or toets=="rw" or toets =="la":
+    regelFeedbackgroep =  "bw"
+elif  toets=="fa":
+    #feedbackgroep A score_TOTAAL >=10 
+    #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 7
+    #feedbackgroep C score_TOTAAL <=7
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2)  
+    regelFeedbackgroep =  "fa"
+elif toets=="ir" or toets=="ww" or toets =="la":
+    regelFeedbackgroep =  "irww" 
+    #feedbackgroep A score_TOTAAL >=10 
+    #feedbackgroep B score_TOTAAL <10 AND score TOTAAL > 5
+    #feedbackgroep C score_TOTAAL <=5
+    regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
+elif toets=="rw":
     regelFeedbackgroep =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
-elif toets=="wf" or toets=="wb" or toets=="ew" or toets=="hi"  or toets=="hw" or toets=="in" or toets=="et":
+elif toets=="wf" or toets=="wb"   or  toets=="in" or toets=="et":
     regelFeedbackgroep =  "iedereenA"
     regelGeslaagd =  "geslaagdTotaal" #A als (TOTAAL >=maxTOTAAL/2) 
 else:
     print ("ERROR found in input variables"   )
     sys.exit()
-
-#instellingen = ["all"]
-instellingen = ["Brussel","Brussel_2","Kortrijk","Gent","Leuven"]
-#instellingen = ["Antwerpen","Brussel","Gent","LK","LN","LZ"] #ew
-#instellingen = ["Gent","LB","LK","LL","LN"] #hw
-#instellingen = ["Antw","BB","Gent1","Gent2","Gent3","Gent4","LB","LK","LL","LN"] #hi
-#instellingen = ["Antwerpen","Brussel","Gent","Leuven","LK"] #wb
-#instellingen = ["Antw","Brussel","Gent","Leuven","LK"] #wf
-#instellingen = ["LEUVEN","LD","GENT","BRUSSEL","GK","Kulak"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk","Brussel_2"]
-#instellingen = ["Leuven","Gent","Brussel","Kortrijk","online"]#
-#instellingen = ["all","extra"]
-#instellingen = ["all","online"]#
-#instellingen = ["Leuven","Kortrijk","Gent"]
-#instellingen = ["Antwerpen_2"]
-#BW instellingen = ["Antwerpen","Antwerpen_2","Brussel","Gent","LK","LZ","UH"] #bw
-#instellingen = ["Antwerpen","Antwerpen-2extra","Brussel","Gent","LK","LZ"]
-# instellingen = ["Antwerpen","Brussel","Gent","Leuven","LO"] #rw
-#instellingen = ["Brussel","Antwerpen","Kortrijk","Gent","Leuven"]
-#instellingen = ["Antwerpen","Brussel","Gent","Gent-Kor","Hasselt","LE","LG","LO","LT","LW","LT-extra"] #in
 
 numAlternatives = 4 #number of alternatives
 

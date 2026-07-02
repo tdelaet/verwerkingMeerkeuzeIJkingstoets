@@ -152,11 +152,13 @@ def permutatieOnderdelen(jaar,toets,onderdelen, outputFolder,outputFolderTotaal)
 # Deelt OMR op in onderdelen en schrijf die weg in map OMR in map van elk onderdeel
 def OMROnderdelen(jaar,toets,onderdelen,instellingen,outputFolder,outputFolderTotaal):
     for instelling in instellingen: 
+        print("checking OMR van " + instelling)
         OMRfilename = outputFolder + "/OMR/" + jaar+ "_"+ toets+ "_OMRoutput_" + instelling + ".xlsx"
         if not os.path.exists(OMRfilename):
             print ("ERROR: het bestand "+  OMRfilename + " bestaat niet")
             sys.exit()
         OMR = pd.read_excel(OMRfilename,dtype=str)
+        #print (OMR["vragenreeks"])
         OMR["vragenreeks"] = OMR["vragenreeks"].astype(str).astype(int)
 
         
